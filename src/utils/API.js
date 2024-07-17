@@ -2,8 +2,7 @@ import axios from "axios";
 const headers = {
   "Content-Type": "application/json"
 };
-const DEV = false;
-const burl = DEV ? "http://localhost:8800" : "https://www.prograrmor.com";
+const burl = "https://prograrmor-back.vercel.app";
 
 function paramsToString(params) {
   let string = "";

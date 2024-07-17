@@ -1,9 +1,7 @@
 import React from "react";
-import { DEV } from "../App";
 
 function BoutonsSociaux(props) {
-  console.log("DEV", DEV)
-  const url = DEV ? "http://localhost:8800" : "https://www.prograrmor.com";
+  const url = "https://prograrmor-back.vercel.app";
 
   return (
     <div>

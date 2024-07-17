@@ -21,8 +21,6 @@ import ProgrammeCreator from "./components/Dashboard/ProgrammeCreator.jsx";
 
 // import eruda from "eruda";
 
-const DEV = false;
-
 function App() {
 
     // document.body.style.zoom = "95%";
@@ -114,4 +112,4 @@ function App() {
     );
 };
 
-export { App, DEV };
+export { App };
