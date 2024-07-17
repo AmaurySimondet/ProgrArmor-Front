@@ -34,11 +34,8 @@ This project is my property only and you can't share it for commercial purpose. 
 ## TODO
 
 ## First time starting the project
-- npm install
-- npm run install-client
-On seperate terminal:
-- npm run start
-- cd client && npm start
+- npm install --legacy-peer-deps
+- npm start
 
 ## Deployment
 - update package.json and package-lock.json
