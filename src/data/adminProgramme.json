@@ -1,0 +1,478 @@
+{
+    "titre": "Le classico",
+    "description": "Ultra classico mon pote",
+    "type": {
+        "id": "type",
+        "label": "Musculation / StreetLifting",
+        "value": "Musculation / StreetLifting",
+        "name": "Type de programme"
+    },
+    "niveau": {
+        "id": "niveaux",
+        "label": "Débutant",
+        "value": "Débutant",
+        "name": "Niveaux"
+    },
+    "duree": "120",
+    "materiel": {
+        "id": "materiel",
+        "label": "Rack, barre et poids",
+        "value": "Rack, barre et poids",
+        "name": "Materiel"
+    },
+    "programme": [
+        {
+            "id": "f159c84e-b5b1-4cf4-b345-9c0733e01b4b",
+            "seances": [
+                {
+                    "id": "95636e1c-c465-4a2a-b052-80df00ef6f3c",
+                    "exercices": [
+                        {
+                            "exercice": {
+                                "name": "Developpé couché"
+                            },
+                            "Series": {
+                                "0": {
+                                    "id": "0f691e27-95dc-4c97-aadf-7a819ea15455",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "1": {
+                                    "id": "ab88fcca-02d2-49f7-8e00-368824aa3944",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "2": {
+                                    "id": "57fcb5ec-7557-426a-b41f-510634dbf606",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "3": {
+                                    "id": "b74862d6-7d9b-4c7b-88ae-602d74054805",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                }
+                            },
+                            "Categories": {
+                                "0": {
+                                    "id": "4ed2f9c0-9cbe-4e93-8e3d-d49c956790b2",
+                                    "input": "Barre olympique droite",
+                                    "name": "Type de barre / poids"
+                                }
+                            },
+                            "id": "4fe30b97-b6ae-4972-8021-777099775346"
+                        },
+                        {
+                            "exercice": {
+                                "name": "Squat"
+                            },
+                            "Series": {
+                                "0": {
+                                    "id": "6ee29fe0-87bc-4d6b-a21c-84310e7464b7",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "1": {
+                                    "id": "462becbe-5367-470a-a306-c9e89f48ebf5",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "2": {
+                                    "id": "298f2289-5f77-4c6c-a2c6-1e6d4efa5793",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "3": {
+                                    "id": "aa312ba5-9103-41f4-9184-14b8330d15cc",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                }
+                            },
+                            "Categories": {},
+                            "id": "48699b90-1a39-4c45-a22b-6c03cc562790"
+                        }
+                    ],
+                    "echauffements": [],
+                    "jourDeRepos": "2"
+                }
+            ],
+            "cycle": "0"
+        },
+        {
+            "id": "f159c999-b5b1-4cf4-b345-9c0733e01b4b",
+            "seances": [
+                {
+                    "id": "95636e1c-c465-4a2a-b052-80df00ef6f3c",
+                    "exercices": [
+                        {
+                            "exercice": {
+                                "name": "Developpé couché"
+                            },
+                            "Series": {
+                                "0": {
+                                    "id": "0f691e27-95dc-4c97-aadf-7a819ea15455",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "1": {
+                                    "id": "ab88fcca-02d2-49f7-8e00-368824aa3944",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "2": {
+                                    "id": "57fcb5ec-7557-426a-b41f-510634dbf606",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "3": {
+                                    "id": "b74862d6-7d9b-4c7b-88ae-602d74054805",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                }
+                            },
+                            "Categories": {
+                                "0": {
+                                    "id": "4ed2f9c0-9cbe-4e93-8e3d-d49c956790b2",
+                                    "input": "Barre olympique droite",
+                                    "name": "Type de barre / poids"
+                                }
+                            },
+                            "id": "4fe30b97-b6ae-4972-8021-777099775346"
+                        },
+                        {
+                            "exercice": {
+                                "name": "Squat"
+                            },
+                            "Series": {
+                                "0": {
+                                    "id": "6ee29fe0-87bc-4d6b-a21c-84310e7464b7",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "1": {
+                                    "id": "462becbe-5367-470a-a306-c9e89f48ebf5",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "2": {
+                                    "id": "298f2289-5f77-4c6c-a2c6-1e6d4efa5793",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "3": {
+                                    "id": "aa312ba5-9103-41f4-9184-14b8330d15cc",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                }
+                            },
+                            "Categories": {},
+                            "id": "48699b90-1a39-4c45-a22b-6c03cc562790"
+                        }
+                    ],
+                    "echauffements": [],
+                    "jourDeRepos": "2"
+                },
+                {
+                    "id": "95636e1c-c465-4a2a-b052-80df00ef6f3c",
+                    "exercices": [
+                        {
+                            "exercice": {
+                                "name": "Developpé couché"
+                            },
+                            "Series": {
+                                "0": {
+                                    "id": "0f691e27-95dc-4c97-aadf-7a819ea15455",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "1": {
+                                    "id": "ab88fcca-02d2-49f7-8e00-368824aa3944",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "2": {
+                                    "id": "57fcb5ec-7557-426a-b41f-510634dbf606",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "3": {
+                                    "id": "b74862d6-7d9b-4c7b-88ae-602d74054805",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                }
+                            },
+                            "Categories": {
+                                "0": {
+                                    "id": "4ed2f9c0-9cbe-4e93-8e3d-d49c956790b2",
+                                    "input": "Barre olympique droite",
+                                    "name": "Type de barre / poids"
+                                }
+                            },
+                            "id": "4fe30b97-b6ae-4972-8021-777099775346"
+                        },
+                        {
+                            "exercice": {
+                                "name": "Squat"
+                            },
+                            "Series": {
+                                "0": {
+                                    "id": "6ee29fe0-87bc-4d6b-a21c-84310e7464b7",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "1": {
+                                    "id": "462becbe-5367-470a-a306-c9e89f48ebf5",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "2": {
+                                    "id": "298f2289-5f77-4c6c-a2c6-1e6d4efa5793",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "3": {
+                                    "id": "aa312ba5-9103-41f4-9184-14b8330d15cc",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                }
+                            },
+                            "Categories": {},
+                            "id": "48699b90-1a39-4c45-a22b-6c03cc562790"
+                        }
+                    ],
+                    "echauffements": [],
+                    "jourDeRepos": "2"
+                },
+                {
+                    "id": "95636e1c-c465-4a2a-b052-999f00ef6f3c",
+                    "exercices": [
+                        {
+                            "exercice": {
+                                "name": "Developpé couché"
+                            },
+                            "Series": {
+                                "0": {
+                                    "id": "0f691e27-95dc-4c97-aadf-7a819ea15455",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "1": {
+                                    "id": "ab88fcca-02d2-49f7-8e00-368824aa3944",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "2": {
+                                    "id": "57fcb5ec-7557-426a-b41f-510634dbf606",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "3": {
+                                    "id": "b74862d6-7d9b-4c7b-88ae-602d74054805",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                }
+                            },
+                            "Categories": {
+                                "0": {
+                                    "id": "4ed2f9c0-9cbe-4e93-8e3d-d49c956790b2",
+                                    "input": "Barre olympique droite",
+                                    "name": "Type de barre / poids"
+                                }
+                            },
+                            "id": "4fe30b97-b6ae-4972-8021-777099775346"
+                        },
+                        {
+                            "exercice": {
+                                "name": "Squat"
+                            },
+                            "Series": {
+                                "0": {
+                                    "id": "6ee29fe0-87bc-4d6b-a21c-84310e7464b7",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "1": {
+                                    "id": "462becbe-5367-470a-a306-c9e89f48ebf5",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "2": {
+                                    "id": "298f2289-5f77-4c6c-a2c6-1e6d4efa5793",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "3": {
+                                    "id": "aa312ba5-9103-41f4-9184-14b8330d15cc",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                }
+                            },
+                            "Categories": {},
+                            "id": "48699b90-1a39-4c45-a22b-6c03cc562790"
+                        }
+                    ],
+                    "echauffements": [],
+                    "jourDeRepos": "2"
+                }
+            ],
+            "cycle": "0"
+        },
+        {
+            "id": "f159c84e-b5b1-4cf4-b345-9c0733e01999",
+            "seances": [
+                {
+                    "id": "95636e1c-c465-4a2a-b052-80df00ef6f3c",
+                    "exercices": [
+                        {
+                            "exercice": {
+                                "name": "Developpé couché"
+                            },
+                            "Series": {
+                                "0": {
+                                    "id": "0f691e27-95dc-4c97-aadf-7a819ea15455",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "1": {
+                                    "id": "ab88fcca-02d2-49f7-8e00-368824aa3944",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "2": {
+                                    "id": "57fcb5ec-7557-426a-b41f-510634dbf606",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "3": {
+                                    "id": "b74862d6-7d9b-4c7b-88ae-602d74054805",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                }
+                            },
+                            "Categories": {
+                                "0": {
+                                    "id": "4ed2f9c0-9cbe-4e93-8e3d-d49c956790b2",
+                                    "input": "Barre olympique droite",
+                                    "name": "Type de barre / poids"
+                                }
+                            },
+                            "id": "4fe30b97-b6ae-4972-8021-777099775346"
+                        },
+                        {
+                            "exercice": {
+                                "name": "Squat"
+                            },
+                            "Series": {
+                                "0": {
+                                    "id": "6ee29fe0-87bc-4d6b-a21c-84310e7464b7",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "1": {
+                                    "id": "462becbe-5367-470a-a306-c9e89f48ebf5",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "2": {
+                                    "id": "298f2289-5f77-4c6c-a2c6-1e6d4efa5793",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                },
+                                "3": {
+                                    "id": "aa312ba5-9103-41f4-9184-14b8330d15cc",
+                                    "typeSerie": "reps",
+                                    "repsTime": "12",
+                                    "charge": "",
+                                    "percent": "NaN%"
+                                }
+                            },
+                            "Categories": {},
+                            "id": "48699b90-1a39-4c45-a22b-6c03cc562790"
+                        }
+                    ],
+                    "echauffements": [],
+                    "jourDeRepos": "2"
+                }
+            ],
+            "cycle": "0"
+        }
+    ]
+}

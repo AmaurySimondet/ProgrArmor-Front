@@ -1,0 +1,45 @@
+{
+  "name": "client",
+  "version": "0.1.0",
+  "private": true,
+  "engines": {
+    "node": "20.15.1"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/material": "^5.10.7",
+    "axios": "^0.27.2",
+    "dotenv-webpack": "^8.0.1",
+    "eruda": "^2.6.2",
+    "react": "^18.2.0",
+    "react-card-flip": "^1.2.0",
+    "react-custom-scrollbars": "^4.2.1",
+    "react-dom": "^18.2.0",
+    "react-headroom": "^3.2.1",
+    "react-router-dom": "^6.4.0",
+    "react-scripts": "5.0.1",
+    "react-select": "^5.5.9",
+    "recharts": "^2.1.15",
+    "upload-js": "^2.2.1",
+    "uuid": "^9.0.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
+}
