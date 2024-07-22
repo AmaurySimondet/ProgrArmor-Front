@@ -68,6 +68,11 @@ function NavigBar(props) {
                                         </tr>
                                         <tr>
                                             <td>
+                                                <a className="nav-link" href="/dashboard"><img className="icon-navbar" src={require('../images/icons/home.webp')} alt='home' /></a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>
                                                 <a className="nav-link" href="/session"><img className="icon-navbar" src={require('../images/icons/write.webp')} alt='session' /></a>
                                             </td>
                                         </tr>
@@ -136,6 +141,9 @@ function NavigBar(props) {
                                 <ul className="navbar-nav mr-auto mt-2 mt-lg-0 navbar-elements">
                                     <li className="nav-item active">
                                         <a className="nav-link" href="/dashboard"><img className="icon-navbar" src={require('../images/icons/home.webp')} alt='home' /></a>
+                                    </li>
+                                    <li className="nav-item active">
+                                        <a className="nav-link" href="/session2"><img className="icon-navbar" src={require('../images/icons/write.webp')} alt='home' style={{ transform: "rotate(90deg)" }} /></a>
                                     </li>
                                     <li className="nav-item active">
                                         <a className="nav-link" href="/session"><img className="icon-navbar" src={require('../images/icons/write.webp')} alt='session' /></a>

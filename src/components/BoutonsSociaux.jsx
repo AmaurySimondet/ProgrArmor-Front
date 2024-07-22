@@ -1,7 +1,7 @@
 import React from "react";
 
 function BoutonsSociaux(props) {
-  const url = "https://prograrmor-back.vercel.app";
+  const url = "http://localhost:8800";
 
   return (
     <div>

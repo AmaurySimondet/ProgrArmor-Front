@@ -73,7 +73,6 @@ function Accomplissements() {
         else {
             // console.log(data);
             // console.log(Object.values(data.checkItems).length)
-            console.log("checkItems", data.checkItems)
             setCheckedItems(data.checkItems);
 
             setAccomplissements(Object.values(data.checkItems).filter(item => item.valeur === true));
