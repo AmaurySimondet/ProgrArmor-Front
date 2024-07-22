@@ -43,7 +43,7 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack }) => {
                     onClick={onSkip}
                     style={{ cursor: 'pointer', color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
                 >
-                    &gt; Passer
+                    Passer &gt;
                 </h2>
             </div>
             <h1>Choisir une catégorie ({selectedType})</h1>

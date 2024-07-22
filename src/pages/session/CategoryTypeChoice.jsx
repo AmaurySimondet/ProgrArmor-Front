@@ -25,12 +25,20 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack }) => {
 
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
-            <h2
-                onClick={onBack}
-                style={{ cursor: 'pointer', color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
-            >
-                &lt; Retour
-            </h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+                <h2
+                    onClick={onBack}
+                    style={{ cursor: 'pointer', color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                >
+                    &lt; Retour
+                </h2>
+                <h2
+                    onClick={onSkip}
+                    style={{ cursor: 'pointer', color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                >
+                    Passer &gt;
+                </h2>
+            </div>
             <h1>Choisir le type de catégorie</h1>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                 {categoryTypes.map((type, index) => (
@@ -50,12 +58,6 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack }) => {
                     <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
                 </div>
             </div>
-            <button
-                onClick={onSkip}
-                style={{ marginTop: '20px', padding: '10px', borderRadius: '5px', border: 'none', backgroundColor: '#9b0000', color: 'white', cursor: 'pointer' }}
-            >
-                Passer
-            </button>
         </div>
     );
 };

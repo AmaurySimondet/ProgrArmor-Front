@@ -445,6 +445,22 @@ table.profile-table {
     }
 }
 
+.sessionChoiceBig {
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    background-color: #EBCCCC;
+    width: 300px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s, color 0.3s;
+    opacity: 0;
+    animation: popIn 1s forwards;
+}
 
 .sessionChoice {
     cursor: pointer;
@@ -1906,7 +1922,7 @@ table.hometable td.inscription-img-td {
     } */
 
     .ProgrArmor {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
     }
 }
 

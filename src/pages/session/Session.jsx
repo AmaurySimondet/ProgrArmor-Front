@@ -58,7 +58,7 @@ const Session = () => {
   const handleNextCategoryChoice = (category) => {
     setSelectedCategory(category);
     setSelectedExercises([...selectedExercises, { type: selectedType, exercise: selectedExercise, categoryType: selectedCategoryType, category }]);
-    setStep(8); // Loop back to choosing the next exercise type
+    setStep(6); // Loop back to choosing the next exercise type
   };
 
   const handleSkipCategories = () => {
@@ -135,7 +135,7 @@ const Session = () => {
             <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onSkip={handleSkipCategories} onBack={handleBackToCategoryTypeChoice} />
           )}
           {step === 8 && (
-            <SetsChoice onBack={handleBackToCategoryChoice} onNext={handleNextSetChoice} onFinish={handleFinish} />
+            <SetsChoice onBack={handleBackToCategoryTypeChoice} onNext={handleNextSetChoice} onFinish={handleFinish} />
           )}
         </div>
         <Footer />
