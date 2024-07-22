@@ -45,7 +45,7 @@ function NavigBar(props) {
     return (
         <div>
             {
-                dimensions.width < 500 ?
+                dimensions.width < 840 ?
                     <nav className="navbar navbar-expand navbar-light bg-light navigbar">
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon"></span>

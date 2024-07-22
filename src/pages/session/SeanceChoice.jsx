@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import Loader from '../../components/Loader';
-import { useWindowDimensions } from '../../utils/useEffect';
+import { useWindowDimensions } from '../../utils/useEffect'; // Ensure the path is correct
 
-const SessionChoice = ({ onNext, onMoreChoices }) => {
+const SessionChoice = ({ onNext }) => {
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { height, width } = useWindowDimensions();
-
+    const [showMore, setShowMore] = useState(true); // Track whether to show the "More Choices" button
+    const { width } = useWindowDimensions();
 
     useEffect(() => {
-        // Simuler la récupération des données des séances depuis une API
+        // Simulate fetching initial session data
         setTimeout(() => {
             setSessions([
                 { id: '2', name: 'Partir de zéro', icon: '✍️' },
@@ -20,6 +20,22 @@ const SessionChoice = ({ onNext, onMoreChoices }) => {
         }, 1000);
     }, []);
 
+    const handleMoreChoices = () => {
+        setLoading(true);
+        // Simulate fetching additional session data
+        setTimeout(() => {
+            setSessions(prevSessions => [
+                ...prevSessions,
+                { id: '4', name: 'Nouvelle séance A', icon: '📚' },
+                { id: '5', name: 'Nouvelle séance B', icon: '🏆' },
+                { id: '6', name: 'Nouvelle séance C', icon: '🔥' },
+                { id: '7', name: 'Nouvelle séance D', icon: '🎯' },
+            ]);
+            setLoading(false);
+            setShowMore(false); // Hide the "More Choices" button
+        }, 1000);
+    };
+
     if (loading) {
         return <Loader />;
     }
@@ -29,8 +45,7 @@ const SessionChoice = ({ onNext, onMoreChoices }) => {
     };
 
     return (
-        // make it full width full page centered
-        <div style={{ width: '100%', maxWidth: '800px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
             <h1>Choisir une séance</h1>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                 {sessions.map((session) => (
@@ -43,13 +58,14 @@ const SessionChoice = ({ onNext, onMoreChoices }) => {
                         <div>{session.name}</div>
                     </div>
                 ))}
-                <div
-                    onClick={onMoreChoices}
-                    //round
-                    className='sessionChoicePlus'
-                >
-                    <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
-                </div>
+                {showMore && (
+                    <div
+                        onClick={handleMoreChoices}
+                        className='sessionChoicePlus'
+                    >
+                        <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
+                    </div>
+                )}
             </div>
         </div>
     );
