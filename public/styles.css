@@ -404,6 +404,70 @@ table.profile-table {
     height: 80px;
 }
 
+/* LOADER */
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.loader {
+    border: 16px solid #f3f3f3;
+    /* Light grey */
+    border-top: 16px solid #9b0000;
+    /* Red */
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+
+
+/* SESSION */
+
+.sessionChoice {
+    cursor: pointer;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    background-color: #EBCCCC;
+    width: 200px;
+    height: 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 500px) {
+    .sessionChoice {
+        width: 150px;
+        height: 150px;
+    }
+}
+
+.sessionChoicePlus {
+    border-radius: 100%;
+    border: 1px solid #ccc;
+    width: 75px;
+    height: 75px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+@media (max-width: 500px) {
+    .sessionChoicePlus {
+        width: 50px;
+        height: 50px;
+    }
+}
+
 /* SESSION DEBUTANT */
 
 .clickOnMe {
@@ -588,6 +652,24 @@ table.profile-table {
 
 /* FOOTER */
 
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content-wrap {
+    flex: 1;
+}
+
+.footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #c5c5c5;
+    padding: 10px 0;
+}
+
 .footer .social {
     width: 25px;
     margin: 0 4vw;
@@ -597,6 +679,7 @@ table.profile-table {
     filter: invert(1);
     background-color: #c5c5c5;
 }
+
 
 
 /* STATS */
