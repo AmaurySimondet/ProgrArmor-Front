@@ -58,12 +58,12 @@ const Session = () => {
   const handleNextCategoryChoice = (category) => {
     setSelectedCategory(category);
     setSelectedExercises([...selectedExercises, { type: selectedType, exercise: selectedExercise, categoryType: selectedCategoryType, category }]);
-    setStep(4); // Loop back to choosing the next exercise type
+    setStep(8); // Loop back to choosing the next exercise type
   };
 
   const handleSkipCategories = () => {
     setSelectedExercises([...selectedExercises, { type: selectedType, exercise: selectedExercise }]);
-    setStep(4); // Loop back to choosing the next exercise type
+    setStep(8); // Loop back to choosing the next exercise type
   };
 
   const handleBackToSeanceChoice = () => {
