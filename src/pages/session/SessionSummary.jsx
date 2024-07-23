@@ -21,32 +21,46 @@ const renderSets = (sets) => {
     });
 };
 
-const renderExercise = (exercise, index) => {
-    return <div key={index} style={{ marginBottom: '10px' }}>
-        <h3 style={{ color: '#9b0000' }}>
-            {exercise.exercise}{exercise.categories.length > 0 && " - " + exercise.categories.join(', ')}</h3>
-        {exercise.sets && exercise.sets.length > 0 && (
-            <ul style={{ listStyleType: 'none', padding: 0 }}>
-                {renderSets(exercise.sets)}
-            </ul>
-        )}
-    </div>
+const renderExercise = (exercise, index, handleExerciseClick) => {
+    console.log('renderExercise', exercise, index);
+    return (
+        <div
+            key={index}
+            style={{ marginBottom: '10px', cursor: 'pointer' }}
+            onClick={() => handleExerciseClick(index)}
+        >
+            <h3 style={{ color: '#9b0000' }}>
+                {exercise.exercise && exercise.exercise + " - "}{exercise.categories && exercise.categories.join(', ')}
+            </h3>
+            {exercise.sets && exercise.sets.length > 0 && (
+                <ul style={{ listStyleType: 'none', padding: 0 }}>
+                    {renderSets(exercise.sets)}
+                </ul>
+            )}
+        </div>
+    )
 };
 
-const SessionSummary = ({ selectedName, selectedDate, selectedExercises, selectedExercise }) => {
+const SessionSummary = ({ selectedName, selectedDate, selectedExercises, selectedExercise, handleExerciseClick, onFinish }) => {
     return (
         <div>
             {selectedName && selectedDate && (
-                <div style={{ padding: '20px', borderBottom: '1px solid #ccc', borderRadius: '5px', textAlign: 'center' }}>
+                <div style={{ padding: '20px', border: '1px solid #ccc', borderRadius: '5px', textAlign: 'center' }}>
 
                     {/* Name and Date */}
                     <h2>{selectedName} - {selectedDate}</h2>
 
                     {/* Exercises already recorded */}
-                    {selectedExercises.map((exercise, index) => renderExercise(exercise, index))}
+                    {selectedExercises.map((exercise, index) => renderExercise(exercise, index, handleExerciseClick))}
 
-                    {/* Currently selected exercise */}
-                    {selectedExercise && renderExercise(selectedExercise, selectedExercises.length)}
+                    {/* Current exercise */}
+                    {selectedExercise && renderExercise(selectedExercise, selectedExercises.length, handleExerciseClick)}
+
+                    {/* Finish button */}
+                    <button onClick={() => onFinish()} className='btn btn-black mt-2'>
+                        Séance terminée
+                    </button>
+                    <p className='text-muted' style={{ fontSize: '0.8em', marginTop: "1rem" }}><i >Cliquez sur un exercice pour le modifier</i></p>
                 </div>
             )}
         </div>

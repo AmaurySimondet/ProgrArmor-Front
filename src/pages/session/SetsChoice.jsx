@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 
-const SetsChoice = ({ onBack, onNext, onFinish }) => {
+const SetsChoice = ({ onBack, onNext }) => {
     const [sets, setSets] = useState([]);
     const [unit, setUnit] = useState('reps'); // Default to 'reps'
     const [value, setValue] = useState('');
@@ -34,10 +34,6 @@ const SetsChoice = ({ onBack, onNext, onFinish }) => {
 
     const handleNextExercise = () => {
         onNext(sets);
-    };
-
-    const handleFinish = () => {
-        onFinish(sets);
     };
 
     const handleCopySet = (index) => {
@@ -146,9 +142,6 @@ const SetsChoice = ({ onBack, onNext, onFinish }) => {
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <button onClick={handleNextExercise} className='btn btn-dark'>
                     Exercice suivant
-                </button>
-                <button onClick={handleFinish} className='btn btn-black'>
-                    Séance terminée
                 </button>
             </div>
         </div >

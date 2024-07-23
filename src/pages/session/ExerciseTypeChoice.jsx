@@ -3,7 +3,7 @@ import { useWindowDimensions } from '../../utils/useEffect';
 import Loader from '../../components/Loader';
 import { randomBodybuildingEmoji } from '../../utils/emojis';
 
-const ExerciseTypeChoice = ({ onNext, onBack, onFinish }) => {
+const ExerciseTypeChoice = ({ onNext, onBack }) => {
     const [exerciseTypes, setExerciseTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const { width } = useWindowDimensions();
@@ -18,10 +18,6 @@ const ExerciseTypeChoice = ({ onNext, onBack, onFinish }) => {
 
     const handleMoreTypes = () => {
         setExerciseTypes([...exerciseTypes, 'Type D', 'Type E', 'Type F']);
-    };
-
-    const handleFinish = () => {
-        onFinish();
     };
 
     if (loading) {
@@ -55,9 +51,6 @@ const ExerciseTypeChoice = ({ onNext, onBack, onFinish }) => {
                     <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
                 </div>
             </div>
-            <button onClick={handleFinish} className='btn btn-black mt-5'>
-                Séance terminée
-            </button>
         </div>
     );
 };

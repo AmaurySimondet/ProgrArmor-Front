@@ -1,8 +1,9 @@
 import React from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar'; // Assuming you are using react-bootstrap for the progress bar
 
-const getProgressPercentage = (selectedName, selectedDate, selectedExercises, selectedExercise) => {
+const getProgressPercentage = (selectedName, selectedDate, selectedExercises) => {
     //name 20%, date 20%, exercise 15%, category 15%, sets 10%
+    console.log('progressBar', selectedName, selectedDate, selectedExercises);
     let progress = 0;
     if (selectedName) {
         progress += 10;
@@ -10,14 +11,20 @@ const getProgressPercentage = (selectedName, selectedDate, selectedExercises, se
     if (selectedDate) {
         progress += 10;
     }
-    if (selectedExercise || selectedExercises.length > 0) {
-        progress += 20;
-    }
-    if ((selectedExercise && selectedExercise.categories && selectedExercise.categories.length > 0) || (selectedExercises && selectedExercises.length > 0)) {
-        progress += 20;
-    }
-    if ((selectedExercise && selectedExercise.sets && selectedExercise.sets.length > 0) || (selectedExercises && selectedExercises.length > 0)) {
+    // count selectedExercises with exercise
+    let countExercises = selectedExercises.filter(exercise => exercise.exercise).length;
+    if (countExercises === 1) {
         progress += 10;
+    }
+    let countCategories = selectedExercises.filter(exercise => exercise.categories && exercise.categories.length > 0).length;
+    if (countCategories === 1) {
+        progress += 10;
+    }
+    if (selectedExercises.length === 2) {
+        progress += 10;
+    }
+    if (selectedExercises.length === 3) {
+        progress += 20;
     }
     return progress;
 };

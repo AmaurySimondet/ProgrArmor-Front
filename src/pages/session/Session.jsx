@@ -19,10 +19,15 @@ const Session = () => {
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedExercises, setSelectedExercises] = useState([]);
   const [selectedType, setSelectedType] = useState('');
-  const [selectedExercise, setSelectedExercise] = useState('');
+  const [selectedExercise, setSelectedExercise] = useState({
+    exercise: '',
+    categories: [],
+    sets: []
+  });
   const [selectedCategoryType, setSelectedCategoryType] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSets, setSelectedSets] = useState([]);
+  const [editingExerciseIndex, setEditingExerciseIndex] = useState(null);
 
   const handleNextSeanceChoice = (session) => {
     setSelectedSession(session);
@@ -49,7 +54,11 @@ const Session = () => {
   };
 
   const handleNextExerciseChoice = (exercise) => {
-    setSelectedExercise({ type: selectedType, exercise, categories: [], sets: [] });
+    let newExercise = {
+      ...selectedExercise,
+      exercise: exercise
+    };
+    setSelectedExercise(newExercise);
     setStep(6);
   };
 
@@ -59,62 +68,49 @@ const Session = () => {
   };
 
   const handleNextCategoryChoice = (category) => {
-    const updatedExercise = { ...selectedExercise };
-    updatedExercise.categories = [...updatedExercise.categories, category];
-    setSelectedExercise(updatedExercise);
+    let newExercise = {
+      ...selectedExercise,
+      categories: [...selectedExercise.categories, category]
+    };
+    setSelectedExercise(newExercise);
     setStep(6); // Loop back to choosing the next category type
   };
 
-  const handleSkipCategories = () => {
+  const handleAddSet = (set) => {
+    let newExercise = {
+      ...selectedExercise,
+      sets: set
+    };
+    setSelectedExercise(newExercise);
     setStep(8);
   };
 
-  const handleBackToSeanceChoice = () => {
-    setStep(1);
-  };
-
-  const handleBackToNameChoice = () => {
-    setStep(2);
-  };
-
-  const handleBackToDateChoice = () => {
-    setStep(3);
-  };
-
-  const handleBackToExerciseTypeChoice = () => {
-    setStep(4);
-  };
-
-  const handleBackToExerciseChoice = () => {
-    setStep(5);
-  };
-
-  const handleBackToCategoryTypeChoice = () => {
-    setStep(6);
-  };
-
   const handleNextExercise = (sets) => {
-    setSelectedExercises([...selectedExercises, { ...selectedExercise, sets: sets }]);
-    setSelectedExercise('');
+    const newExercise = {
+      ...selectedExercise,
+      sets: sets
+    };
+    if (editingExerciseIndex !== null) {
+      const updatedExercises = [...selectedExercises];
+      updatedExercises[editingExerciseIndex] = newExercise;
+      setSelectedExercises(updatedExercises);
+      setEditingExerciseIndex(null);
+    } else {
+      setSelectedExercises([...selectedExercises, newExercise]);
+    }
     setSelectedType('');
+    setSelectedExercise({
+      exercise: '',
+      categories: [],
+      sets: []
+    });
     setSelectedCategoryType('');
     setSelectedCategory('');
     setSelectedSets([]);
     setStep(4);
   };
 
-  const handleFinishFromSets = (sets) => {
-    setSelectedExercises([...selectedExercises, { ...selectedExercise, sets: sets }]);
-    alert(`Séance terminée: ${JSON.stringify({
-      selectedSession,
-      selectedName,
-      selectedDate,
-      selectedExercises: [...selectedExercises, { ...selectedExercise, sets: sets }]
-    })}`);
-    // Optionally reset or redirect to another page
-  };
-
-  const handleFinishFromExerciseType = () => {
+  const handleFinish = () => {
     alert(`Séance terminée: ${JSON.stringify({
       selectedSession,
       selectedName,
@@ -122,6 +118,21 @@ const Session = () => {
       selectedExercises
     })}`);
     // Optionally reset or redirect to another page
+  };
+
+  const handleExerciseClick = (index) => {
+    const exercise = selectedExercises[index];
+    setSelectedType("");
+    setSelectedExercise({
+      exercise: '',
+      categories: [],
+      sets: []
+    });
+    setSelectedCategoryType('');
+    setSelectedCategory("");
+    setSelectedSets([]);
+    setEditingExerciseIndex(index);
+    setStep(4);
   };
 
   return (
@@ -133,37 +144,42 @@ const Session = () => {
             selectedName={selectedName}
             selectedDate={selectedDate}
             selectedExercises={selectedExercises}
-            selectedExercise={selectedExercise}
           />
           <SessionSummary
             selectedName={selectedName}
             selectedDate={selectedDate}
             selectedExercises={selectedExercises}
             selectedExercise={selectedExercise}
+            handleExerciseClick={handleExerciseClick}
+            onFinish={handleFinish}
           />
           {step === 1 && (
             <SeanceChoice onNext={handleNextSeanceChoice} onMoreChoices={handleMoreChoices} />
           )}
           {step === 2 && (
-            <SeanceNameChoice onNext={handleNextNameChoice} onBack={handleBackToSeanceChoice} />
+            <SeanceNameChoice onNext={handleNextNameChoice} onBack={() => setStep(1)} />
           )}
           {step === 3 && (
-            <SeanceDateChoice onNext={handleNextDateChoice} onBack={handleBackToNameChoice} />
+            <SeanceDateChoice onNext={handleNextDateChoice} onBack={() => setStep(2)} />
           )}
           {step === 4 && (
-            <ExerciseTypeChoice onNext={handleNextExerciseTypeChoice} onBack={handleBackToDateChoice} onFinish={handleFinishFromExerciseType} />
+            <ExerciseTypeChoice onNext={handleNextExerciseTypeChoice} onBack={() => setStep(3)} />
           )}
           {step === 5 && (
-            <ExerciseChoice selectedType={selectedType} onNext={handleNextExerciseChoice} onBack={handleBackToExerciseTypeChoice} />
+            <ExerciseChoice selectedType={selectedType} onNext={handleNextExerciseChoice} onBack={() => setStep(4)} />
           )}
           {step === 6 && (
-            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={handleSkipCategories} onBack={handleBackToExerciseChoice} />
+            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => setStep(5)} />
           )}
           {step === 7 && (
-            <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onSkip={handleSkipCategories} onBack={handleBackToCategoryTypeChoice} />
+            <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onBack={() => setStep(6)} />
           )}
           {step === 8 && (
-            <SetsChoice onBack={handleBackToCategoryTypeChoice} onNext={handleNextExercise} onFinish={handleFinishFromSets} />
+            <SetsChoice
+              onAddSet={handleAddSet}
+              onBack={() => setStep(7)}
+              onNext={handleNextExercise}
+            />
           )}
         </div>
         <Footer />
