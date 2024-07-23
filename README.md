@@ -32,6 +32,7 @@ This project is my property only and you can't share it for commercial purpose. 
 **Merci / Thank you!** 🚀
 
 ## TODO
+- Erreur si inscription d'un utilisateur déjà existant
 
 ## First time starting the project
 - npm install --legacy-peer-deps

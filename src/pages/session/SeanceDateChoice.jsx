@@ -9,6 +9,12 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
         onNext(new Date().toISOString().split('T')[0]);
     };
 
+    const handleYesterdayChoice = () => {
+        const yesterday = new Date();
+        yesterday.setDate(yesterday.getDate() - 1);
+        onNext(yesterday.toISOString().split('T')[0]);
+    };
+
     const handleCustomDateChange = (e) => {
         setCustomDate(e.target.value);
     };
@@ -36,12 +42,18 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
                     <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>📅</div>
                     <div>Aujourd'hui</div>
                 </div>
-                <div className='sessionChoice' style={{ backgroundColor: '#CCCCCC', padding: '20px' }}>
+                <div
+                    onClick={handleYesterdayChoice}
+                    className='sessionChoice'
+                >
+                    <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🗓️</div>
+                    <div>Hier</div>
+                </div>
+                <div className='sessionChoice' style={{ backgroundColor: '#CCCCCC', padding: '20px', width: '300px' }}>
                     <input
                         type="date"
                         value={customDate}
                         onChange={handleCustomDateChange}
-                        placeholder="Entrer une date"
                         style={{ width: '100%', marginBottom: '10px', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
                     />
                     <button

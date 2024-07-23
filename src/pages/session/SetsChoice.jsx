@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 
-const SetsChoice = ({ onBack, onNext, onFinish, onAddSet }) => {
+const SetsChoice = ({ onBack, onNext, onFinish }) => {
     const [sets, setSets] = useState([]);
     const [unit, setUnit] = useState('reps'); // Default to 'reps'
     const [value, setValue] = useState('');
@@ -33,11 +33,11 @@ const SetsChoice = ({ onBack, onNext, onFinish, onAddSet }) => {
     };
 
     const handleNextExercise = () => {
-        onAddSet(sets); // Save the sets for the current exercise
+        onNext(sets);
     };
 
     const handleFinish = () => {
-        onFinish(); // Finish and save the session
+        onFinish(sets);
     };
 
     const handleCopySet = (index) => {
@@ -76,6 +76,7 @@ const SetsChoice = ({ onBack, onNext, onFinish, onAddSet }) => {
                             onChange={(e) => setValue(e.target.value)}
                             placeholder="Nb Reps / Secs"
                             style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
+                            inputMode='numeric'
                         />
                     </label>
                     <label className='sessionChoice'>
@@ -86,8 +87,9 @@ const SetsChoice = ({ onBack, onNext, onFinish, onAddSet }) => {
                             type="number"
                             value={charge}
                             onChange={(e) => setCharge(e.target.value)}
-                            placeholder="Charge en kg"
+                            placeholder="Charge (kg)"
                             style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
+                            inputMode='numeric'
                         />
                     </label>
                     <label className='sessionChoice' style={{ backgroundColor: '#CCCCCC' }}>
@@ -103,8 +105,9 @@ const SetsChoice = ({ onBack, onNext, onFinish, onAddSet }) => {
                                 type="number"
                                 value={elastique.tension}
                                 onChange={handleChangeElastiqueTension}
-                                placeholder="Tension en kg"
+                                placeholder="Tension (kg)"
                                 style={{ width: '100%', maxWidth: '200px' }}
+                                inputMode='numeric'
                             />
                         </div>
                     </label>

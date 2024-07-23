@@ -9,13 +9,15 @@ import ExerciseChoice from "./ExerciseChoice";
 import CategoryTypeChoice from "./CategoryTypeChoice";
 import CategoryChoice from "./CategoryChoice";
 import SetsChoice from "./SetsChoice";
+import SessionSummary from "./SessionSummary";
+import SessionProgressBar from "./SessionProgressBar";
 
 const Session = () => {
   const [step, setStep] = useState(1);
   const [selectedSession, setSelectedSession] = useState(null);
   const [selectedName, setSelectedName] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
-  // const [selectedExercises, setSelectedExercises] = useState([]);
+  const [selectedExercises, setSelectedExercises] = useState([]);
   const [selectedType, setSelectedType] = useState('');
   const [selectedExercise, setSelectedExercise] = useState('');
   const [selectedCategoryType, setSelectedCategoryType] = useState('');
@@ -47,7 +49,7 @@ const Session = () => {
   };
 
   const handleNextExerciseChoice = (exercise) => {
-    setSelectedExercise(exercise);
+    setSelectedExercise({ type: selectedType, exercise, categories: [], sets: [] });
     setStep(6);
   };
 
@@ -57,25 +59,13 @@ const Session = () => {
   };
 
   const handleNextCategoryChoice = (category) => {
-    setSelectedCategory(category);
-    let categories = [];
-    if (selectedExercise.categories) {
-      categories = [...selectedExercise.categories, category];
-    } else {
-      categories = [category];
-    }
-    setSelectedExercise({ type: selectedType, exercise: selectedExercise, categoryType: selectedCategoryType, categories: categories, sets: [] });
+    const updatedExercise = { ...selectedExercise };
+    updatedExercise.categories = [...updatedExercise.categories, category];
+    setSelectedExercise(updatedExercise);
     setStep(6); // Loop back to choosing the next category type
   };
 
   const handleSkipCategories = () => {
-    setSelectedExercise({ type: selectedType, exercise: selectedExercise, categoryType: selectedCategoryType, categories: [], sets: [] });
-    setStep(8); // Loop back to choosing the next set
-  };
-
-  const handleAddSet = (set) => {
-    setSelectedSets(set);
-    setSelectedExercise({ ...selectedExercise, sets: set });
     setStep(8);
   };
 
@@ -103,47 +93,54 @@ const Session = () => {
     setStep(6);
   };
 
-  const handleNextExercice = () => {
+  const handleNextExercise = (sets) => {
+    setSelectedExercises([...selectedExercises, { ...selectedExercise, sets: sets }]);
+    setSelectedExercise('');
+    setSelectedType('');
+    setSelectedCategoryType('');
+    setSelectedCategory('');
+    setSelectedSets([]);
     setStep(4);
   };
 
-  const handleFinish = () => {
+  const handleFinishFromSets = (sets) => {
+    setSelectedExercises([...selectedExercises, { ...selectedExercise, sets: sets }]);
     alert(`Séance terminée: ${JSON.stringify({
       selectedSession,
       selectedName,
       selectedDate,
-      selectedExercise
+      selectedExercises: [...selectedExercises, { ...selectedExercise, sets: sets }]
     })}`);
     // Optionally reset or redirect to another page
   };
 
-  const renderSessionSummary = () => {
-    console.log("selectedExercise", selectedExercise);
-
-    return (
-      <div style={{ marginBottom: '20px', padding: '20px', border: '1px solid #ccc', borderRadius: '5px', textAlign: 'center' }}>
-        <h3>Séance actuelle</h3>
-        <p><strong>Nom:</strong> {selectedName || "N/A"} - <strong>Date:</strong> {selectedDate || "N/A"}</p>
-        <div>
-          <p><strong>Exercice:</strong> {selectedExercise.exercise} - <strong>Catégories:</strong> {selectedExercise.categories ? selectedExercise.categories.join(', ') : "N/A"}</p>
-          {selectedExercise.sets && selectedExercise.sets.length > 0 && (
-            <ul>
-              {selectedExercise.sets.map((set, idx) => (
-                <li key={idx}>{`${set.value} ${set.unit} ${set.charge ? `@ ${set.charge} kg` : ''} ${set.elastique.tension ? `Elastique: ${set.elastique.usage} ${set.elastique.tension} kg` : ''}`}</li>
-              ))}
-            </ul>
-          )}
-        </div>
-      </div>
-    )
-  }
+  const handleFinishFromExerciseType = () => {
+    alert(`Séance terminée: ${JSON.stringify({
+      selectedSession,
+      selectedName,
+      selectedDate,
+      selectedExercises
+    })}`);
+    // Optionally reset or redirect to another page
+  };
 
   return (
     <div>
       <div className="page-container">
         <NavigBar location="session" />
         <div className="content-wrap">
-          {renderSessionSummary()}
+          <SessionProgressBar
+            selectedName={selectedName}
+            selectedDate={selectedDate}
+            selectedExercises={selectedExercises}
+            selectedExercise={selectedExercise}
+          />
+          <SessionSummary
+            selectedName={selectedName}
+            selectedDate={selectedDate}
+            selectedExercises={selectedExercises}
+            selectedExercise={selectedExercise}
+          />
           {step === 1 && (
             <SeanceChoice onNext={handleNextSeanceChoice} onMoreChoices={handleMoreChoices} />
           )}
@@ -154,7 +151,7 @@ const Session = () => {
             <SeanceDateChoice onNext={handleNextDateChoice} onBack={handleBackToNameChoice} />
           )}
           {step === 4 && (
-            <ExerciseTypeChoice onNext={handleNextExerciseTypeChoice} onBack={handleBackToDateChoice} />
+            <ExerciseTypeChoice onNext={handleNextExerciseTypeChoice} onBack={handleBackToDateChoice} onFinish={handleFinishFromExerciseType} />
           )}
           {step === 5 && (
             <ExerciseChoice selectedType={selectedType} onNext={handleNextExerciseChoice} onBack={handleBackToExerciseTypeChoice} />
@@ -166,7 +163,7 @@ const Session = () => {
             <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onSkip={handleSkipCategories} onBack={handleBackToCategoryTypeChoice} />
           )}
           {step === 8 && (
-            <SetsChoice onBack={handleBackToCategoryTypeChoice} onNext={handleNextExercice} onFinish={handleFinish} onAddSet={handleAddSet} />
+            <SetsChoice onBack={handleBackToCategoryTypeChoice} onNext={handleNextExercise} onFinish={handleFinishFromSets} />
           )}
         </div>
         <Footer />

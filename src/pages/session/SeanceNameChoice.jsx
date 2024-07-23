@@ -74,7 +74,7 @@ const SessionNameChoice = ({ onNext, onBack }) => {
                 ))}
                 <div
                     className='sessionChoice'
-                    style={{ backgroundColor: '#CCCCCC' }}
+                    style={{ backgroundColor: '#CCCCCC', width: "300px" }}
                 >
                     <input
                         type="text"
