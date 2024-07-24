@@ -11,13 +11,13 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack }) => {
     useEffect(() => {
         // Simulate fetching category types from an API
         setTimeout(() => {
-            setCategoryTypes(['Type A', 'Type B', 'Type C']);
+            setCategoryTypes([{ name: 'Type A', id: 1, examples: ['Example 1', 'Example 2'] }, { name: 'Type B', id: 2, examples: ['Example 3', 'Example 4'] }, { name: 'Type C', id: 3, examples: ['Example 5', 'Example 6'] }]);
             setLoading(false);
         }, 1000);
     }, []);
 
     const handleMoreTypes = () => {
-        setCategoryTypes([...categoryTypes, 'Type D', 'Type E', 'Type F']);
+        setCategoryTypes([...categoryTypes, { name: 'Type D', id: 4, examples: ['Example 7', 'Example 8'] }, { name: 'Type E', id: 5, examples: ['Example 9', 'Example 10'] }, { name: 'Type F', id: 6, examples: ['Example 11', 'Example 12'] }]);
         setMoreTypesUnclicked(false);
     };
 
@@ -44,11 +44,12 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack }) => {
                 {categoryTypes.map((type, index) => (
                     <div
                         key={index}
-                        onClick={() => onNext(type)}
+                        onClick={() => onNext(type.name)}
                         className='sessionChoice'
                     >
                         <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🏷️</div>
-                        <div>{type}</div>
+                        <div>{type.name}</div>
+                        <div style={{ fontSize: '0.66rem' }}>{type.examples.join(', ')}</div>
                     </div>
                 ))}
                 {moreTypesUnclicked && (
