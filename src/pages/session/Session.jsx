@@ -110,6 +110,13 @@ const Session = () => {
     setStep(4);
   };
 
+  const handleOnDeleteExercise = (index) => {
+    const updatedExercises = [...selectedExercises];
+    updatedExercises.splice(index, 1);
+    setSelectedExercises(updatedExercises);
+    setEditingExerciseIndex(null);
+  };
+
   const handleFinish = () => {
     alert(`Séance terminée: ${JSON.stringify({
       selectedSession,
@@ -121,6 +128,7 @@ const Session = () => {
   };
 
   const handleExerciseClick = (index) => {
+    console.log('handleExerciseClick', index);
     const exercise = selectedExercises[index];
     setSelectedType("");
     setSelectedExercise({
@@ -129,10 +137,10 @@ const Session = () => {
       sets: []
     });
     setSelectedCategoryType('');
-    setSelectedCategory("");
+    setSelectedCategory('');
     setSelectedSets([]);
     setEditingExerciseIndex(index);
-    setStep(4);
+    setStep(4); // Set step to exercise choice
   };
 
   return (
@@ -144,6 +152,7 @@ const Session = () => {
             selectedName={selectedName}
             selectedDate={selectedDate}
             selectedExercises={selectedExercises}
+            selectedExercise={selectedExercise}
           />
           <SessionSummary
             selectedName={selectedName}
@@ -152,6 +161,8 @@ const Session = () => {
             selectedExercise={selectedExercise}
             handleExerciseClick={handleExerciseClick}
             onFinish={handleFinish}
+            index={editingExerciseIndex}
+            handleDateClick={() => setStep(3)}
           />
           {step === 1 && (
             <SeanceChoice onNext={handleNextSeanceChoice} onMoreChoices={handleMoreChoices} />
@@ -163,7 +174,7 @@ const Session = () => {
             <SeanceDateChoice onNext={handleNextDateChoice} onBack={() => setStep(2)} />
           )}
           {step === 4 && (
-            <ExerciseTypeChoice onNext={handleNextExerciseTypeChoice} onBack={() => setStep(3)} />
+            <ExerciseTypeChoice onNext={handleNextExerciseTypeChoice} onBack={() => setStep(3)} onDelete={(index) => handleOnDeleteExercise(index)} />
           )}
           {step === 5 && (
             <ExerciseChoice selectedType={selectedType} onNext={handleNextExerciseChoice} onBack={() => setStep(4)} />

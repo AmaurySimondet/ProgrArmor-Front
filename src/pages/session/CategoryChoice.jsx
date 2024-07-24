@@ -34,16 +34,14 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack }) => {
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <h2
-                    onClick={onBack}
-                    style={{ cursor: 'pointer', color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                    style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
                 >
-                    &lt; Retour
+                    <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
                 </h2>
                 <h2
-                    onClick={onSkip}
-                    style={{ cursor: 'pointer', color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                    style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
                 >
-                    Passer &gt;
+                    <span onClick={onSkip} style={{ cursor: 'pointer' }} className="clickable"> Passer &gt; </span>
                 </h2>
             </div>
             <h1>Choisir une catégorie ({selectedType})</h1>

@@ -3,9 +3,10 @@ import { useWindowDimensions } from '../../utils/useEffect';
 import Loader from '../../components/Loader';
 import { randomBodybuildingEmoji } from '../../utils/emojis';
 
-const ExerciseTypeChoice = ({ onNext, onBack }) => {
+const ExerciseTypeChoice = ({ onNext, onBack, onDelete }) => {
     const [exerciseTypes, setExerciseTypes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [moreTypesUnclicked, setMoreTypesUnclicked] = useState(true);
     const { width } = useWindowDimensions();
 
     useEffect(() => {
@@ -18,6 +19,7 @@ const ExerciseTypeChoice = ({ onNext, onBack }) => {
 
     const handleMoreTypes = () => {
         setExerciseTypes([...exerciseTypes, 'Type D', 'Type E', 'Type F']);
+        setMoreTypesUnclicked(false);
     };
 
     if (loading) {
@@ -27,10 +29,9 @@ const ExerciseTypeChoice = ({ onNext, onBack }) => {
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
             <h2
-                onClick={onBack}
-                style={{ cursor: 'pointer', color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
             >
-                &lt; Retour
+                <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h2>
             <h1>Choisir le type d'exercice</h1>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
@@ -44,13 +45,18 @@ const ExerciseTypeChoice = ({ onNext, onBack }) => {
                         <div>{type}</div>
                     </div>
                 ))}
-                <div
-                    onClick={handleMoreTypes}
-                    className='sessionChoicePlus'
-                >
-                    <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
-                </div>
+                {moreTypesUnclicked && (
+                    <div
+                        onClick={handleMoreTypes}
+                        className='sessionChoicePlus'
+                    >
+                        <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
+                    </div>
+                )}
             </div>
+            <button onClick={onDelete} className='btn btn-black mt-5'>
+                Supprimer l'exercice
+            </button>
         </div>
     );
 };

@@ -55,10 +55,9 @@ const SessionNameChoice = ({ onNext, onBack }) => {
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px' }}>
             <h2
-                onClick={onBack}
-                style={{ cursor: 'pointer', color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
             >
-                &lt; Retour
+                <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h2>
             <h1 style={{ textAlign: 'center' }}>Choisir le nom de la séance</h1>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>

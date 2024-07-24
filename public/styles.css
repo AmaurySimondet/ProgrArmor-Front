@@ -1,5 +1,20 @@
 /* TAGS */
 
+.clickable {
+    cursor: pointer;
+    transition: 0.5s;
+}
+
+.clickable:hover {
+    color: #9a9a9a;
+}
+
+.react-tooltip {
+    color: white;
+    font-size: 10px;
+    z-index: 1000;
+}
+
 .darkMode {
     background-color: #180000;
     color: white;
@@ -432,17 +447,46 @@ table.profile-table {
 @keyframes popIn {
     0% {
         transform: scale(0.9);
-        /* Start slightly smaller */
         opacity: 0;
-        /* Start invisible */
     }
 
     100% {
         transform: scale(1);
-        /* End at normal size */
         opacity: 1;
-        /* End fully visible */
     }
+}
+
+.sessionSummary {
+    padding: 20px;
+    border-bottom: 1px solid #ccc;
+    text-align: center;
+    opacity: 0;
+    animation: popIn 1s forwards;
+}
+
+.popInElement {
+    opacity: 0;
+    animation: popIn 1s forwards;
+}
+
+.sessionSummaryExercise {
+    transition: transform 0.3s ease-in-out;
+}
+
+.sessionSummaryExercise:hover {
+    transform: scale(1.1);
+}
+
+.editingExercise h3 {
+    color: rgb(155, 112, 112);
+}
+
+.progress {
+    transition: 0.5s;
+}
+
+.progress:hover {
+    transform: scale(1.1);
 }
 
 .sessionChoiceBig {
@@ -589,11 +633,6 @@ table.profile-table {
 .selectDark:focus {
     color: white;
     background-color: #000000;
-}
-
-.hidden-text {
-    padding: 2%;
-
 }
 
 .select-item-own {
@@ -1105,7 +1144,12 @@ table.Stats-table {
 
 .logo-navbar {
     width: 80px;
+    transition: 1s;
+}
 
+.logo-navbar:hover {
+    /* rotation: 360deg; */
+    transform: rotate(360deg);
 }
 
 .navbar-light .navbar-nav .active>.nav-link {
@@ -1121,6 +1165,11 @@ table.Stats-table {
 .ProgrArmor {
     margin: auto;
     color: white;
+    transition: 0.5s;
+}
+
+.ProgrArmor:hover {
+    color: #9a9a9a;
 }
 
 .ProgrArmor-a:hover {
@@ -1167,7 +1216,7 @@ table.Stats-table {
 }
 
 .extended {
-    max-height: 600px;
+    max-height: 700px;
     transition: max-height 0.5s linear;
 }
 
@@ -1427,7 +1476,7 @@ table.hometable td.inscription-img-td {
 .toggle-is-clicked {
     background-color: #9b0000;
     width: 120px;
-    height: 520px;
+    height: 700px;
     border-radius: 25px;
     top: 0;
     z-index: 0;
@@ -1442,7 +1491,7 @@ table.hometable td.inscription-img-td {
     z-index: 2;
     position: absolute;
     right: 35px;
-
+    transition: 0.5s;
 }
 
 .navigbar {

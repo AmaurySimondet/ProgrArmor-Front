@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
+import { Tooltip } from 'react-tooltip'
 
 const SetsChoice = ({ onBack, onNext }) => {
     const [sets, setSets] = useState([]);
@@ -8,6 +9,10 @@ const SetsChoice = ({ onBack, onNext }) => {
     const [charge, setCharge] = useState(0);
     const [elastique, setElastique] = useState({ usage: 'resistance', tension: '' });
     const { width } = useWindowDimensions();
+
+    const tooltipText = (
+        "Valeurs classiques: </br> (Mesuré a 200% de sa taille) </br> Extra fin (<5kg)</br> Très petit (5-16kg)</br> Petit (12-24kg)</br> Moyen (12-36kg)</br> Gros (22-60kg)</br> Très gros (28-80kg)</br> Énorme (>80kg) (rare)</br> </br> Pour une mesure précise, </br> utilisez un pèse bagage </br> ou une balance de pêche."
+    );
 
     const handleAddSet = () => {
         if (value.trim()) {
@@ -33,24 +38,24 @@ const SetsChoice = ({ onBack, onNext }) => {
     };
 
     const handleNextExercise = () => {
-        onNext(sets);
+        if (sets.length === 0) {
+            alert('Veuillez ajouter au moins une série');
+        } else {
+            onNext(sets);
+        }
     };
 
     const handleCopySet = (index) => {
         const set = sets[index];
         setSets([...sets, set]);
-    }
+    };
 
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h2
-                    onClick={onBack}
-                    style={{ cursor: 'pointer', color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
-                >
-                    &lt; Retour
-                </h2>
-            </div>
+            <Tooltip id="my-tooltip" />
+            <h2 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
+            </h2>
             <h1 style={{ marginTop: '0' }}>Ajouter des séries</h1>
             <div>
                 <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
@@ -90,7 +95,13 @@ const SetsChoice = ({ onBack, onNext }) => {
                     </label>
                     <label className='sessionChoice' style={{ backgroundColor: '#CCCCCC' }}>
                         <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🪢</div>
-                        Elastique
+                        <a
+                            data-tooltip-id="my-tooltip"
+                            data-tooltip-html={tooltipText}
+                            data-tooltip-place="top"
+                        >
+                            Elastique
+                        </a>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center' }}>
                             <select className="custom-select" value={elastique.usage} onChange={handleChangeElastiqueUsage} style={{ width: '100%', maxWidth: '200px' }}>
                                 <option value="resistance">Résistance</option>
@@ -141,10 +152,10 @@ const SetsChoice = ({ onBack, onNext }) => {
             </div>
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <button onClick={handleNextExercise} className='btn btn-dark'>
-                    Exercice suivant
+                    Valider
                 </button>
             </div>
-        </div >
+        </div>
     );
 };
 
