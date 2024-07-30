@@ -2,7 +2,7 @@ import axios from "axios";
 const headers = {
   "Content-Type": "application/json"
 };
-const burl = "http://10.0.200.207:8800";
+const burl = "http://10.0.51.241:8800";
 
 function paramsToString(params) {
   let string = "";
@@ -24,37 +24,30 @@ export default {
     return axios.post(`${burl}/user/login`, { email, password }, { headers: headers });
 
   },
-
   signup: function (send) {
     return axios.post(`${burl}/user/signup`, send, { headers: headers });
 
   },
-
   verifyToken: function (send) {
     return axios.post(`${burl}/user/verifyToken`, send, { headers: headers });
 
   },
-
   facebook: function () {
     return axios.get(`${burl}/user/auth/facebook`, { headers: headers })
 
   },
-
   facebookAuthenticate: function () {
     return axios.get(`${burl}/user/auth/facebook/authenticate`, { headers: headers })
 
   },
-
   google: function () {
     return axios.get(`${burl}/user/auth/google`, { headers: headers })
 
   },
-
   googleAuthenticate: function () {
     return axios.get(`${burl}/user/auth/google/authenticate`, { headers: headers })
 
   },
-
   isAuth: async function () {
     if (localStorage.getItem("token") !== null) {
       const result = await axios.post(`${burl}/user/verifyToken`, { token: localStorage.getItem("token") }, { headers: headers });
@@ -66,7 +59,6 @@ export default {
     return false;
 
   },
-
   logout: function () {
     return axios.get(`${burl}/user/logout`, { headers: headers });
 
@@ -83,48 +75,45 @@ export default {
     return axios.post(`${burl}/user/debutantform`, send, { headers: headers });
 
   },
-
   supprSeance: function (send) {
     return axios.post(`${burl}/user/supprSeance`, send, { headers: headers });
 
   },
-
   workouts: function (params) {
     let string = paramsToString(params);
 
     return axios.get(`${burl}/user/workouts?` + string, { headers: headers });
 
   },
-
   loadSeance: function (params) {
     let string = paramsToString(params);
 
     return axios.get(`${burl}/user/loadSeance?` + string + "&id=" + localStorage.getItem("id"), { headers: headers });
 
   },
-
   getUser: function (id) {
     return axios.post(`${burl}/user/getUser`, id, { headers: headers });
 
   },
-
   priseDeNote: function (send) {
     return axios.post(`${burl}/user/priseDeNote`, send, { headers: headers });
 
   },
 
+  //SEANCES
+  getSeanceNames: function (send) {
+    return axios.get(`${burl}/user/seance/names`, { headers: headers, params: send });
+  },
 
   //COMPTE
   modifyUser: function (send) {
     return axios.post(`${burl}/user/modifyUser`, send, { headers: headers });
 
   },
-
   resetPassword: function (send) {
     return axios.post(`${burl}/user/resetPassword`, send, { headers: headers });
 
   },
-
   reguScore: function (send) {
     return axios.post(`${burl}/user/reguScore`, send, { headers: headers });
 

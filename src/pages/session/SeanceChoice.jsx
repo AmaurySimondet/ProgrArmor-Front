@@ -1,39 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import Loader from '../../components/Loader';
 import { useWindowDimensions } from '../../utils/useEffect'; // Ensure the path is correct
+import API from '../../utils/API'; // Ensure the path is correct
 
 const SessionChoice = ({ onNext }) => {
     const [sessions, setSessions] = useState([]);
+    const [allSessions, setAllSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showMore, setShowMore] = useState(true); // Track whether to show the "More Choices" button
     const { width } = useWindowDimensions();
 
     useEffect(() => {
-        // Simulate fetching initial session data
-        setTimeout(() => {
-            setSessions([
-                { id: '2', name: 'Partir de zéro', icon: '✍️' },
-                { id: '1', name: 'Dernière séance en date', icon: '📅' },
-                { id: '3', name: 'Dernière séance {Nom1}', icon: '🏋️' },
-            ]);
-            setLoading(false);
-        }, 1000);
+        // Fetch real session data from the API
+        API.getSeanceNames({ userId: localStorage.getItem("id") }) // Replace with actual user ID or other params if needed
+            .then(response => {
+                const seanceNames = response.data.seanceNames;
+                const initialSessions = [
+                    { id: '2', name: 'Partir de zéro', icon: '✍️' },
+                    { id: '1', name: 'Dernière séance en date', icon: '📅' },
+                ];
+                const seanceSessions = seanceNames.map((name, index) => ({
+                    id: (index + 3).toString(), // Starting from id 3
+                    name: `Dernière séance ${name}`,
+                    icon: '🏋️'
+                }));
+                const combinedSessions = [...initialSessions, ...seanceSessions];
+                setAllSessions(combinedSessions);
+                setSessions(combinedSessions.slice(0, 3)); // Show only first 3 sessions initially
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Error fetching seance names:", error);
+                setLoading(false);
+            });
     }, []);
 
     const handleMoreChoices = () => {
-        setLoading(true);
-        // Simulate fetching additional session data
-        setTimeout(() => {
-            setSessions(prevSessions => [
-                ...prevSessions,
-                { id: '4', name: 'Nouvelle séance A', icon: '📚' },
-                { id: '5', name: 'Nouvelle séance B', icon: '🏆' },
-                { id: '6', name: 'Nouvelle séance C', icon: '🔥' },
-                { id: '7', name: 'Nouvelle séance D', icon: '🎯' },
-            ]);
-            setLoading(false);
-            setShowMore(false); // Hide the "More Choices" button
-        }, 1000);
+        setSessions(allSessions); // Show all sessions
+        setShowMore(false); // Hide the "More Choices" button
     };
 
     if (loading) {
