@@ -144,6 +144,16 @@ export default {
 
 
 
+
+  // CATEGORIES
+  getCategoryTypes: function (send) {
+    return axios.get(`${burl}/user/categorietypes`, {
+      headers: headers, params: send
+    });
+  },
+
+
+
   //COMPTE
   modifyUser: function (send) {
     return axios.post(`${burl}/user/modifyUser`, send, { headers: headers });

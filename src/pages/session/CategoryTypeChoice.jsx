@@ -1,24 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import Loader from '../../components/Loader';
+import API from '../../utils/API'; // Ensure the API module is correctly imported
 
 const CategoryTypeChoice = ({ onNext, onSkip, onBack }) => {
     const [categoryTypes, setCategoryTypes] = useState([]);
+    const [allCategoryTypes, setAllCategoryTypes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const { width } = useWindowDimensions();
     const [moreTypesUnclicked, setMoreTypesUnclicked] = useState(true);
+    const { width } = useWindowDimensions();
 
     useEffect(() => {
-        // Simulate fetching category types from an API
-        setTimeout(() => {
-            setCategoryTypes([{ name: 'Type A', id: 1, examples: ['Example 1', 'Example 2'] }, { name: 'Type B', id: 2, examples: ['Example 3', 'Example 4'] }, { name: 'Type C', id: 3, examples: ['Example 5', 'Example 6'] }]);
-            setLoading(false);
-        }, 1000);
+        // Fetch category types from the API
+        API.getCategoryTypes() // Replace with the actual method to fetch category types
+            .then(response => {
+                console.log(response.data.categorieTypes);
+                let fetchedTypes = response.data.categorieTypes || [];
+                // keep only name
+                fetchedTypes = fetchedTypes.map(type => ({ name: type.name.fr, examples: type.examples.fr }));
+                setAllCategoryTypes(fetchedTypes);
+                setCategoryTypes(fetchedTypes.slice(0, 3)); // Show only the first 3 types initially
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Error fetching category types:", error);
+                setLoading(false);
+            });
     }, []);
 
     const handleMoreTypes = () => {
-        setCategoryTypes([...categoryTypes, { name: 'Type D', id: 4, examples: ['Example 7', 'Example 8'] }, { name: 'Type E', id: 5, examples: ['Example 9', 'Example 10'] }, { name: 'Type F', id: 6, examples: ['Example 11', 'Example 12'] }]);
-        setMoreTypesUnclicked(false);
+        setCategoryTypes(allCategoryTypes); // Show all category types
+        setMoreTypesUnclicked(false); // Hide the "More Types" button
     };
 
     if (loading) {
@@ -56,6 +68,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack }) => {
                     <div
                         onClick={handleMoreTypes}
                         className='sessionChoicePlus'
+                        style={{ cursor: 'pointer', color: '#007bff' }}
                     >
                         <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
                     </div>
