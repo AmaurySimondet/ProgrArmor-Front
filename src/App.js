@@ -9,8 +9,7 @@ import Token from "./components/Token";
 import Stats from "./components/Dashboard/Stats";
 import PrivateRoute from "./components/PrivateRoute.js";
 import Travaux from "./components/Dashboard/Travaux";
-import Session from "./components/Dashboard/Session";
-import Session2 from "./pages/session/Session.jsx";
+import Session from "./pages/session/Session.jsx";
 import Compte from "./components/Dashboard/Compte";
 import Admin from "./components/Dashboard/Admin.jsx";
 import InstallApp from "./components/Dashboard/Help/InstallApp.jsx";
@@ -104,10 +103,6 @@ function App() {
 
             <Route path="/session/*" element={<PrivateRoute />}>
                 <Route exact path='/session/*' element={<Session />} />
-            </Route>
-
-            <Route path="/session2/*" element={<PrivateRoute />}>
-                <Route exact path='/session2/*' element={<Session2 />} />
             </Route>
 
             <Route path="/admin" element={<PrivateRoute />}>

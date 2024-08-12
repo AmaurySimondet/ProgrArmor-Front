@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Loader from '../../components/Loader';
-import { useWindowDimensions } from '../../utils/useEffect'; // Ensure the path is correct
-import API from '../../utils/API'; // Ensure the path is correct
+import { useWindowDimensions } from '../../utils/useEffect';
+import API from '../../utils/API';
 
 const SessionChoice = ({ onNext }) => {
     const [sessions, setSessions] = useState([]);
@@ -15,15 +15,20 @@ const SessionChoice = ({ onNext }) => {
         API.getSeanceNames({ userId: localStorage.getItem("id") }) // Replace with actual user ID or other params if needed
             .then(response => {
                 const seanceNames = response.data.seanceNames;
-                const initialSessions = [
-                    { id: '2', name: 'Partir de zéro', icon: '✍️' },
-                    { id: '1', name: 'Dernière séance en date', icon: '📅' },
-                ];
+
+                const initialSessions = [{ id: '1', name: 'Partir de zéro', icon: '✍️' }];
+
+                // Only add 'Dernière séance en date' if there are user sessions
+                if (seanceNames.length > 0) {
+                    initialSessions.push({ id: '2', name: 'Dernière séance en date', icon: '📅' });
+                }
+
                 const seanceSessions = seanceNames.map((name, index) => ({
                     id: (index + 3).toString(), // Starting from id 3
                     name: `Dernière séance ${name}`,
                     icon: '🏋️'
                 }));
+
                 const combinedSessions = [...initialSessions, ...seanceSessions];
                 setAllSessions(combinedSessions);
                 setSessions(combinedSessions.slice(0, 3)); // Show only first 3 sessions initially
@@ -62,7 +67,7 @@ const SessionChoice = ({ onNext }) => {
                         <div>{session.name}</div>
                     </div>
                 ))}
-                {showMore && (
+                {showMore && allSessions.length > 1 && (
                     <div
                         onClick={handleMoreChoices}
                         className='sessionChoicePlus'

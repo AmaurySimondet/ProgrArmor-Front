@@ -1,25 +1,41 @@
 import React, { useState, useEffect } from 'react';
-import { useWindowDimensions } from '../../utils/useEffect';
 import Loader from '../../components/Loader';
-import { randomBodybuildingEmoji } from '../../utils/emojis';
+import API from '../../utils/API';
+import { randomBodybuildingEmojis } from '../../utils/emojis';
+import { useWindowDimensions } from '../../utils/useEffect';
 
-const ExerciseTypeChoice = ({ onNext, onBack, onDelete }) => {
+const ExerciseTypeChoice = ({ onNext, onDelete, onBack }) => {
     const [exerciseTypes, setExerciseTypes] = useState([]);
+    const [allExerciseTypes, setAllExerciseTypes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [moreTypesUnclicked, setMoreTypesUnclicked] = useState(true);
+    const [moreTypesUnclicked, setMoreTypesUnclicked] = useState(true); // Track whether to show more types
+    const [emojis, setEmojis] = useState([]);
     const { width } = useWindowDimensions();
 
+
     useEffect(() => {
-        // Simulate fetching exercise types from an API
-        setTimeout(() => {
-            setExerciseTypes([{ name: 'Type A', id: 1, examples: ['Example 1', 'Example 2'] }, { name: 'Type B', id: 2, examples: ['Example 3', 'Example 4'] }, { name: 'Type C', id: 3, examples: ['Example 5', 'Example 6'] }]);
-            setLoading(false);
-        }, 1000);
+        // Fetch exercise types from the API
+        API.getExerciceTypes() // Replace with the actual method to fetch exercise types
+            .then(response => {
+                console.log(response.data.exerciceTypes);
+                const fetchedTypes = response.data.exerciceTypes || [];
+                setAllExerciseTypes(fetchedTypes);
+                setExerciseTypes(fetchedTypes.slice(0, 3)); // Show only the first 3 types initially
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Error fetching exercise types:", error);
+                setLoading(false);
+            });
     }, []);
 
+    useEffect(() => {
+        setEmojis(randomBodybuildingEmojis(allExerciseTypes.length));
+    }, [allExerciseTypes]);
+
     const handleMoreTypes = () => {
-        setExerciseTypes([...exerciseTypes, { name: 'Type D', id: 4, examples: ['Example 7', 'Example 8'] }, { name: 'Type E', id: 5, examples: ['Example 9', 'Example 10'] }, { name: 'Type F', id: 6, examples: ['Example 11', 'Example 12'] }]);
-        setMoreTypesUnclicked(false);
+        setExerciseTypes(allExerciseTypes); // Show all exercise types
+        setMoreTypesUnclicked(false); // Hide the "More Types" button
     };
 
     if (loading) {
@@ -38,12 +54,12 @@ const ExerciseTypeChoice = ({ onNext, onBack, onDelete }) => {
                 {exerciseTypes.map((type, index) => (
                     <div
                         key={index}
-                        onClick={() => onNext(type.name)}
+                        onClick={() => onNext(type.name.fr)}
                         className='sessionChoice'
                     >
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{randomBodybuildingEmoji()}</div>
-                        <div>{type.name}</div>
-                        <div style={{ fontSize: '0.66rem' }}>{type.examples.join(', ')}</div>
+                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
+                        <div>{type.name.fr}</div>
+                        <div style={{ fontSize: '0.66rem' }}>{type.examples.fr.join(', ')}</div>
                     </div>
                 ))}
                 {moreTypesUnclicked && (

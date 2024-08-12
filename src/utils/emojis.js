@@ -3,4 +3,8 @@ const randomBodybuildingEmoji = () => {
     return emojis[Math.floor(Math.random() * emojis.length)];
 }
 
-export { randomBodybuildingEmoji };
+const randomBodybuildingEmojis = (count) => {
+    return Array.from({ length: count }, () => randomBodybuildingEmoji());
+}
+
+export { randomBodybuildingEmoji, randomBodybuildingEmojis };

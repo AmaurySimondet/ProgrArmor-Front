@@ -1,25 +1,58 @@
 import React, { useState, useEffect } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import Loader from '../../components/Loader';
-import { randomBodybuildingEmoji } from '../../utils/emojis';
+import API from '../../utils/API'; // Ensure the API module is correctly imported
+import { randomBodybuildingEmojis } from '../../utils/emojis';
 
 const ExerciseChoice = ({ selectedType, onNext, onBack }) => {
     const [exercises, setExercises] = useState([]);
+    const [selectedTypeId, setSelectedTypeId] = useState(null);
+    const [allExercises, setAllExercises] = useState([]);
+    const [emojis, setEmojis] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [moreExercisesUnclicked, setMoreExercisesUnclicked] = useState(true);
     const { width } = useWindowDimensions();
-    const [moreTypesUnclicked, setMoreTypesUnclicked] = useState(true);
 
     useEffect(() => {
-        // Simulate fetching exercises from an API based on the selected type
-        setTimeout(() => {
-            setExercises(['Exercice A', 'Exercice B', 'Exercice C']);
-            setLoading(false);
-        }, 1000);
+        // First get exericeType id from name
+        API.getExericeTypeId({ name: selectedType }) // Replace with the actual method to fetch exercises
+            .then(response => {
+                console.log(response.data.exerciceTypeId);
+                setSelectedTypeId(response.data.exerciceTypeId);
+            }
+            )
+            .catch(error => {
+                console.error("Error fetching exercises:", error);
+                setLoading(false);
+            }
+            );
     }, [selectedType]);
 
+
+    useEffect(() => {
+        API.getExercises({ exerciceType: selectedTypeId }) // Replace with the actual method to fetch exercises
+            .then(response => {
+                console.log(response.data.exercices);
+                let fetchedExercises = response.data.exercices || [];
+                // keep only name.fr
+                fetchedExercises = fetchedExercises.map(exercise => exercise.name.fr);
+                setAllExercises(fetchedExercises);
+                setExercises(fetchedExercises.slice(0, 3)); // Show only the first 3 exercises initially
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Error fetching exercises:", error);
+                setLoading(false);
+            });
+    }, [selectedTypeId]);
+
+    useEffect(() => {
+        setEmojis(randomBodybuildingEmojis(allExercises.length));
+    }, [allExercises]);
+
     const handleMoreExercises = () => {
-        setExercises([...exercises, 'Exercice D', 'Exercice E', 'Exercice F']);
-        setMoreTypesUnclicked(false);
+        setExercises(allExercises); // Show all exercises
+        setMoreExercisesUnclicked(false); // Hide the "More Exercises" button
     };
 
     if (loading) {
@@ -41,14 +74,15 @@ const ExerciseChoice = ({ selectedType, onNext, onBack }) => {
                         onClick={() => onNext(exercise)}
                         className='sessionChoice'
                     >
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{randomBodybuildingEmoji()}</div>
+                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
                         <div>{exercise}</div>
                     </div>
                 ))}
-                {moreTypesUnclicked && (
+                {moreExercisesUnclicked && allExercises.length > 3 && (
                     <div
                         onClick={handleMoreExercises}
                         className='sessionChoicePlus'
+                        style={{ cursor: 'pointer', color: '#007bff' }}
                     >
                         <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
                     </div>

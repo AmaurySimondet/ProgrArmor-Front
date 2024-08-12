@@ -64,11 +64,17 @@ export default {
 
   },
 
+
+
+
   //NIVEAU
   getNiveau: function (send) {
     return axios.post(`${burl}/user/getNiveau`, send, { headers: headers });
-
   },
+
+
+
+
 
   //SESSION
   debutantform: function (send) {
@@ -100,10 +106,43 @@ export default {
 
   },
 
+
+
+
+
+
+
   //SEANCES
   getSeanceNames: function (send) {
     return axios.get(`${burl}/user/seance/names`, { headers: headers, params: send });
   },
+
+
+
+
+  // EXERCICE TYPES
+  getExerciceTypes: function (send) {
+    return axios.get(`${burl}/user/exerciceTypes`, {
+      headers: headers, params: send
+    });
+  },
+  getExericeTypeId: function (send) {
+    return axios.get(`${burl}/user/exerciceTypeId`, {
+      headers: headers, params: send
+    });
+  },
+
+
+
+  // EXERCICES
+  getExercises: function (send) {
+    return axios.get(`${burl}/user/exercices`, {
+      headers: headers, params: send
+    });
+  },
+
+
+
 
   //COMPTE
   modifyUser: function (send) {
@@ -118,6 +157,12 @@ export default {
     return axios.post(`${burl}/user/reguScore`, send, { headers: headers });
 
   },
+
+
+
+
+
+
 
   //PROGRAMMES
   createProgramme: function (send) {

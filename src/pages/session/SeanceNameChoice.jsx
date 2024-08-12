@@ -1,37 +1,43 @@
 import React, { useState, useEffect } from 'react';
 import Loader from '../../components/Loader';
-import { useWindowDimensions } from '../../utils/useEffect'; // Ensure the path is correct
-import { randomBodybuildingEmoji } from '../../utils/emojis';
+import { useWindowDimensions } from '../../utils/useEffect';
+import { randomBodybuildingEmojis } from '../../utils/emojis';
+import API from '../../utils/API';
+
 
 const SessionNameChoice = ({ onNext, onBack }) => {
     const [names, setNames] = useState([]);
+    const [allNames, setAllNames] = useState([]);
     const [loading, setLoading] = useState(true);
     const [customName, setCustomName] = useState('');
     const [showMore, setShowMore] = useState(true); // Track whether to show the "More Choices" button
+    const [emojis, setEmojis] = useState([]);
     const { width } = useWindowDimensions();
 
     useEffect(() => {
-        // Simuler la récupération des noms de séances depuis une API
-        setTimeout(() => {
-            setNames(['Séance A', 'Séance B']);
-            setLoading(false);
-        }, 1000);
+        // Fetch session names from the API
+        API.getSeanceNames({ userId: localStorage.getItem("id") }) // Replace with actual user ID or other params if needed
+            .then(response => {
+                const fetchedNames = response.data.seanceNames || [];
+
+                // Set all names and initially display only the first 2
+                setAllNames(fetchedNames);
+                setNames(fetchedNames.slice(0, 2)); // Show only first 2 names initially
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error("Error fetching seance names:", error);
+                setLoading(false);
+            });
     }, []);
 
+    useEffect(() => {
+        setEmojis(randomBodybuildingEmojis(allNames.length));
+    }, [allNames]);
+
     const handleMoreChoices = () => {
-        setLoading(true);
-        // Simulate fetching additional session names
-        setTimeout(() => {
-            setNames(prevNames => [
-                ...prevNames,
-                'Séance C',
-                'Séance D',
-                'Séance E',
-                'Séance F',
-            ]);
-            setLoading(false);
-            setShowMore(false); // Hide the "More Choices" button after loading
-        }, 1000);
+        setNames(allNames); // Show all session names
+        setShowMore(false); // Hide the "More Choices" button
     };
 
     if (loading) {
@@ -67,7 +73,7 @@ const SessionNameChoice = ({ onNext, onBack }) => {
                         onClick={() => handleChoice(name)}
                         className='sessionChoice'
                     >
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{randomBodybuildingEmoji()}</div>
+                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
                         <div>{name}</div>
                     </div>
                 ))}
@@ -89,7 +95,7 @@ const SessionNameChoice = ({ onNext, onBack }) => {
                         Valider
                     </button>
                 </div>
-                {showMore && (
+                {showMore && allNames.length > 0 && (
                     <div
                         onClick={handleMoreChoices}
                         className='sessionChoicePlus'
