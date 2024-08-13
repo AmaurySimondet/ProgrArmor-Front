@@ -1,9 +1,9 @@
 import React from 'react';
 import ProgressBar from 'react-bootstrap/ProgressBar'; // Assuming you are using react-bootstrap for the progress bar
 
-const getProgressPercentage = (selectedName, selectedDate, selectedExercises, selectedExercise) => {
-    //name 20%, date 20%, exercise 15%, category 15%, sets 10%
-    console.log('progressBar', selectedName, selectedDate, selectedExercises, selectedExercise);
+const getProgressPercentage = (selectedName, selectedDate, selectedExercices, selectedExercice) => {
+    //name 20%, date 20%, exercice 15%, category 15%, sets 10%
+    console.log('progressBar', selectedName, selectedDate, selectedExercices, selectedExercice);
     let progress = 0;
     if (selectedName) {
         progress += 10;
@@ -11,28 +11,28 @@ const getProgressPercentage = (selectedName, selectedDate, selectedExercises, se
     if (selectedDate) {
         progress += 10;
     }
-    // exercise name chosen
-    if (selectedExercise.exercise) {
+    // exercice name chosen
+    if (selectedExercice.exercice) {
         progress += 10;
     }
     // category chosen
-    if (selectedExercise.categories.length > 0) {
+    if (selectedExercice.categories.length > 0) {
         progress += 10;
     }
     // sets added
-    if (selectedExercise.sets.length > 0) {
+    if (selectedExercice.sets.length > 0) {
         progress += 10;
     }
-    // exercise 1
-    if (selectedExercises.length === 1) {
+    // exercice 1
+    if (selectedExercices.length === 1) {
         progress += 20;
     }
-    // exercise 2
-    if (selectedExercises.length === 2) {
+    // exercice 2
+    if (selectedExercices.length === 2) {
         progress += 40;
     }
-    // exercise 3
-    if (selectedExercises.length === 3) {
+    // exercice 3
+    if (selectedExercices.length === 3) {
         progress += 60;
     }
     if (progress >= 100) {
@@ -41,8 +41,8 @@ const getProgressPercentage = (selectedName, selectedDate, selectedExercises, se
     return progress;
 };
 
-const SessionProgressBar = ({ selectedName, selectedDate, selectedExercises, selectedExercise }) => {
-    const progressPercentage = getProgressPercentage(selectedName, selectedDate, selectedExercises, selectedExercise);
+const SessionProgressBar = ({ selectedName, selectedDate, selectedExercices, selectedExercice }) => {
+    const progressPercentage = getProgressPercentage(selectedName, selectedDate, selectedExercices, selectedExercice);
 
     return (
         <div>

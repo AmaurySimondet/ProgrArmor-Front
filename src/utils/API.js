@@ -2,7 +2,7 @@ import axios from "axios";
 const headers = {
   "Content-Type": "application/json"
 };
-const burl = "http://10.0.51.241:8800";
+const burl = "http://10.0.200.207:8800";
 
 function paramsToString(params) {
   let string = "";
@@ -116,7 +116,18 @@ export default {
   getSeanceNames: function (send) {
     return axios.get(`${burl}/user/seance/names`, { headers: headers, params: send });
   },
+  getLastSeance: function (send) {
+    return axios.get(`${burl}/user/seance/last`, { headers: headers, params: send });
+  },
 
+
+
+
+
+  // SEANCE SETS
+  getSeanceSets: function (send) {
+    return axios.get(`${burl}/user/sets`, { headers: headers, params: send });
+  },
 
 
 
@@ -135,7 +146,7 @@ export default {
 
 
   // EXERCICES
-  getExercises: function (send) {
+  getExercices: function (send) {
     return axios.get(`${burl}/user/exercices`, {
       headers: headers, params: send
     });

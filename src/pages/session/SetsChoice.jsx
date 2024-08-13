@@ -6,8 +6,8 @@ const SetsChoice = ({ onBack, onNext }) => {
     const [sets, setSets] = useState([]);
     const [unit, setUnit] = useState('reps'); // Default to 'reps'
     const [value, setValue] = useState('');
-    const [charge, setCharge] = useState(0);
-    const [elastique, setElastique] = useState({ usage: 'resistance', tension: '' });
+    const [weightLoad, setweightLoad] = useState(0);
+    const [elastic, setElastic] = useState({ use: 'resistance', tension: '' });
     const { width } = useWindowDimensions();
 
     const tooltipText = (
@@ -16,12 +16,12 @@ const SetsChoice = ({ onBack, onNext }) => {
 
     const handleAddSet = () => {
         if (value.trim()) {
-            const newSet = { unit, value, charge, elastique };
+            const newSet = { unit, value, weightLoad, elastic };
             setSets([...sets, newSet]);
             // Reset fields after adding
             setValue('');
-            setCharge(0);
-            setElastique({ usage: 'resistance', tension: '' });
+            setweightLoad(0);
+            setElastic({ use: 'resistance', tension: 0 });
         }
     };
 
@@ -29,15 +29,15 @@ const SetsChoice = ({ onBack, onNext }) => {
         setSets(sets.filter((_, i) => i !== index));
     };
 
-    const handleChangeElastiqueUsage = (e) => {
-        setElastique((prev) => ({ ...prev, usage: e.target.value }));
+    const handleChangeElasticuse = (e) => {
+        setElastic((prev) => ({ ...prev, use: e.target.value }));
     };
 
-    const handleChangeElastiqueTension = (e) => {
-        setElastique((prev) => ({ ...prev, tension: e.target.value }));
+    const handleChangeElasticTension = (e) => {
+        setElastic((prev) => ({ ...prev, tension: parseFloat(e.target.value) }));
     };
 
-    const handleNextExercise = () => {
+    const handleNextExercice = () => {
         if (sets.length === 0) {
             alert('Veuillez ajouter au moins une série');
         } else {
@@ -63,7 +63,7 @@ const SetsChoice = ({ onBack, onNext }) => {
                         <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>⏱️</div>
                         Unité
                         <select className="custom-select" value={unit} onChange={(e) => setUnit(e.target.value)} style={{ maxWidth: '200px', marginTop: '5px' }}>
-                            <option value="reps">Répetitions</option>
+                            <option value="repetitions">Répetitions</option>
                             <option value="seconds">Secondes</option>
                         </select>
                     </label>
@@ -74,7 +74,7 @@ const SetsChoice = ({ onBack, onNext }) => {
                             className="form-control"
                             type="number"
                             value={value}
-                            onChange={(e) => setValue(e.target.value)}
+                            onChange={(e) => setValue(parseFloat(e.target.value))}
                             placeholder="Nb Reps / Secs"
                             style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
                             inputMode='numeric'
@@ -86,8 +86,8 @@ const SetsChoice = ({ onBack, onNext }) => {
                         <input
                             className="form-control"
                             type="number"
-                            value={charge}
-                            onChange={(e) => setCharge(e.target.value)}
+                            value={weightLoad}
+                            onChange={(e) => setweightLoad(parseFloat(e.target.value))}
                             placeholder="Charge (kg)"
                             style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
                             inputMode='numeric'
@@ -100,18 +100,18 @@ const SetsChoice = ({ onBack, onNext }) => {
                             data-tooltip-html={tooltipText}
                             data-tooltip-place="top"
                         >
-                            Elastique
+                            Elastic
                         </a>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center' }}>
-                            <select className="custom-select" value={elastique.usage} onChange={handleChangeElastiqueUsage} style={{ width: '100%', maxWidth: '200px' }}>
+                            <select className="custom-select" value={elastic.use} onChange={handleChangeElasticuse} style={{ width: '100%', maxWidth: '200px' }}>
                                 <option value="resistance">Résistance</option>
                                 <option value="assistance">Assistance</option>
                             </select>
                             <input
                                 className="form-control"
                                 type="number"
-                                value={elastique.tension}
-                                onChange={handleChangeElastiqueTension}
+                                value={elastic.tension}
+                                onChange={handleChangeElasticTension}
                                 placeholder="Tension (kg)"
                                 style={{ width: '100%', maxWidth: '200px' }}
                                 inputMode='numeric'
@@ -127,7 +127,7 @@ const SetsChoice = ({ onBack, onNext }) => {
                 {sets.length > 0 ? (
                     sets.map((set, index) => (
                         <div key={index} style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', maxWidth: '600px', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' }}>
-                            <span>{`${set.value} ${set.unit} ${set.charge ? `@ ${set.charge} kg` : ''} ${set.elastique.tension ? `Elastique: ${set.elastique.usage} ${set.elastique.tension} kg` : ''}`}</span>
+                            <span>{`${set.value} ${set.unit} ${set.weightLoad ? `@ ${set.weightLoad} kg` : ''} ${set.elastic.tension ? `Elastic: ${set.elastic.use} ${set.elastic.tension} kg` : ''}`}</span>
                             <div style={{
                                 display: "flex",
                                 gap: "10px",
@@ -151,7 +151,7 @@ const SetsChoice = ({ onBack, onNext }) => {
                 )}
             </div>
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                <button onClick={handleNextExercise} className='btn btn-dark'>
+                <button onClick={handleNextExercice} className='btn btn-dark'>
                     Valider
                 </button>
             </div>

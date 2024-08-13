@@ -15,39 +15,39 @@ const renderSets = (sets) => {
         const set = JSON.parse(setKey);
         return (
             <li key={idx} style={{ marginBottom: '5px' }} className='popInElement'>
-                {`${setCount[setKey]} x ${set.value} ${set.unit} ${set.charge ? `@ ${set.charge} kg` : ''} ${set.elastique.tension ? `Elastique: ${set.elastique.usage} ${set.elastique.tension} kg` : ''}`}
+                {`${setCount[setKey]} x ${set.value} ${set.unit} ${set.weightLoad ? `@ ${set.weightLoad} kg` : ''} ${set.elastic.tension ? `Elastic: ${set.elastic.use} ${set.elastic.tension} kg` : ''}`}
             </li>
         );
     });
 };
 
-const renderExercise = (exercise, index, handleExerciseClick, isEditing) => {
+const renderExercice = (exercice, index, handleExerciceClick, isEditing) => {
     return (
         <div
             key={index}
-            onClick={() => handleExerciseClick(index)}
-            className={`sessionSummaryExercise ${isEditing ? 'editingExercise' : ''}`}
+            onClick={() => handleExerciceClick(index)}
+            className={`sessionSummaryExercice ${isEditing ? 'editingExercice' : ''}`}
         >
             <h3 style={{ color: isEditing ? '#aaaaaa' : '#9b0000' }}>
-                {exercise.exercise && exercise.exercise}{exercise.categories.length > 0 && " - " + exercise.categories.join(', ')}
+                {exercice.exercice && exercice.exercice}{exercice.categories.length > 0 && " - " + exercice.categories.join(', ')}
             </h3>
-            {exercise.sets && exercise.sets.length > 0 && (
+            {exercice.sets && exercice.sets.length > 0 && (
                 <ul style={{ listStyleType: 'none', padding: 0 }}>
-                    {renderSets(exercise.sets)}
+                    {renderSets(exercice.sets)}
                 </ul>
             )}
         </div>
     );
 };
 
-const SessionSummary = ({ selectedName, selectedDate, selectedExercises, selectedExercise, handleExerciseClick, onFinish, index, handleDateClick }) => {
-    const exercisesToRender = [...selectedExercises];
+const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selectedExercice, handleExerciceClick, onFinish, index, handleDateClick }) => {
+    const exercicesToRender = [...selectedExercices];
 
-    // Place selectedExercise at the correct position
-    if (selectedExercise && index !== null) {
-        exercisesToRender.splice(index, 0, selectedExercise);
-    } else if (selectedExercise) {
-        exercisesToRender.push(selectedExercise);
+    // Place selectedExercice at the correct position
+    if (selectedExercice && index !== null) {
+        exercicesToRender.splice(index, 0, selectedExercice);
+    } else if (selectedExercice) {
+        exercicesToRender.push(selectedExercice);
     }
 
     return (
@@ -63,9 +63,9 @@ const SessionSummary = ({ selectedName, selectedDate, selectedExercises, selecte
                         </div>
                     )}
 
-                    {/* Exercises to be rendered */}
-                    {exercisesToRender.map((exercise, idx) =>
-                        renderExercise(exercise, idx, handleExerciseClick, (idx === index || (idx === selectedExercises.length && index === null)))
+                    {/* Exercices to be rendered */}
+                    {exercicesToRender.map((exercice, idx) =>
+                        renderExercice(exercice, idx, handleExerciceClick, (idx === index || (idx === selectedExercices.length && index === null)))
                     )}
 
                     {/* Finish button */}

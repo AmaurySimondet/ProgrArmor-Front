@@ -4,9 +4,9 @@ import API from '../../utils/API';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import { useWindowDimensions } from '../../utils/useEffect';
 
-const ExerciseTypeChoice = ({ onNext, onDelete, onBack }) => {
-    const [exerciseTypes, setExerciseTypes] = useState([]);
-    const [allExerciseTypes, setAllExerciseTypes] = useState([]);
+const ExerciceTypeChoice = ({ onNext, onDelete, onBack }) => {
+    const [exerciceTypes, setExerciceTypes] = useState([]);
+    const [allExerciceTypes, setAllExerciceTypes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [moreTypesUnclicked, setMoreTypesUnclicked] = useState(true); // Track whether to show more types
     const [emojis, setEmojis] = useState([]);
@@ -14,27 +14,27 @@ const ExerciseTypeChoice = ({ onNext, onDelete, onBack }) => {
 
 
     useEffect(() => {
-        // Fetch exercise types from the API
-        API.getExerciceTypes() // Replace with the actual method to fetch exercise types
+        // Fetch exercice types from the API
+        API.getExerciceTypes() // Replace with the actual method to fetch exercice types
             .then(response => {
                 console.log(response.data.exerciceTypes);
                 const fetchedTypes = response.data.exerciceTypes || [];
-                setAllExerciseTypes(fetchedTypes);
-                setExerciseTypes(fetchedTypes.slice(0, 3)); // Show only the first 3 types initially
+                setAllExerciceTypes(fetchedTypes);
+                setExerciceTypes(fetchedTypes.slice(0, 3)); // Show only the first 3 types initially
                 setLoading(false);
             })
             .catch(error => {
-                console.error("Error fetching exercise types:", error);
+                console.error("Error fetching exercice types:", error);
                 setLoading(false);
             });
     }, []);
 
     useEffect(() => {
-        setEmojis(randomBodybuildingEmojis(allExerciseTypes.length));
-    }, [allExerciseTypes]);
+        setEmojis(randomBodybuildingEmojis(allExerciceTypes.length));
+    }, [allExerciceTypes]);
 
     const handleMoreTypes = () => {
-        setExerciseTypes(allExerciseTypes); // Show all exercise types
+        setExerciceTypes(allExerciceTypes); // Show all exercice types
         setMoreTypesUnclicked(false); // Hide the "More Types" button
     };
 
@@ -51,7 +51,7 @@ const ExerciseTypeChoice = ({ onNext, onDelete, onBack }) => {
             </h2>
             <h1>Choisir le type d'exercice</h1>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-                {exerciseTypes.map((type, index) => (
+                {exerciceTypes.map((type, index) => (
                     <div
                         key={index}
                         onClick={() => onNext(type.name.fr)}
@@ -78,4 +78,4 @@ const ExerciseTypeChoice = ({ onNext, onDelete, onBack }) => {
     );
 };
 
-export default ExerciseTypeChoice;
+export default ExerciceTypeChoice;

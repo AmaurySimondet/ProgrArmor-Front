@@ -16,17 +16,18 @@ const SessionChoice = ({ onNext }) => {
             .then(response => {
                 const seanceNames = response.data.seanceNames;
 
-                const initialSessions = [{ id: '1', name: 'Partir de zéro', icon: '✍️' }];
+                const initialSessions = [{ id: '1', name: 'Partir de zéro', icon: '✍️', value: "new" }];
 
                 // Only add 'Dernière séance en date' if there are user sessions
                 if (seanceNames.length > 0) {
-                    initialSessions.push({ id: '2', name: 'Dernière séance en date', icon: '📅' });
+                    initialSessions.push({ id: '2', name: 'Dernière séance en date', icon: '📅', value: "last" })
                 }
 
                 const seanceSessions = seanceNames.map((name, index) => ({
                     id: (index + 3).toString(), // Starting from id 3
                     name: `Dernière séance ${name}`,
-                    icon: '🏋️'
+                    icon: '🏋️',
+                    value: name
                 }));
 
                 const combinedSessions = [...initialSessions, ...seanceSessions];
@@ -55,7 +56,7 @@ const SessionChoice = ({ onNext }) => {
 
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
-            <h1>Choisir une séance</h1>
+            <h1>Choisir un modèle</h1>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                 {sessions.map((session) => (
                     <div
