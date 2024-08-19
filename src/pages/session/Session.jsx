@@ -44,7 +44,6 @@ const Session = () => {
           API.getSeanceSets({ userId: localStorage.getItem("id"), seanceId: lastSession._id })
             .then(response => {
               const lastSessionSets = response.data.sets; // Adjust if needed
-              console.log('lastSessionSets', lastSessionSets);
             })
             .catch(error => {
               console.error('Error fetching last session or sets:', error);
@@ -166,7 +165,6 @@ const Session = () => {
   };
 
   const handleExerciceClick = (index) => {
-    console.log('handleExerciceClick', index);
     const exercice = selectedExercices[index];
     setSelectedType("");
     setSelectedExercice({
@@ -180,6 +178,30 @@ const Session = () => {
     setEditingExerciceIndex(index);
     setStep(4); // Set step to exercice choice
   };
+
+
+  const handleSearch = (exerciceName) => {
+    API.getExercice({ name: exerciceName })
+      .then((response) => {
+        const exerciceTypeId = response.data.exerciceReturned.type;
+        return API.getExerciceType({ id: exerciceTypeId });
+      })
+      .then((response) => {
+        const exerciceTypeName = response.data.exerciceTypeReturned.name.fr;
+        setSelectedType(exerciceTypeName);
+
+        const newExercice = {
+          ...selectedExercice,
+          exercice: exerciceName
+        };
+        setSelectedExercice(newExercice);
+        setStep(6);
+      })
+      .catch((error) => {
+        console.error('Error during exercise search:', error);
+      });
+  };
+
 
   return (
     <div>
@@ -212,7 +234,7 @@ const Session = () => {
             <SeanceDateChoice onNext={handleNextDateChoice} onBack={() => setStep(2)} />
           )}
           {step === 4 && (
-            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => setStep(3)} onDelete={(index) => handleOnDeleteExercice(index)} />
+            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => setStep(3)} onDelete={(index) => handleOnDeleteExercice(index)} onSearch={(exerciceName) => handleSearch(exerciceName)} />
           )}
           {step === 5 && (
             <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => setStep(4)} />

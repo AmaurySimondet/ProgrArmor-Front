@@ -142,6 +142,11 @@ export default {
       headers: headers, params: send
     });
   },
+  getExerciceType: function (send) {
+    return axios.get(`${burl}/user/exerciceType`, {
+      headers: headers, params: send
+    });
+  },
 
 
 
@@ -152,17 +157,28 @@ export default {
     });
   },
 
+  getExercice: function (send) {
+    return axios.get(`${burl}/user/exercice`, {
+      headers: headers, params: send
+    });
+  },
 
 
 
-
-  // CATEGORIES
+  // CATEGORIES TYPES
   getCategoryTypes: function (send) {
     return axios.get(`${burl}/user/categorietypes`, {
       headers: headers, params: send
     });
   },
 
+
+  // CATEGORIES
+  getCategories: function (send) {
+    return axios.get(`${burl}/user/categories`, {
+      headers: headers, params: send
+    });
+  },
 
 
   //COMPTE

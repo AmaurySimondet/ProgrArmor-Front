@@ -1,5 +1,5 @@
 import API from './API';
-import { sortDateCroissant } from './utils';
+import { sortDateCroissant } from './dates';
 
 async function getUser(id) {
     const { data } = await API.getUser({ id: id });

@@ -19,10 +19,11 @@ const SessionNameChoice = ({ onNext, onBack }) => {
         API.getSeanceNames({ userId: localStorage.getItem("id") }) // Replace with actual user ID or other params if needed
             .then(response => {
                 const fetchedNames = response.data.seanceNames || [];
+                const uniqueNames = fetchedNames.map(name => name.name).filter((value, index, self) => self.indexOf(value) === index);
 
                 // Set all names and initially display only the first 2
-                setAllNames(fetchedNames);
-                setNames(fetchedNames.slice(0, 2)); // Show only first 2 names initially
+                setAllNames(uniqueNames);
+                setNames(uniqueNames.slice(0, 2)); // Show only first 2 names initially
                 setLoading(false);
             })
             .catch(error => {

@@ -17,7 +17,6 @@ const ExerciceChoice = ({ selectedType, onNext, onBack }) => {
         // First get exericeType id from name
         API.getExericeTypeId({ name: selectedType }) // Replace with the actual method to fetch exercices
             .then(response => {
-                console.log(response.data.exerciceTypeId);
                 setSelectedTypeId(response.data.exerciceTypeId);
             }
             )
@@ -32,7 +31,6 @@ const ExerciceChoice = ({ selectedType, onNext, onBack }) => {
     useEffect(() => {
         API.getExercices({ exerciceType: selectedTypeId }) // Replace with the actual method to fetch exercices
             .then(response => {
-                console.log(response.data.exercices);
                 let fetchedExercices = response.data.exercices || [];
                 // keep only name.fr
                 fetchedExercices = fetchedExercices.map(exercice => exercice.name.fr);

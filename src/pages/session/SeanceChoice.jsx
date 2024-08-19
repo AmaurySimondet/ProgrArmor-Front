@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Loader from '../../components/Loader';
 import { useWindowDimensions } from '../../utils/useEffect';
 import API from '../../utils/API';
+import { stringToDate } from '../../utils/dates';
 
 const SessionChoice = ({ onNext }) => {
     const [sessions, setSessions] = useState([]);
@@ -20,15 +21,39 @@ const SessionChoice = ({ onNext }) => {
 
                 // Only add 'Dernière séance en date' if there are user sessions
                 if (seanceNames.length > 0) {
-                    initialSessions.push({ id: '2', name: 'Dernière séance en date', icon: '📅', value: "last" })
+                    initialSessions.push({
+                        id: '2',
+                        name: 'Dernière séance en date',
+                        icon: '📅',
+                        value: "last",
+                        date: seanceNames[0].name + " le " + stringToDate(seanceNames[0].date),
+                        _id: seanceNames[0]._id
+                    })
                 }
 
-                const seanceSessions = seanceNames.map((name, index) => ({
-                    id: (index + 3).toString(), // Starting from id 3
-                    name: `Dernière séance ${name}`,
-                    icon: '🏋️',
-                    value: name
-                }));
+                // Create a set to track names that have been added
+                const existingNames = new Set();
+
+                // Filter out duplicates while mapping
+                const seanceSessions = seanceNames
+                    .filter(seance => {
+                        if (existingNames.has(seance.name)) {
+                            // If name already exists, filter it out
+                            return false;
+                        } else {
+                            // Otherwise, add the name to the set and include it in the result
+                            existingNames.add(seance.name);
+                            return true;
+                        }
+                    })
+                    .map((seance, index) => ({
+                        id: (index + 3).toString(), // Starting from id 3
+                        name: `Dernière séance ${seance.name}`,
+                        icon: '🏋️',
+                        value: seance.name,
+                        date: stringToDate(seance.date),
+                        _id: seance._id,
+                    }));
 
                 const combinedSessions = [...initialSessions, ...seanceSessions];
                 setAllSessions(combinedSessions);
@@ -66,6 +91,7 @@ const SessionChoice = ({ onNext }) => {
                     >
                         <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>{session.icon}</div>
                         <div>{session.name}</div>
+                        <div style={{ fontSize: '0.66rem' }}>{session.date}</div>
                     </div>
                 ))}
                 {showMore && allSessions.length > 1 && (

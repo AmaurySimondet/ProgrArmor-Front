@@ -3,7 +3,6 @@ import { useWindowDimensions } from '../../utils/useEffect';
 import Loader from '../../components/Loader';
 
 const CategoryChoice = ({ selectedType, onNext, onSkip, onBack }) => {
-    console.log("Selected type: ", selectedType);
 
     // Check if selectedType is not a string
     if (typeof selectedType !== 'string') {
