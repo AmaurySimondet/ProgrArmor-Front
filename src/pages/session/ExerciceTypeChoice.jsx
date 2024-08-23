@@ -5,7 +5,7 @@ import { randomBodybuildingEmojis } from '../../utils/emojis';
 import { useWindowDimensions } from '../../utils/useEffect';
 import Fuse from 'fuse.js';
 
-const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch }) => {
+const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToSeries }) => {
     const [exerciceTypes, setExerciceTypes] = useState([]);
     const [allExerciceTypes, setAllExerciceTypes] = useState([]);
     const [allExercices, setAllExercices] = useState([]);
@@ -68,6 +68,10 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch }) => {
         return <Loader />;
     }
 
+    const handleDelete = () => {
+        onDelete(index);
+    }
+
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
             <h2
@@ -75,7 +79,7 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch }) => {
             >
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h2>
-            <h1>Choisir le type d'exercice</h1>
+            <h1>{index !== null ? "Modifier" : "Choisir"} le type d'exercice</h1>
 
             {/* Search Bar */}
             <input
@@ -133,10 +137,22 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch }) => {
                     </div>
                 )}
             </div>
-            <button onClick={onDelete} className='btn btn-black mt-5'>
-                Supprimer l'exercice
-            </button>
-        </div>
+            {index !== null &&
+                <div style={{
+                    "display": "flex",
+                    "flexDirection": "row",
+                    "justifyContent": "center",
+                    "gap": "10px"
+                }}>
+                    <button onClick={() => onGoToSeries()} className='btn btn-white mt-5'>
+                        Modifier seulement les séries
+                    </button>
+                    <button onClick={handleDelete} className='btn btn-black mt-5'>
+                        Supprimer l'exercice
+                    </button>
+                </div>
+            }
+        </div >
     );
 };
 

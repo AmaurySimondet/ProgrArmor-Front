@@ -2,7 +2,7 @@ import axios from "axios";
 const headers = {
   "Content-Type": "application/json"
 };
-const burl = "http://10.0.200.207:8800";
+const burl = "http://10.0.51.241:8800";
 
 function paramsToString(params) {
   let string = "";
@@ -119,6 +119,9 @@ export default {
   getLastSeance: function (send) {
     return axios.get(`${burl}/user/seance/last`, { headers: headers, params: send });
   },
+  getSeance: function (send) {
+    return axios.get(`${burl}/user/seance`, { headers: headers, params: send });
+  },
 
 
 
@@ -134,11 +137,6 @@ export default {
   // EXERCICE TYPES
   getExerciceTypes: function (send) {
     return axios.get(`${burl}/user/exerciceTypes`, {
-      headers: headers, params: send
-    });
-  },
-  getExericeTypeId: function (send) {
-    return axios.get(`${burl}/user/exerciceTypeId`, {
       headers: headers, params: send
     });
   },
@@ -171,11 +169,21 @@ export default {
       headers: headers, params: send
     });
   },
+  getCategorieType: function (send) {
+    return axios.get(`${burl}/user/categorietype`, {
+      headers: headers, params: send
+    });
+  },
 
 
   // CATEGORIES
   getCategories: function (send) {
     return axios.get(`${burl}/user/categories`, {
+      headers: headers, params: send
+    });
+  },
+  getCategory: function (send) {
+    return axios.get(`${burl}/user/category`, {
       headers: headers, params: send
     });
   },

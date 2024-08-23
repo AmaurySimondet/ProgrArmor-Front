@@ -95,12 +95,6 @@ function App() {
                 <Route exact path='/aide/InstallApp/*' element={<InstallApp />} />
             </Route>
 
-
-
-            <Route path="/cgu/*" element={<PrivateRoute />}>
-                <Route exact path='/cgu/*' element={<Travaux />} />
-            </Route>
-
             <Route path="/session/*" element={<PrivateRoute />}>
                 <Route exact path='/session/*' element={<Session />} />
             </Route>

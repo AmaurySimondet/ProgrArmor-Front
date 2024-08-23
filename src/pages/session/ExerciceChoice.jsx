@@ -4,7 +4,7 @@ import Loader from '../../components/Loader';
 import API from '../../utils/API'; // Ensure the API module is correctly imported
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 
-const ExerciceChoice = ({ selectedType, onNext, onBack }) => {
+const ExerciceChoice = ({ selectedType, onNext, onBack, index }) => {
     const [exercices, setExercices] = useState([]);
     const [selectedTypeId, setSelectedTypeId] = useState(null);
     const [allExercices, setAllExercices] = useState([]);
@@ -15,9 +15,9 @@ const ExerciceChoice = ({ selectedType, onNext, onBack }) => {
 
     useEffect(() => {
         // First get exericeType id from name
-        API.getExericeTypeId({ name: selectedType }) // Replace with the actual method to fetch exercices
+        API.getExerciceType({ name: selectedType }) // Replace with the actual method to fetch exercices
             .then(response => {
-                setSelectedTypeId(response.data.exerciceTypeId);
+                setSelectedTypeId(response.data.exerciceTypeReturned._id);
             }
             )
             .catch(error => {
@@ -64,7 +64,7 @@ const ExerciceChoice = ({ selectedType, onNext, onBack }) => {
             >
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h2>
-            <h1>Choisir un exercice ({selectedType})</h1>
+            <h1>{index !== null ? "Modifier" : "Choisir"} un exercice ({selectedType})</h1>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                 {exercices.map((exercice, index) => (
                     <div

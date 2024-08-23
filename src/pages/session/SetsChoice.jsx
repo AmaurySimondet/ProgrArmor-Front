@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
-import { Tooltip } from 'react-tooltip'
+import { Tooltip } from 'react-tooltip';
 
-const SetsChoice = ({ onBack, onNext }) => {
-    const [sets, setSets] = useState([]);
+const SetsChoice = ({ onBack, onNext, editingSets }) => {
+    const [sets, setSets] = useState(editingSets);
     const [unit, setUnit] = useState('reps'); // Default to 'reps'
     const [value, setValue] = useState('');
-    const [weightLoad, setweightLoad] = useState(0);
-    const [elastic, setElastic] = useState({ use: 'resistance', tension: '' });
+    const [weightLoad, setWeightLoad] = useState(0);
+    const [elastic, setElastic] = useState({});
     const { width } = useWindowDimensions();
 
     const tooltipText = (
@@ -15,26 +15,46 @@ const SetsChoice = ({ onBack, onNext }) => {
     );
 
     const handleAddSet = () => {
-        if (value.trim()) {
-            const newSet = { unit, value, weightLoad, elastic };
-            setSets([...sets, newSet]);
-            // Reset fields after adding
-            setValue('');
-            setweightLoad(0);
-            setElastic({ use: 'resistance', tension: 0 });
-        }
+        const newSet = { unit, value, weightLoad, elastic };
+        setSets([...sets, newSet]);
     };
 
     const handleRemoveSet = (index) => {
         setSets(sets.filter((_, i) => i !== index));
     };
 
-    const handleChangeElasticuse = (e) => {
-        setElastic((prev) => ({ ...prev, use: e.target.value }));
+    const handleChangeElasticUse = (index, e) => {
+        const updatedSets = [...sets];
+        updatedSets[index].elastic.use = e.target.value;
+        setSets(updatedSets);
     };
 
-    const handleChangeElasticTension = (e) => {
-        setElastic((prev) => ({ ...prev, tension: parseFloat(e.target.value) }));
+    const handleChangeElasticTension = (index, e) => {
+        const updatedSets = [...sets];
+        updatedSets[index].elastic = { ...updatedSets[index].elastic, tension: parseFloat(e.target.value) };
+        // if elastic use is not set, set it to resistance
+        if (!updatedSets[index].elastic.use) {
+            updatedSets[index].elastic.use = 'resistance';
+        }
+        setSets(updatedSets);
+    };
+
+    const handleUnitChange = (index, e) => {
+        const updatedSets = [...sets];
+        updatedSets[index].unit = e.target.value;
+        setSets(updatedSets);
+    };
+
+    const handleValueChange = (index, e) => {
+        const updatedSets = [...sets];
+        updatedSets[index].value = parseFloat(e.target.value);
+        setSets(updatedSets);
+    };
+
+    const handleWeightLoadChange = (index, e) => {
+        const updatedSets = [...sets];
+        updatedSets[index].weightLoad = parseFloat(e.target.value);
+        setSets(updatedSets);
     };
 
     const handleNextExercice = () => {
@@ -68,7 +88,7 @@ const SetsChoice = ({ onBack, onNext }) => {
                         </select>
                     </label>
                     <label className='sessionChoice'>
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>📏</div>
+                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🔢</div>
                         Valeur
                         <input
                             className="form-control"
@@ -81,13 +101,13 @@ const SetsChoice = ({ onBack, onNext }) => {
                         />
                     </label>
                     <label className='sessionChoice'>
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>💪</div>
+                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>⚖️ </div>
                         Charge (kg)
                         <input
                             className="form-control"
                             type="number"
                             value={weightLoad}
-                            onChange={(e) => setweightLoad(parseFloat(e.target.value))}
+                            onChange={(e) => setWeightLoad(parseFloat(e.target.value))}
                             placeholder="Charge (kg)"
                             style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
                             inputMode='numeric'
@@ -103,7 +123,7 @@ const SetsChoice = ({ onBack, onNext }) => {
                             Elastic
                         </a>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center' }}>
-                            <select className="custom-select" value={elastic.use} onChange={handleChangeElasticuse} style={{ width: '100%', maxWidth: '200px' }}>
+                            <select className="custom-select" value={elastic.use} onChange={(e) => setElastic((prev) => ({ ...prev, use: e.target.value }))} style={{ width: '100%', maxWidth: '200px' }}>
                                 <option value="resistance">Résistance</option>
                                 <option value="assistance">Assistance</option>
                             </select>
@@ -111,7 +131,7 @@ const SetsChoice = ({ onBack, onNext }) => {
                                 className="form-control"
                                 type="number"
                                 value={elastic.tension}
-                                onChange={handleChangeElasticTension}
+                                onChange={(e) => setElastic((prev) => ({ ...prev, tension: parseFloat(e.target.value) }))}
                                 placeholder="Tension (kg)"
                                 style={{ width: '100%', maxWidth: '200px' }}
                                 inputMode='numeric'
@@ -127,7 +147,54 @@ const SetsChoice = ({ onBack, onNext }) => {
                 {sets.length > 0 ? (
                     sets.map((set, index) => (
                         <div key={index} style={{ marginBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%', maxWidth: '600px', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '5px' }}>
-                            <span>{`${set.value} ${set.unit} ${set.weightLoad ? `@ ${set.weightLoad} kg` : ''} ${set.elastic.tension ? `Elastic: ${set.elastic.use} ${set.elastic.tension} kg` : ''}`}</span>
+                            <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
+                                <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
+                                    <label >
+                                        <p>⏱️</p>
+                                        <select className="custom-select" value={set.unit} onChange={(e) => handleUnitChange(index, e)} style={{ maxWidth: '75px' }}>
+                                            <option value="repetitions">Répetitions</option>
+                                            <option value="seconds">Secondes</option>
+                                        </select>
+                                    </label>
+                                    <label >
+                                        <p>🔢</p>
+                                        <input
+                                            className="form-control"
+                                            type="number"
+                                            value={set.value}
+                                            onChange={(e) => handleValueChange(index, e)}
+                                            style={{ maxWidth: '75px' }}
+                                            inputMode='numeric'
+                                        />
+                                    </label>
+                                    <label >
+                                        <p>⚖️ </p>
+                                        <input
+                                            className="form-control"
+                                            type="number"
+                                            value={set.weightLoad}
+                                            onChange={(e) => handleWeightLoadChange(index, e)}
+                                            style={{ maxWidth: '75px' }}
+                                            inputMode='numeric'
+                                        />
+                                    </label>
+                                    <label >
+                                        <p>🪢</p>
+                                        <select className="custom-select" value={set.elastic?.use || ''} onChange={(e) => handleChangeElasticUse(index, e)} style={{ maxWidth: '75px' }}>
+                                            <option value="resistance">Résistance</option>
+                                            <option value="assistance">Assistance</option>
+                                        </select>
+                                        <input
+                                            className="form-control"
+                                            type="number"
+                                            value={set.elastic?.tension || ''}
+                                            onChange={(e) => handleChangeElasticTension(index, e)}
+                                            style={{ maxWidth: '75px' }}
+                                            inputMode='numeric'
+                                        />
+                                    </label>
+                                </div>
+                            </div>
                             <div style={{
                                 display: "flex",
                                 gap: "10px",

@@ -12,6 +12,8 @@ import SetsChoice from "./SetsChoice";
 import SessionSummary from "./SessionSummary";
 import SessionProgressBar from "./SessionProgressBar";
 import API from "../../utils/API";
+import { setsToSeance } from "../../utils/sets";
+import Loader from "../../components/Loader";
 
 const Session = () => {
   const [step, setStep] = useState(1);
@@ -28,40 +30,34 @@ const Session = () => {
   const [selectedCategoryType, setSelectedCategoryType] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedSets, setSelectedSets] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [editingExerciceIndex, setEditingExerciceIndex] = useState(null);
 
   useEffect(() => {
     if (!selectedSession) return;
 
-    if (selectedSession.value === 'last') {
-      // Fetch the last session from the API
-      API.getLastSeance({ userId: localStorage.getItem("id") })
-        .then(response => {
-          const lastSession = response.data.lastSeance; // Adjust if needed based on the API response structure
-          setSelectedName(lastSession.name);
+    setLoading(true);
 
-          // Fetch sets from the last session
-          API.getSeanceSets({ userId: localStorage.getItem("id"), seanceId: lastSession._id })
-            .then(response => {
-              const lastSessionSets = response.data.sets; // Adjust if needed
-            })
-            .catch(error => {
-              console.error('Error fetching last session or sets:', error);
-            });
-        })
-      setStep(3);
-    } else if (selectedSession.value !== 'new') {
+    if (selectedSession.value !== 'new') {
       // Fetch the selected session from the API
-      API.getSession({ userId: localStorage.getItem("id"), seanceName: selectedSession.value })
+      API.getSeanceSets({ userId: localStorage.getItem("id"), seanceId: selectedSession._id })
         .then(response => {
-          const session = response.data; // Adjust if needed based on the API response structure
-          setSelectedName(session.name);
-          setSelectedDate(session.date);
-          setSelectedExercices(session.exercices);
+          const selectedSessionSets = response.data.sets; // Adjust if needed
+          setsToSeance(selectedSessionSets, selectedSession.name, selectedSession.date).then(seance => {
+            setSelectedName(selectedSession.name);
+            setSelectedExercices(seance.exercices);
+            setStep(3);
+            setLoading(false);
+          }
+          );
         })
         .catch(error => {
-          console.error('Error fetching session:', error);
+          console.error('Error fetching selected session or sets:', error);
         });
+    }
+    else {
+      setStep(2);
+      setLoading(false);
     }
   }, [selectedSession]);
 
@@ -93,7 +89,8 @@ const Session = () => {
   const handleNextExerciceChoice = (exercice) => {
     let newExercice = {
       ...selectedExercice,
-      exercice: exercice
+      exercice: exercice,
+      categories: []
     };
     setSelectedExercice(newExercice);
     setStep(6);
@@ -149,13 +146,14 @@ const Session = () => {
 
   const handleOnDeleteExercice = (index) => {
     const updatedExercices = [...selectedExercices];
+    console.log('Deleting exercice at index:', index);
     updatedExercices.splice(index, 1);
     setSelectedExercices(updatedExercices);
     setEditingExerciceIndex(null);
   };
 
   const handleFinish = () => {
-    alert(`Séance terminée: ${JSON.stringify({
+    console.log(`Séance terminée: ${JSON.stringify({
       selectedSession,
       selectedName,
       selectedDate,
@@ -166,15 +164,15 @@ const Session = () => {
 
   const handleExerciceClick = (index) => {
     const exercice = selectedExercices[index];
-    setSelectedType("");
+    setSelectedType(selectedExercices[index].exerciceType);
     setSelectedExercice({
-      exercice: '',
-      categories: [],
-      sets: []
+      exercice: selectedExercices[index].exercice,
+      categories: selectedExercices[index].categories,
+      sets: selectedExercices[index].sets
     });
     setSelectedCategoryType('');
     setSelectedCategory('');
-    setSelectedSets([]);
+    setSelectedSets(selectedExercices[index].sets);
     setEditingExerciceIndex(index);
     setStep(4); // Set step to exercice choice
   };
@@ -202,6 +200,34 @@ const Session = () => {
       });
   };
 
+  useEffect(() => {
+    console.log("index", editingExerciceIndex);
+  }, [editingExerciceIndex]);
+
+
+  if (loading) {
+    return <div className="page-container">
+      <NavigBar location="session" />
+      <div className="content-wrap">
+        <Loader />
+      </div>
+      <Footer />
+    </div>
+  }
+
+  const handleNewExercice = () => {
+    setSelectedType('');
+    setSelectedExercice({
+      exercice: '',
+      categories: [],
+      sets: []
+    });
+    setSelectedCategoryType('');
+    setSelectedCategory('');
+    setSelectedSets([]);
+    setEditingExerciceIndex(null);
+    setStep(4);
+  }
 
   return (
     <div>
@@ -223,6 +249,7 @@ const Session = () => {
             onFinish={handleFinish}
             index={editingExerciceIndex}
             handleDateClick={() => setStep(3)}
+            onNewExercice={handleNewExercice}
           />
           {step === 1 && (
             <SeanceChoice onNext={handleNextSeanceChoice} />
@@ -234,22 +261,23 @@ const Session = () => {
             <SeanceDateChoice onNext={handleNextDateChoice} onBack={() => setStep(2)} />
           )}
           {step === 4 && (
-            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => setStep(3)} onDelete={(index) => handleOnDeleteExercice(index)} onSearch={(exerciceName) => handleSearch(exerciceName)} />
+            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => setStep(3)} onDelete={(index) => handleOnDeleteExercice(index)} onSearch={(exerciceName) => handleSearch(exerciceName)} index={editingExerciceIndex} onGoToSeries={() => setStep(8)} />
           )}
           {step === 5 && (
-            <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => setStep(4)} />
+            <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => setStep(4)} index={editingExerciceIndex} />
           )}
           {step === 6 && (
-            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => setStep(5)} />
+            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => setStep(5)} index={editingExerciceIndex} />
           )}
           {step === 7 && (
-            <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onBack={() => setStep(6)} />
+            <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onBack={() => setStep(6)} index={editingExerciceIndex} />
           )}
           {step === 8 && (
             <SetsChoice
               onAddSet={handleAddSet}
               onBack={() => setStep(7)}
               onNext={handleNextExercice}
+              editingSets={selectedExercices ? selectedExercices[editingExerciceIndex] ? selectedExercices[editingExerciceIndex].sets : [] : []}
             />
           )}
         </div>

@@ -35,8 +35,11 @@ const getProgressPercentage = (selectedName, selectedDate, selectedExercices, se
     if (selectedExercices.length === 3) {
         progress += 60;
     }
+    if (selectedExercices.length >= 4) {
+        progress += 80;
+    }
     if (progress >= 100) {
-        progress = 99;
+        progress = 90;
     }
     return progress;
 };

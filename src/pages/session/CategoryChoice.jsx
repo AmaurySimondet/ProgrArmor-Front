@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import Loader from '../../components/Loader';
 
-const CategoryChoice = ({ selectedType, onNext, onSkip, onBack }) => {
+const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index }) => {
 
     // Check if selectedType is not a string
     if (typeof selectedType !== 'string') {
@@ -43,7 +43,7 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack }) => {
                     <span onClick={onSkip} style={{ cursor: 'pointer' }} className="clickable"> Passer &gt; </span>
                 </h2>
             </div>
-            <h1>Choisir une catégorie ({selectedType})</h1>
+            <h1>{index !== null ? "Modifier" : "Choisir"} une catégorie ({selectedType})</h1>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                 {categories.map((category, index) => (
                     <div

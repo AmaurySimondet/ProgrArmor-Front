@@ -4,7 +4,7 @@ import Loader from '../../components/Loader';
 import API from '../../utils/API';
 import Fuse from 'fuse.js';
 
-const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch }) => {
+const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index }) => {
     const [categoryTypes, setCategoryTypes] = useState([]);
     const [allCategoryTypes, setAllCategoryTypes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -80,7 +80,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch }) => {
                     <span onClick={onSkip} style={{ cursor: 'pointer' }} className="clickable"> Passer &gt; </span>
                 </h2>
             </div>
-            <h1>Choisir le type de catégorie</h1>
+            <h1>{index !== null ? "Modifier" : "Choisir"} le type de catégorie</h1>
 
             {/* Search Bar */}
             <input

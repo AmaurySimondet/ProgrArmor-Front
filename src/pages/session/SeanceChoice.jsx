@@ -17,16 +17,18 @@ const SessionChoice = ({ onNext }) => {
             .then(response => {
                 const seanceNames = response.data.seanceNames;
 
-                const initialSessions = [{ id: '1', name: 'Partir de zéro', icon: '✍️', value: "new" }];
+                const initialSessions = [{ id: '1', title: 'Partir de zéro', icon: '✍️', value: "new" }];
 
                 // Only add 'Dernière séance en date' if there are user sessions
                 if (seanceNames.length > 0) {
                     initialSessions.push({
                         id: '2',
-                        name: 'Dernière séance en date',
+                        title: 'Dernière séance en date',
+                        name: seanceNames[0].name,
                         icon: '📅',
                         value: "last",
-                        date: seanceNames[0].name + " le " + stringToDate(seanceNames[0].date),
+                        subtitle: seanceNames[0].name + " le " + stringToDate(seanceNames[0].date),
+                        date: stringToDate(seanceNames[0].date),
                         _id: seanceNames[0]._id
                     })
                 }
@@ -48,9 +50,11 @@ const SessionChoice = ({ onNext }) => {
                     })
                     .map((seance, index) => ({
                         id: (index + 3).toString(), // Starting from id 3
-                        name: `Dernière séance ${seance.name}`,
+                        title: `Dernière séance ${seance.name}`,
+                        name: seance.name,
                         icon: '🏋️',
                         value: seance.name,
+                        subtitle: stringToDate(seance.date),
                         date: stringToDate(seance.date),
                         _id: seance._id,
                     }));
@@ -90,8 +94,8 @@ const SessionChoice = ({ onNext }) => {
                         className='sessionChoice'
                     >
                         <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>{session.icon}</div>
-                        <div>{session.name}</div>
-                        <div style={{ fontSize: '0.66rem' }}>{session.date}</div>
+                        <div>{session.title}</div>
+                        <div style={{ fontSize: '0.66rem' }}>{session.subtitle}</div>
                     </div>
                 ))}
                 {showMore && allSessions.length > 1 && (

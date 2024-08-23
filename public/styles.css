@@ -1,5 +1,9 @@
 /* TAGS */
 
+.prograrmor-red {
+    color: #9b0000;
+}
+
 .clickable {
     cursor: pointer;
     transition: 0.5s;
@@ -531,8 +535,8 @@ table.profile-table {
 
 @media (max-width: 500px) {
     .sessionChoice {
-        width: 150px;
-        height: 150px;
+        width: 175px;
+        height: 175px;
     }
 }
 
@@ -1179,11 +1183,6 @@ table.Stats-table {
 
 .nav-link {
     font-size: 20px;
-
-}
-
-.text-navbar {
-    margin-right: 80px;
 
 }
 
