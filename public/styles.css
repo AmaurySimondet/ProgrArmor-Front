@@ -1,5 +1,4 @@
 /* TAGS */
-
 .prograrmor-red {
     color: #9b0000;
 }
@@ -491,6 +490,16 @@ table.profile-table {
 
 .progress:hover {
     transform: scale(1.1);
+}
+
+.inputClickable {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #ccc;
+}
+
+.inputClickable:hover {
+    background-color: #f9f9f9;
 }
 
 .sessionChoiceBig {
@@ -1441,7 +1450,7 @@ table.hometable td.inscription-img-td {
 
 
 .icon-navbar {
-    width: 25px;
+    width: 30px;
     margin-right: 10px;
 }
 

@@ -26,7 +26,7 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
     };
 
     return (
-        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <h2
                 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
             >

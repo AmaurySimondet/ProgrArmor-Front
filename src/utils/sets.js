@@ -1,5 +1,26 @@
 import API from './API';
 
+const countSets = (sets) => {
+    const setCount = {};
+    sets.forEach(set => {
+        const setKey = JSON.stringify(set);
+        setCount[setKey] = (setCount[setKey] || 0) + 1;
+    });
+    return setCount;
+};
+
+const renderSets = (sets) => {
+    const setCount = countSets(sets);
+    return Object.keys(setCount).map((setKey, idx) => {
+        const set = JSON.parse(setKey);
+        return (
+            <li key={idx} style={{ marginBottom: '5px' }} className='popInElement'>
+                {`${setCount[setKey]} x ${set.value} ${set.unit} ${set.weightLoad ? `@ ${set.weightLoad} kg` : ''} ${set.elastic && set.elastic.tension ? `Elastic: ${set.elastic.use} ${set.elastic.tension} kg` : ''}`}
+            </li>
+        );
+    });
+};
+
 // Convert IDs to names using async functions
 const getCategoryNameById = async (categoryId) => {
     try {
@@ -45,9 +66,16 @@ const getExerciseTypeNameById = async (exerciseTypeId) => {
     }
 };
 
+// Helper function to get a unique key for exercise-category combinations
+const getExerciseCategoryKey = (exerciseId, categories) => {
+    // Convert categories to a string sorted by category ID to ensure uniqueness
+    const categoryIds = categories.map(cat => cat.category).sort().join('-');
+    return `${exerciseId}-${categoryIds}`;
+};
+
 // Transform session sets into a seance
 const setsToSeance = async (sessionSets, name, date) => {
-    // Group sets by exercise
+    // Group sets by exercise and category combination
     const exercisesMap = {};
 
     for (const set of sessionSets) {
@@ -55,11 +83,16 @@ const setsToSeance = async (sessionSets, name, date) => {
         const categories = set.categories;
 
         // Convert categories IDs to category names asynchronously
-        const categoriesNames = await Promise.all(categories.map(async (categoryObject) => (getCategoryNameById(categoryObject.category))));
+        const categoriesNames = await Promise.all(
+            categories.map(async (categoryObject) => getCategoryNameById(categoryObject.category))
+        );
+
+        // Get a unique key for the exercise and category combination
+        const exerciseCategoryKey = getExerciseCategoryKey(exerciseId, categories);
 
         // Initialize the exercise object if it doesn't exist
-        if (!exercisesMap[exerciseId]) {
-            exercisesMap[exerciseId] = {
+        if (!exercisesMap[exerciseCategoryKey]) {
+            exercisesMap[exerciseCategoryKey] = {
                 exercice: await getExerciseNameById(exerciseId),
                 exerciseType: await getExerciseTypeNameById(set.exerciceType),
                 categories: categoriesNames,
@@ -67,8 +100,8 @@ const setsToSeance = async (sessionSets, name, date) => {
             };
         }
 
-        // Add the set to the exercise's sets list
-        exercisesMap[exerciseId].sets.push({
+        // Add the set to the exercise's sets list for the corresponding category combination
+        exercisesMap[exerciseCategoryKey].sets.push({
             unit: set.unit,
             value: set.value,
             weightLoad: set.weightLoad,
@@ -89,4 +122,5 @@ const setsToSeance = async (sessionSets, name, date) => {
     return seance;
 };
 
-export { setsToSeance };
+
+export { setsToSeance, renderSets };

@@ -1,36 +1,86 @@
 import React, { useState, useEffect } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import Loader from '../../components/Loader';
+import API from '../../utils/API';
+import RenderExercice from './RenderExercice';
+import { randomBodybuildingEmojis } from '../../utils/emojis';
+import Fuse from 'fuse.js';
 
-const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index }) => {
-
-    // Check if selectedType is not a string
-    if (typeof selectedType !== 'string') {
-        return <div>Error: selectedType is not a string.</div>;
-    }
-
+const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice }) => {
     const [categories, setCategories] = useState([]);
+    const [selectedTypeId, setSelectedTypeId] = useState(null);
+    const [allCategories, setAllCategories] = useState([]);
+    const [emojis, setEmojis] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [moreCategoriesUnclicked, setMoreCategoriesUnclicked] = useState(true);
+    const [searchQuery, setSearchQuery] = useState('');
     const { width } = useWindowDimensions();
 
     useEffect(() => {
-        // Simulate fetching categories from an API based on the selected type
-        setTimeout(() => {
-            setCategories(['Catégorie A', 'Catégorie B', 'Catégorie C']);
-            setLoading(false);
-        }, 1000);
+        // First get exericeType id from name
+        API.getCategorieType({ name: selectedType }) // Replace with the actual method to fetch categories
+            .then(response => {
+                console.log("response", response);
+                setSelectedTypeId(response.data.categorieTypeReturned._id);
+            }
+            )
+            .catch(error => {
+                console.error("Error fetching categories:", error);
+                setLoading(false);
+            }
+            );
     }, [selectedType]);
 
+
+    useEffect(() => {
+        // Only fetch categories if selectedTypeId is valid (not null)
+        if (selectedTypeId) {
+            setLoading(true); // Set loading to true before fetching categories
+            API.getCategories({ categorieType: selectedTypeId }) // Replace with the actual method to fetch categories
+                .then(response => {
+                    let fetchedCategories = response.data.categories || [];
+                    console.log("id", selectedTypeId, "categories", fetchedCategories);
+
+                    // Process the categories and set the state
+                    fetchedCategories = fetchedCategories.map(categorie => categorie.name.fr);
+                    setAllCategories(fetchedCategories);
+                    setCategories(fetchedCategories.slice(0, 3)); // Show only the first 3 categories initially
+                    setLoading(false); // Set loading to false after fetching
+                })
+                .catch(error => {
+                    console.error("Error fetching categories:", error);
+                    setLoading(false); // Set loading to false if there is an error
+                });
+        }
+    }, [selectedTypeId]); // Runs only when selectedTypeId changes
+
+    useEffect(() => {
+        setEmojis(randomBodybuildingEmojis(allCategories.length));
+    }, [allCategories]);
+
     const handleMoreCategories = () => {
-        setCategories([...categories, 'Catégorie D', 'Catégorie E', 'Catégorie F']);
+        setCategories(allCategories); // Show all categories
+        setMoreCategoriesUnclicked(false); // Hide the "More Categories" button
     };
 
     if (loading) {
         return <Loader />;
     }
 
+    const handleSearch = (event) => {
+        setSearchQuery(event.target.value);
+        if (event.target.value === '') {
+            setCategories(allCategories.slice(0, 3));
+            setMoreCategoriesUnclicked(true);
+            return;
+        }
+        const fuse = new Fuse(allCategories, { keys: ['name'] });
+        const results = fuse.search(event.target.value);
+        setCategories(results.map(result => result.item));
+    };
+
     return (
-        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <h2
                     style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
@@ -43,7 +93,27 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index }) => {
                     <span onClick={onSkip} style={{ cursor: 'pointer' }} className="clickable"> Passer &gt; </span>
                 </h2>
             </div>
+
             <h1>{index !== null ? "Modifier" : "Choisir"} une catégorie ({selectedType})</h1>
+
+            <RenderExercice exercice={exercice} />
+
+            {/* Search Bar */}
+            <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearch}
+                placeholder="Ou rechercher une catégorie..."
+                style={{
+                    padding: '10px',
+                    fontSize: '1rem',
+                    margin: '20px 0',
+                    width: '80%',
+                    maxWidth: '400px',
+                    borderRadius: '5px',
+                }}
+            />
+
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                 {categories.map((category, index) => (
                     <div
@@ -51,16 +121,18 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index }) => {
                         onClick={() => onNext(category)}
                         className='sessionChoice'
                     >
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🏷️</div>
+                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
                         <div>{category}</div>
                     </div>
                 ))}
-                <div
-                    onClick={handleMoreCategories}
-                    className='sessionChoicePlus'
-                >
-                    <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
-                </div>
+                {moreCategoriesUnclicked && allCategories.length > 3 && (
+                    <div
+                        onClick={handleMoreCategories}
+                        className='sessionChoicePlus'
+                    >
+                        <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
+                    </div>
+                )}
             </div>
         </div>
     );

@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import { Tooltip } from 'react-tooltip';
+import RenderExercice from './RenderExercice';
 
-const SetsChoice = ({ onBack, onNext, editingSets }) => {
+const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
     const [sets, setSets] = useState(editingSets);
     const [unit, setUnit] = useState('reps'); // Default to 'reps'
     const [value, setValue] = useState('');
@@ -67,82 +68,94 @@ const SetsChoice = ({ onBack, onNext, editingSets }) => {
 
     const handleCopySet = (index) => {
         const set = sets[index];
-        setSets([...sets, set]);
+        // Create a deep copy of the set to avoid shared reference issues
+        const copiedSet = JSON.parse(JSON.stringify(set));
+        setSets([...sets, copiedSet]);
     };
 
+
     return (
-        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <Tooltip id="my-tooltip" />
             <h2 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h2>
-            <h1 style={{ marginTop: '0' }}>Ajouter des séries</h1>
-            <div>
-                <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-                    <label className='sessionChoice'>
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>⏱️</div>
-                        Unité
-                        <select className="custom-select" value={unit} onChange={(e) => setUnit(e.target.value)} style={{ maxWidth: '200px', marginTop: '5px' }}>
-                            <option value="repetitions">Répetitions</option>
-                            <option value="seconds">Secondes</option>
-                        </select>
-                    </label>
-                    <label className='sessionChoice'>
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🔢</div>
-                        Valeur
-                        <input
-                            className="form-control"
-                            type="number"
-                            value={value}
-                            onChange={(e) => setValue(parseFloat(e.target.value))}
-                            placeholder="Nb Reps / Secs"
-                            style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
-                            inputMode='numeric'
-                        />
-                    </label>
-                    <label className='sessionChoice'>
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>⚖️ </div>
-                        Charge (kg)
-                        <input
-                            className="form-control"
-                            type="number"
-                            value={weightLoad}
-                            onChange={(e) => setWeightLoad(parseFloat(e.target.value))}
-                            placeholder="Charge (kg)"
-                            style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
-                            inputMode='numeric'
-                        />
-                    </label>
-                    <label className='sessionChoice' style={{ backgroundColor: '#CCCCCC' }}>
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🪢</div>
-                        <a
-                            data-tooltip-id="my-tooltip"
-                            data-tooltip-html={tooltipText}
-                            data-tooltip-place="top"
-                        >
-                            Elastic
-                        </a>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center' }}>
-                            <select className="custom-select" value={elastic.use} onChange={(e) => setElastic((prev) => ({ ...prev, use: e.target.value }))} style={{ width: '100%', maxWidth: '200px' }}>
-                                <option value="resistance">Résistance</option>
-                                <option value="assistance">Assistance</option>
+            <h1 style={{ marginTop: '0' }}>
+                {index !== null ? "Modifier" : "Ajouter"} les séries
+            </h1>
+
+            <RenderExercice exercice={exercice} />
+
+            {sets.length === 0 && (
+                <div>
+                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+                        <label className='sessionChoice'>
+                            <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>⏱️</div>
+                            Unité
+                            <select className="custom-select" value={unit} onChange={(e) => setUnit(e.target.value)} style={{ maxWidth: '200px', marginTop: '5px' }}>
+                                <option value="repetitions">Répetitions</option>
+                                <option value="seconds">Secondes</option>
                             </select>
+                        </label>
+                        <label className='sessionChoice'>
+                            <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🔢</div>
+                            Valeur
                             <input
                                 className="form-control"
                                 type="number"
-                                value={elastic.tension}
-                                onChange={(e) => setElastic((prev) => ({ ...prev, tension: parseFloat(e.target.value) }))}
-                                placeholder="Tension (kg)"
-                                style={{ width: '100%', maxWidth: '200px' }}
+                                value={value}
+                                onChange={(e) => setValue(parseFloat(e.target.value))}
+                                placeholder="Nb Reps / Secs"
+                                style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
                                 inputMode='numeric'
                             />
-                        </div>
-                    </label>
+                        </label>
+                        <label className='sessionChoice'>
+                            <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>⚖️ </div>
+                            Charge (kg)
+                            <input
+                                className="form-control"
+                                type="number"
+                                value={weightLoad}
+                                onChange={(e) => setWeightLoad(parseFloat(e.target.value))}
+                                placeholder="Charge (kg)"
+                                style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
+                                inputMode='numeric'
+                            />
+                        </label>
+                        <label className='sessionChoice' style={{ backgroundColor: '#CCCCCC' }}>
+                            <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🪢</div>
+                            <a
+                                data-tooltip-id="my-tooltip"
+                                data-tooltip-html={tooltipText}
+                                data-tooltip-place="top"
+                            >
+                                Elastique
+                            </a>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center' }}>
+                                <select className="custom-select" value={elastic.use} onChange={(e) => setElastic((prev) => ({ ...prev, use: e.target.value }))} style={{ width: '100%', maxWidth: '200px' }}>
+                                    <option value="resistance">Résistance</option>
+                                    <option value="assistance">Assistance</option>
+                                </select>
+                                <input
+                                    className="form-control"
+                                    type="number"
+                                    value={elastic.tension}
+                                    onChange={(e) => setElastic((prev) => ({ ...prev, tension: parseFloat(e.target.value) }))}
+                                    placeholder="Tension (kg)"
+                                    style={{ width: '100%', maxWidth: '200px' }}
+                                    inputMode='numeric'
+                                />
+                            </div>
+                        </label>
+                    </div>
+                    <button onClick={handleAddSet} className='btn btn-dark mt-2' style={{ marginBottom: '20px' }}>
+                        Ajouter série
+                    </button>
                 </div>
-                <button onClick={handleAddSet} className='btn btn-dark mt-2' style={{ marginBottom: '20px' }}>
-                    Ajouter série
-                </button>
-            </div>
+            )}
+
+
             <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
                 {sets.length > 0 ? (
                     sets.map((set, index) => (
@@ -217,6 +230,8 @@ const SetsChoice = ({ onBack, onNext, editingSets }) => {
                     <p>Aucune série ajoutée</p>
                 )}
             </div>
+
+
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <button onClick={handleNextExercice} className='btn btn-dark'>
                     Valider

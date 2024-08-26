@@ -23,7 +23,7 @@ const SessionChoice = ({ onNext }) => {
                 if (seanceNames.length > 0) {
                     initialSessions.push({
                         id: '2',
-                        title: 'Dernière séance en date',
+                        title: 'Dernière séance',
                         name: seanceNames[0].name,
                         icon: '📅',
                         value: "last",
@@ -59,7 +59,13 @@ const SessionChoice = ({ onNext }) => {
                         _id: seance._id,
                     }));
 
-                const combinedSessions = [...initialSessions, ...seanceSessions];
+                let combinedSessions = [...initialSessions, ...seanceSessions];
+                // filter out same seance.name
+                combinedSessions = combinedSessions.filter((session, index, self) =>
+                    index === self.findIndex((t) => (
+                        t.name === session.name
+                    ))
+                );
                 setAllSessions(combinedSessions);
                 setSessions(combinedSessions.slice(0, 3)); // Show only first 3 sessions initially
                 setLoading(false);
@@ -84,7 +90,7 @@ const SessionChoice = ({ onNext }) => {
     };
 
     return (
-        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <h1>Choisir un modèle</h1>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                 {sessions.map((session) => (

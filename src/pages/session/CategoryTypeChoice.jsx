@@ -3,8 +3,10 @@ import { useWindowDimensions } from '../../utils/useEffect';
 import Loader from '../../components/Loader';
 import API from '../../utils/API';
 import Fuse from 'fuse.js';
+import { randomBodybuildingEmojis } from '../../utils/emojis';
+import RenderExercice from './RenderExercice';
 
-const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index }) => {
+const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice }) => {
     const [categoryTypes, setCategoryTypes] = useState([]);
     const [allCategoryTypes, setAllCategoryTypes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -12,6 +14,8 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index }) => {
     const [searchQuery, setSearchQuery] = useState('');
     const [allCategories, setAllCategories] = useState([]);
     const { width } = useWindowDimensions();
+    const [emojis, setEmojis] = useState([]);
+    const [clickedCategory, setClickedCategory] = useState(null); // State to track the clicked category
 
     useEffect(() => {
         // Fetch category types from the API
@@ -62,12 +66,25 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index }) => {
     const fuse = new Fuse(allCategories, options);
     const filteredCategories = fuse.search(searchQuery).map(result => result.item);
 
+    useEffect(() => {
+        setEmojis(randomBodybuildingEmojis(allCategories.length));
+    }, [allCategories]);
+
+    // Handle category click with animation
+    const handleCategoryClick = (categorie) => {
+        setClickedCategory(categorie);
+        onSearch(categorie);
+
+        // Reset the clicked state after a short delay to reset the animation
+        setTimeout(() => setClickedCategory(null), 500);
+    };
+
     if (loading) {
         return <Loader />;
     }
 
     return (
-        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <h2
                     style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
@@ -80,7 +97,9 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index }) => {
                     <span onClick={onSkip} style={{ cursor: 'pointer' }} className="clickable"> Passer &gt; </span>
                 </h2>
             </div>
-            <h1>{index !== null ? "Modifier" : "Choisir"} le type de catégorie</h1>
+            <h1>{index !== null ? "Modifier" : "Ajouter"} un type de catégorie</h1>
+
+            <RenderExercice exercice={exercice} />
 
             {/* Search Bar */}
             <input
@@ -105,10 +124,15 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index }) => {
                         filteredCategories.map((categorie, index) => (
                             <div
                                 key={index}
-                                onClick={() => onSearch(categorie)} // Corrected to access the name property
-                                style={{ padding: '10px', cursor: 'pointer', borderBottom: '1px solid #ccc' }}
+                                onClick={() => handleCategoryClick(categorie)} // Use handleCategoryClick for animation
+                                className={`inputClickable ${clickedCategory === categorie ? 'clicked' : ''}`} // Add 'clicked' class when clicked
+                                style={{
+                                    padding: '10px',
+                                    backgroundColor: clickedCategory === categorie ? '#dff0d8' : '#fff', // Highlight background on click
+                                    transition: 'background-color 0.5s', // Smooth background color change
+                                }}
                             >
-                                {categorie} {/* Corrected to access the name property */}
+                                {categorie}
                             </div>
                         ))
                     ) : (
@@ -125,7 +149,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index }) => {
                         onClick={() => onNext(type.name)}
                         className='sessionChoice'
                     >
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🏷️</div>
+                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
                         <div>{type.name}</div>
                         <div style={{ fontSize: '0.66rem' }}>{type.examples.join(', ')}</div>
                     </div>

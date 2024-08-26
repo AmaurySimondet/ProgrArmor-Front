@@ -56,6 +56,8 @@ const Session = () => {
         });
     }
     else {
+      setSelectedName('');
+      setSelectedExercices([]);
       setStep(2);
       setLoading(false);
     }
@@ -88,9 +90,9 @@ const Session = () => {
 
   const handleNextExerciceChoice = (exercice) => {
     let newExercice = {
-      ...selectedExercice,
       exercice: exercice,
-      categories: []
+      categories: [],
+      sets: []
     };
     setSelectedExercice(newExercice);
     setStep(6);
@@ -164,21 +166,33 @@ const Session = () => {
 
   const handleExerciceClick = (index) => {
     const exercice = selectedExercices[index];
-    setSelectedType(selectedExercices[index].exerciceType);
-    setSelectedExercice({
-      exercice: selectedExercices[index].exercice,
-      categories: selectedExercices[index].categories,
-      sets: selectedExercices[index].sets
-    });
+    if (!exercice) {
+      setSelectedType('');
+      setSelectedExercice({
+        exercice: '',
+        categories: [],
+        sets: []
+      });
+      setSelectedSets([]);
+      setEditingExerciceIndex(null);
+    }
+    else {
+      setSelectedType(exercice.exerciceType);
+      setSelectedExercice({
+        exercice: exercice.exercice,
+        categories: exercice.categories,
+        sets: exercice.sets
+      });
+      setSelectedSets(exercice.sets);
+      setEditingExerciceIndex(index);
+    }
     setSelectedCategoryType('');
     setSelectedCategory('');
-    setSelectedSets(selectedExercices[index].sets);
-    setEditingExerciceIndex(index);
     setStep(4); // Set step to exercice choice
   };
 
 
-  const handleSearch = (exerciceName) => {
+  const handleSearchExercice = (exerciceName) => {
     API.getExercice({ name: exerciceName })
       .then((response) => {
         const exerciceTypeId = response.data.exerciceReturned.type;
@@ -200,9 +214,35 @@ const Session = () => {
       });
   };
 
+  const handleSearchCategory = (categoryName) => {
+    API.getCategory({ name: categoryName })
+      .then((response) => {
+        const categoryTypeId = response.data.categoryReturned.type;
+        return API.getCategorieType({ id: categoryTypeId });
+      })
+      .then((response) => {
+        const categoryTypeName = response.data.categorieTypeReturned.name.fr;
+        setSelectedCategoryType(categoryTypeName);
+
+        const newExercice = {
+          ...selectedExercice,
+          categories: [...selectedExercice.categories, categoryName]
+        };
+        setSelectedExercice(newExercice);
+        setStep(6);
+      })
+      .catch((error) => {
+        console.error('Error during category search:', error);
+      });
+  }
+
   useEffect(() => {
     console.log("index", editingExerciceIndex);
   }, [editingExerciceIndex]);
+
+  useEffect(() => {
+    console.log("selectedExercices", selectedExercices);
+  }, [selectedExercices]);
 
 
   if (loading) {
@@ -229,6 +269,14 @@ const Session = () => {
     setStep(4);
   }
 
+  const handleGoToCategories = () => {
+    setSelectedExercice({
+      ...selectedExercice,
+      categories: []
+    })
+    setStep(6);
+  }
+
   return (
     <div>
       <div className="page-container">
@@ -249,6 +297,7 @@ const Session = () => {
             onFinish={handleFinish}
             index={editingExerciceIndex}
             handleDateClick={() => setStep(3)}
+            handleNameClick={() => setStep(2)}
             onNewExercice={handleNewExercice}
           />
           {step === 1 && (
@@ -261,16 +310,16 @@ const Session = () => {
             <SeanceDateChoice onNext={handleNextDateChoice} onBack={() => setStep(2)} />
           )}
           {step === 4 && (
-            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => setStep(3)} onDelete={(index) => handleOnDeleteExercice(index)} onSearch={(exerciceName) => handleSearch(exerciceName)} index={editingExerciceIndex} onGoToSeries={() => setStep(8)} />
+            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => setStep(3)} onDelete={(index) => handleOnDeleteExercice(index)} onSearch={(exerciceName) => handleSearchExercice(exerciceName)} index={editingExerciceIndex} onGoToSeries={() => setStep(8)} exercice={selectedExercice} onGoToCategories={handleGoToCategories} />
           )}
           {step === 5 && (
-            <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => setStep(4)} index={editingExerciceIndex} />
+            <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => setStep(4)} index={editingExerciceIndex} exercice={selectedExercice} />
           )}
           {step === 6 && (
-            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => setStep(5)} index={editingExerciceIndex} />
+            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => setStep(5)} index={editingExerciceIndex} onSearch={(categoryName) => handleSearchCategory(categoryName)} exercice={selectedExercice} />
           )}
           {step === 7 && (
-            <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onBack={() => setStep(6)} index={editingExerciceIndex} />
+            <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onBack={() => setStep(6)} index={editingExerciceIndex} exercice={selectedExercice} />
           )}
           {step === 8 && (
             <SetsChoice
@@ -278,6 +327,7 @@ const Session = () => {
               onBack={() => setStep(7)}
               onNext={handleNextExercice}
               editingSets={selectedExercices ? selectedExercices[editingExerciceIndex] ? selectedExercices[editingExerciceIndex].sets : [] : []}
+              exercice={selectedExercice}
             />
           )}
         </div>

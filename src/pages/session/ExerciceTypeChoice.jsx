@@ -4,8 +4,9 @@ import API from '../../utils/API';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import { useWindowDimensions } from '../../utils/useEffect';
 import Fuse from 'fuse.js';
+import RenderExercice from './RenderExercice';
 
-const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToSeries }) => {
+const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToSeries, onGoToCategories, exercice }) => {
     const [exerciceTypes, setExerciceTypes] = useState([]);
     const [allExerciceTypes, setAllExerciceTypes] = useState([]);
     const [allExercices, setAllExercices] = useState([]);
@@ -73,13 +74,34 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
     }
 
     return (
-        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }}>
+        <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <h2
                 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
             >
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h2>
+
             <h1>{index !== null ? "Modifier" : "Choisir"} le type d'exercice</h1>
+
+            <RenderExercice exercice={exercice} />
+
+            {index !== null &&
+                <div style={{
+                    "display": "flex",
+                    "flexDirection": "row",
+                    "justifyContent": "center",
+                }}>
+                    <button onClick={() => onGoToSeries()} className='btn btn-white m-2'>
+                        Modifier les séries
+                    </button>
+                    <button onClick={() => onGoToCategories()} className='btn btn-white m-2'>
+                        Modifier les catégories
+                    </button>
+                    <button onClick={handleDelete} className='btn btn-black m-2'>
+                        Supprimer l'exercice
+                    </button>
+                </div>
+            }
 
             {/* Search Bar */}
             <input
@@ -105,7 +127,7 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
                             <div
                                 key={index}
                                 onClick={() => onSearch(exercice)}
-                                style={{ padding: '10px', cursor: 'pointer', borderBottom: '1px solid #ccc' }}
+                                className="inputClickable"
                             >
                                 {exercice}
                             </div>
@@ -137,21 +159,6 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
                     </div>
                 )}
             </div>
-            {index !== null &&
-                <div style={{
-                    "display": "flex",
-                    "flexDirection": "row",
-                    "justifyContent": "center",
-                    "gap": "10px"
-                }}>
-                    <button onClick={() => onGoToSeries()} className='btn btn-white mt-5'>
-                        Modifier seulement les séries
-                    </button>
-                    <button onClick={handleDelete} className='btn btn-black mt-5'>
-                        Supprimer l'exercice
-                    </button>
-                </div>
-            }
         </div >
     );
 };
