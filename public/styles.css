@@ -1,3 +1,111 @@
+/* SETS */
+.set-item {
+    padding: 10px;
+    margin: 5px 0;
+    background-color: #f8f8f8;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 70vw;
+    text-align: -webkit-center;
+}
+
+.set-item.personal-record {
+    background-color: #e0ffe0;
+    border: 2px solid #00c853;
+    animation: pulse 1s infinite alternate;
+    font-weight: bold;
+}
+
+.pr-badge {
+    margin-left: 10px;
+    color: #00c853;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+/* Pulse animation for PR sets */
+@keyframes pulse {
+    0% {
+        transform: scale(0.98);
+    }
+
+    100% {
+        transform: scale(1.02);
+    }
+}
+
+
+
+
+/* ALERTS */
+.alert {
+    padding: 16px;
+    margin: 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+}
+
+.alert-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    margin-left: 16px;
+}
+
+.elementToFadeInAndOut {
+    opacity: 1;
+    animation: pop 3s linear;
+}
+
+
+@keyframes pop {
+
+    0%,
+    100% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+
+    25% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    75% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+
 /* TAGS */
 .prograrmor-red {
     color: #9b0000;
@@ -1464,7 +1572,7 @@ table.hometable td.inscription-img-td {
 }
 
 .toggler-icon:hover {
-    filter: invert(0.6);
+    filter: invert(0.4);
 
 }
 

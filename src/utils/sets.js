@@ -1,4 +1,6 @@
 import API from './API';
+import React, { useState, useEffect } from 'react';
+import { isPersonalRecord } from './pr';
 
 const countSets = (sets) => {
     const setCount = {};
@@ -20,6 +22,20 @@ const renderSets = (sets) => {
         );
     });
 };
+
+const renderSetsWithPR = (sets) => {
+    return sets.map((set, idx) => (
+        <li key={idx} className={`set-item ${set.isPR ? 'personal-record' : ''}`}>
+            <span>{set.value} {set.unit} @ {set.weightLoad} kg {set.elastic && set.elastic.tension ? `Elastique: ${set.elastic.use} ${set.elastic.tension} kg` : ''}</span>
+            {set.isPR && (
+                <span className="pr-badge">
+                    🎉 PR! 🎉
+                </span>
+            )}
+        </li>
+    ));
+};
+
 
 // Convert IDs to names using async functions
 const getCategoryNameById = async (categoryId) => {
@@ -123,4 +139,4 @@ const setsToSeance = async (sessionSets, name, date) => {
 };
 
 
-export { setsToSeance, renderSets };
+export { setsToSeance, renderSets, renderSetsWithPR };

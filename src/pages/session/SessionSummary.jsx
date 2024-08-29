@@ -1,34 +1,39 @@
-import React, { useState } from 'react';
-import { renderSets } from '../../utils/sets';
-
-const renderExercice = (exercice, idx, handleExerciceClick, index) => {
-    return (
-        <div
-            key={idx}
-            onClick={() => handleExerciceClick(index !== null && idx > index ? idx - 1 : idx)}
-            className={"sessionSummaryExercice"}
-        >
-            <h3 className={idx === index ? 'clickable' : "clickable prograrmor-red"}>
-                {idx === index && "---> "}{index !== null && idx === index + 1 && "<--- "}{exercice.exercice && exercice.exercice}{exercice.categories.length > 0 && " - " + exercice.categories.join(', ')}
-            </h3>
-            {exercice.sets && exercice.sets.length > 0 && (
-                <ul style={{ listStyleType: 'none', padding: 0 }}>
-                    {renderSets(exercice.sets)}
-                </ul>
-            )}
-        </div>
-    );
-};
+import React, { useEffect, useState } from 'react';
+import { isPersonalRecord } from '../../utils/pr';
+import { renderSetsWithPR } from '../../utils/sets';
 
 const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selectedExercice, handleExerciceClick, onFinish, index, handleDateClick, handleNameClick, onNewExercice }) => {
-    const exercicesToRender = [...selectedExercices];
+    const [exercicesWithPR, setExercicesWithPR] = useState([]);
 
-    // Place selectedExercice at the correct position
-    if (selectedExercice && index !== null) {
-        exercicesToRender.splice(index, 0, selectedExercice);
-    } else if (selectedExercice) {
-        exercicesToRender.push(selectedExercice);
-    }
+    useEffect(() => {
+        const preprocessExercices = async () => {
+            const exercicesToRender = [...selectedExercices];
+
+            // Place selectedExercice at the correct position
+            if (selectedExercice && index !== null) {
+                exercicesToRender.splice(index, 0, selectedExercice);
+            } else if (selectedExercice) {
+                exercicesToRender.push(selectedExercice);
+            }
+
+            // Check for PRs
+            const exercicesWithPRStatus = await Promise.all(
+                exercicesToRender.map(async (exercice) => {
+                    const updatedSets = await Promise.all(
+                        exercice.sets.map(async (set) => {
+                            const isPR = await isPersonalRecord(set);
+                            return { ...set, isPR };
+                        })
+                    );
+                    return { ...exercice, sets: updatedSets };
+                })
+            );
+
+            setExercicesWithPR(exercicesWithPRStatus);
+        };
+
+        preprocessExercices();
+    }, [selectedExercices, selectedExercice, index]);
 
     return (
         <div>
@@ -43,8 +48,21 @@ const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selecte
                     </h2>
 
                     <div style={{ maxHeight: '200px', overflowY: 'auto', paddingRight: '10px' }}>
-                        {exercicesToRender.map((exercice, idx) =>
-                            renderExercice(exercice, idx, handleExerciceClick, index)
+                        {exercicesWithPR.map((exercice, idx) =>
+                            <div
+                                key={idx}
+                                onClick={() => handleExerciceClick(index !== null && idx > index ? idx - 1 : idx)}
+                                className={"sessionSummaryExercice"}
+                            >
+                                <h3 className={idx === index ? 'clickable' : "clickable prograrmor-red"}>
+                                    {idx === index && "---> "}{index !== null && idx === index + 1 && "<--- "}{exercice.exercice && exercice.exercice}{exercice.categories.length > 0 && " - " + exercice.categories.join(', ')}
+                                </h3>
+                                {exercice.sets && exercice.sets.length > 0 && (
+                                    <ul style={{ listStyleType: 'none', padding: 0, textAlign: "-webkit-center" }}>
+                                        {renderSetsWithPR(exercice.sets)}
+                                    </ul>
+                                )}
+                            </div>
                         )}
                     </div>
 

@@ -45,13 +45,18 @@ function NavigBar(props) {
     return (
         <div>
             {
-                dimensions.width < 840 ?
+                dimensions.width < 880 ?
                     <nav className="navbar navbar-expand navbar-light bg-light navigbar">
                         <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                             <span className="navbar-toggler-icon"></span>
                         </button>
                         <a className="navbar-brand" href="/dashboard"><img className="logo-navbar" src={require('../images/icons/logo-navbar.webp')} alt="logo" /></a>
-                        <a className="navbar-brand" href="/dashboard"><h1 className="ProgrArmor">ProgrArmor</h1></a>
+                        <a className="navbar-brand" href="/dashboard">
+                            <h1 className="ProgrArmor">ProgrArmor
+                                <sub style={{ fontSize: "0.5em" }}>alpha</sub>
+                            </h1>
+                        </a>
+
                         <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
                             <img className={toggled ? "toggler-icon scaled" : "toggler-icon not-scaled"} onClick={toggling} src={require('../images/icons/output-onlinepngtools.webp')} alt="logo" />
 
@@ -131,7 +136,7 @@ function NavigBar(props) {
                                 <span className="navbar-toggler-icon"></span>
                             </button>
                             <a className="navbar-brand" href="/dashboard"><img className="logo-navbar" src={require('../images/icons/logo-navbar.webp')} alt="logo" /></a>
-                            <a className="navbar-brand" href="/dashboard"><h1 className="ProgrArmor">ProgrArmor</h1></a>
+                            <a className="navbar-brand" href="/dashboard"><h1 className="ProgrArmor">ProgrArmor<sub style={{ fontSize: "0.5em" }}>alpha</sub></h1></a>
                             <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
                                 <ul className="navbar-nav mr-auto mt-2 mt-lg-0 navbar-elements">
                                     <li className="nav-item active">

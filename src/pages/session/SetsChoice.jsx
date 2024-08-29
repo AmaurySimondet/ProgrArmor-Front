@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import { Tooltip } from 'react-tooltip';
 import RenderExercice from './RenderExercice';
+import Alert from '../../components/Alert';
 
 const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
     const [sets, setSets] = useState(editingSets);
@@ -10,6 +11,15 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
     const [weightLoad, setWeightLoad] = useState(0);
     const [elastic, setElastic] = useState({});
     const { width } = useWindowDimensions();
+    const [alert, setAlert] = useState(null);
+
+    const showAlert = (message, type) => {
+        setAlert({ message, type });
+    };
+
+    const handleClose = () => {
+        setAlert(null);
+    };
 
     const tooltipText = (
         "Valeurs classiques: </br> (Mesuré a 200% de sa taille) </br> Extra fin (<5kg)</br> Très petit (5-16kg)</br> Petit (12-24kg)</br> Moyen (12-36kg)</br> Gros (22-60kg)</br> Très gros (28-80kg)</br> Énorme (>80kg) (rare)</br> </br> Pour une mesure précise, </br> utilisez un pèse bagage </br> ou une balance de pêche."
@@ -60,8 +70,14 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
 
     const handleNextExercice = () => {
         if (sets.length === 0) {
-            alert('Veuillez ajouter au moins une série');
-        } else {
+            showAlert("Tu n'as pas ajouté de série", "danger");
+            return;
+        }
+        if (sets.some(set => set.value === "") || sets.some(set => !set.value) || sets.some(set => set.weightLoad === "") || sets.some(set => !set.weightLoad)) {
+            showAlert("Tu n'as pas rempli tous les champs", "danger");
+            return;
+        }
+        else {
             onNext(sets);
         }
     };
@@ -84,7 +100,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
                 {index !== null ? "Modifier" : "Ajouter"} les séries
             </h1>
 
-            <RenderExercice exercice={exercice} />
+            <RenderExercice exercice={exercice} sets={sets} />
 
             {sets.length === 0 && (
                 <div>
@@ -107,7 +123,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
                                 onChange={(e) => setValue(parseFloat(e.target.value))}
                                 placeholder="Nb Reps / Secs"
                                 style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
-                                inputMode='numeric'
+                                inputMode='decimal'
                             />
                         </label>
                         <label className='sessionChoice'>
@@ -120,7 +136,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
                                 onChange={(e) => setWeightLoad(parseFloat(e.target.value))}
                                 placeholder="Charge (kg)"
                                 style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
-                                inputMode='numeric'
+                                inputMode='decimal'
                             />
                         </label>
                         <label className='sessionChoice' style={{ backgroundColor: '#CCCCCC' }}>
@@ -144,7 +160,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
                                     onChange={(e) => setElastic((prev) => ({ ...prev, tension: parseFloat(e.target.value) }))}
                                     placeholder="Tension (kg)"
                                     style={{ width: '100%', maxWidth: '200px' }}
-                                    inputMode='numeric'
+                                    inputMode='decimal'
                                 />
                             </div>
                         </label>
@@ -177,7 +193,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
                                             value={set.value}
                                             onChange={(e) => handleValueChange(index, e)}
                                             style={{ maxWidth: '75px' }}
-                                            inputMode='numeric'
+                                            inputMode='decimal'
                                         />
                                     </label>
                                     <label >
@@ -188,7 +204,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
                                             value={set.weightLoad}
                                             onChange={(e) => handleWeightLoadChange(index, e)}
                                             style={{ maxWidth: '75px' }}
-                                            inputMode='numeric'
+                                            inputMode='decimal'
                                         />
                                     </label>
                                     <label >
@@ -203,7 +219,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
                                             value={set.elastic?.tension || ''}
                                             onChange={(e) => handleChangeElasticTension(index, e)}
                                             style={{ maxWidth: '75px' }}
-                                            inputMode='numeric'
+                                            inputMode='decimal'
                                         />
                                     </label>
                                 </div>
@@ -236,6 +252,12 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
                 <button onClick={handleNextExercice} className='btn btn-dark'>
                     Valider
                 </button>
+            </div>
+
+            <div>
+                {alert && (
+                    <Alert message={alert.message} type={alert.type} onClose={handleClose} />
+                )}
             </div>
         </div>
     );
