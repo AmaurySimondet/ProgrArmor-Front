@@ -20,7 +20,6 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice 
         // First get exericeType id from name
         API.getCategorieType({ name: selectedType }) // Replace with the actual method to fetch categories
             .then(response => {
-                console.log("response", response);
                 setSelectedTypeId(response.data.categorieTypeReturned._id);
             }
             )
@@ -39,10 +38,6 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice 
             API.getCategories({ categorieType: selectedTypeId }) // Replace with the actual method to fetch categories
                 .then(response => {
                     let fetchedCategories = response.data.categories || [];
-                    console.log("id", selectedTypeId, "categories", fetchedCategories);
-
-                    // Process the categories and set the state
-                    fetchedCategories = fetchedCategories.map(categorie => categorie.name.fr);
                     setAllCategories(fetchedCategories);
                     setCategories(fetchedCategories.slice(0, 3)); // Show only the first 3 categories initially
                     setLoading(false); // Set loading to false after fetching
@@ -74,7 +69,8 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice 
             setMoreCategoriesUnclicked(true);
             return;
         }
-        const fuse = new Fuse(allCategories, { keys: ['name'] });
+        setMoreCategoriesUnclicked(false);
+        const fuse = new Fuse(allCategories, { keys: ['name.fr'] });
         const results = fuse.search(event.target.value);
         setCategories(results.map(result => result.item));
     };
@@ -122,7 +118,7 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice 
                         className='sessionChoice'
                     >
                         <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
-                        <div>{category}</div>
+                        <div>{category.name.fr}</div>
                     </div>
                 ))}
                 {moreCategoriesUnclicked && allCategories.length > 3 && (

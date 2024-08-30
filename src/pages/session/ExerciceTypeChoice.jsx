@@ -7,6 +7,7 @@ import Fuse from 'fuse.js';
 import RenderExercice from './RenderExercice';
 
 const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToSeries, onGoToCategories, exercice }) => {
+    const [exercices, setExercices] = useState([]);
     const [exerciceTypes, setExerciceTypes] = useState([]);
     const [allExerciceTypes, setAllExerciceTypes] = useState([]);
     const [allExercices, setAllExercices] = useState([]);
@@ -34,8 +35,7 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
         API.getExercices() // Replace with the actual method to fetch exercise names
             .then(response => {
                 const fetchedNames = response.data.exercices || [];
-                const uniqueNames = fetchedNames.map(exercice => exercice.name.fr).filter((value, index, self) => self.indexOf(value) === index);
-                setAllExercices(uniqueNames);
+                setAllExercices(fetchedNames);
             })
             .catch(error => {
                 console.error("Error fetching exercise names:", error);
@@ -53,16 +53,15 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
 
     const handleSearch = (event) => {
         setSearchQuery(event.target.value);
+        if (event.target.value === '') {
+            setExercices(allExercices.slice(0, 3));
+            setMoreExercicesUnclicked(true);
+            return;
+        }
+        const fuse = new Fuse(allExercices, { keys: ['name.fr'] });
+        const results = fuse.search(event.target.value);
+        setExercices(results.map(result => result.item));
     };
-
-    const options = {
-        includeScore: true, // Include match scores
-        threshold: 0.7, // Adjust this for more or fewer matches (0 is an exact match, 1 matches everything)
-        keys: ['name'], // The key(s) you want to search within
-    };
-
-    const fuse = new Fuse(allExercices.map(ex => ({ name: ex })), options);
-    const filteredExercices = fuse.search(searchQuery).map(result => result.item.name);
 
 
     if (loading) {
@@ -122,14 +121,14 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
             {/* Search Results */}
             {searchQuery && (
                 <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
-                    {filteredExercices.length ? (
-                        filteredExercices.map((exercice, index) => (
+                    {exercices.length ? (
+                        exercices.map((exercice, index) => (
                             <div
                                 key={index}
                                 onClick={() => onSearch(exercice)}
                                 className="inputClickable"
                             >
-                                {exercice}
+                                {exercice.name.fr}
                             </div>
                         ))
                     ) : (

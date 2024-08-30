@@ -7,20 +7,17 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 70vw;
+    width: 85vw;
     text-align: -webkit-center;
 }
 
 .set-item.personal-record {
-    background-color: #e0ffe0;
-    border: 2px solid #00c853;
     animation: pulse 1s infinite alternate;
     font-weight: bold;
 }
 
 .pr-badge {
     margin-left: 10px;
-    color: #00c853;
     font-weight: bold;
     font-size: 1.1rem;
 }

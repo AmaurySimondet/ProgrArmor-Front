@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { isPersonalRecord } from '../../utils/pr';
-import { renderSetsWithPR } from '../../utils/sets';
+import { renderSets } from '../../utils/sets';
 
 const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selectedExercice, handleExerciceClick, onFinish, index, handleDateClick, handleNameClick, onNewExercice }) => {
     const [exercicesWithPR, setExercicesWithPR] = useState([]);
@@ -19,10 +19,11 @@ const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selecte
             // Check for PRs
             const exercicesWithPRStatus = await Promise.all(
                 exercicesToRender.map(async (exercice) => {
+                    console.log('Querying PR for:', exercice.exercice.name.fr + " (" + exercice.exercice._id + ") " + exercice.categories.map((category) => (category.name.fr + " (" + category._id + ") ")).join(', '));
                     const updatedSets = await Promise.all(
                         exercice.sets.map(async (set) => {
-                            const isPR = await isPersonalRecord(set);
-                            return { ...set, isPR };
+                            const isPR = await isPersonalRecord(set, exercice.exercice._id, exercice.categories.map((category) => ({ category: category._id })));
+                            return { ...set, PR: isPR };
                         })
                     );
                     return { ...exercice, sets: updatedSets };
@@ -55,11 +56,11 @@ const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selecte
                                 className={"sessionSummaryExercice"}
                             >
                                 <h3 className={idx === index ? 'clickable' : "clickable prograrmor-red"}>
-                                    {idx === index && "---> "}{index !== null && idx === index + 1 && "<--- "}{exercice.exercice && exercice.exercice}{exercice.categories.length > 0 && " - " + exercice.categories.join(', ')}
+                                    {idx === index && "---> "}{index !== null && idx === index + 1 && "<--- "}{exercice.exercice.name.fr && exercice.exercice.name.fr}{exercice.categories.length > 0 && " - " + exercice.categories.map((category) => category.name.fr).join(', ')}
                                 </h3>
                                 {exercice.sets && exercice.sets.length > 0 && (
                                     <ul style={{ listStyleType: 'none', padding: 0, textAlign: "-webkit-center" }}>
-                                        {renderSetsWithPR(exercice.sets)}
+                                        {renderSets(exercice.sets)}
                                     </ul>
                                 )}
                             </div>

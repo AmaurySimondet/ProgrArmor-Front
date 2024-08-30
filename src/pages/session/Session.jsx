@@ -23,7 +23,7 @@ const Session = () => {
   const [selectedExercices, setSelectedExercices] = useState([]);
   const [selectedType, setSelectedType] = useState('');
   const [selectedExercice, setSelectedExercice] = useState({
-    exercice: '',
+    exercice: { name: { fr: '' }, _id: '' },
     categories: [],
     sets: []
   });
@@ -136,7 +136,7 @@ const Session = () => {
     }
     setSelectedType('');
     setSelectedExercice({
-      exercice: '',
+      exercice: { name: { fr: '' }, _id: '' },
       categories: [],
       sets: []
     });
@@ -148,7 +148,6 @@ const Session = () => {
 
   const handleOnDeleteExercice = (index) => {
     const updatedExercices = [...selectedExercices];
-    console.log('Deleting exercice at index:', index);
     updatedExercices.splice(index, 1);
     setSelectedExercices(updatedExercices);
     setEditingExerciceIndex(null);
@@ -169,7 +168,7 @@ const Session = () => {
     if (!exercice) {
       setSelectedType('');
       setSelectedExercice({
-        exercice: '',
+        exercice: { name: { fr: '' }, _id: '' },
         categories: [],
         sets: []
       });
@@ -192,19 +191,15 @@ const Session = () => {
   };
 
 
-  const handleSearchExercice = (exerciceName) => {
-    API.getExercice({ name: exerciceName })
-      .then((response) => {
-        const exerciceTypeId = response.data.exerciceReturned.type;
-        return API.getExerciceType({ id: exerciceTypeId });
-      })
+  const handleSearchExercice = (exercice) => {
+    API.getExerciceType({ id: exercice.type })
       .then((response) => {
         const exerciceTypeName = response.data.exerciceTypeReturned.name.fr;
         setSelectedType(exerciceTypeName);
 
         const newExercice = {
           ...selectedExercice,
-          exercice: exerciceName
+          exercice: exercice
         };
         setSelectedExercice(newExercice);
         setStep(6);
@@ -215,18 +210,20 @@ const Session = () => {
   };
 
   const handleSearchCategory = (categoryName) => {
+    let selectedCategory;  // Declare a variable to hold the category
+
     API.getCategory({ name: categoryName })
       .then((response) => {
-        const categoryTypeId = response.data.categoryReturned.type;
-        return API.getCategorieType({ id: categoryTypeId });
+        selectedCategory = response.data.categoryReturned; // Store the category
+        return API.getCategorieType({ id: selectedCategory.type }); // Use the stored category
       })
       .then((response) => {
-        const categoryTypeName = response.data.categorieTypeReturned.name.fr;
-        setSelectedCategoryType(categoryTypeName);
+        const categoryType = response.data.categorieTypeReturned;
+        setSelectedCategoryType(categoryType);
 
         const newExercice = {
           ...selectedExercice,
-          categories: [...selectedExercice.categories, categoryName]
+          categories: [...selectedExercice.categories, selectedCategory] // Add the stored category to the categories array
         };
         setSelectedExercice(newExercice);
         setStep(6);
@@ -235,6 +232,7 @@ const Session = () => {
         console.error('Error during category search:', error);
       });
   }
+
 
   useEffect(() => {
     console.log("index", editingExerciceIndex);
@@ -258,7 +256,7 @@ const Session = () => {
   const handleNewExercice = () => {
     setSelectedType('');
     setSelectedExercice({
-      exercice: '',
+      exercice: { name: { fr: '' }, _id: '' },
       categories: [],
       sets: []
     });

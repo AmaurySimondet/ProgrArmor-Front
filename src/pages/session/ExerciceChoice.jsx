@@ -36,8 +36,6 @@ const ExerciceChoice = ({ selectedType, onNext, onBack, index, exercice }) => {
             API.getExercices({ exerciceType: selectedTypeId }) // Replace with the actual method to fetch exercices
                 .then(response => {
                     let fetchedExercices = response.data.exercices || [];
-                    // keep only name.fr
-                    fetchedExercices = fetchedExercices.map(exercice => exercice.name.fr);
                     setAllExercices(fetchedExercices);
                     setExercices(fetchedExercices.slice(0, 3)); // Show only the first 3 exercices initially
                     setLoading(false);
@@ -69,7 +67,8 @@ const ExerciceChoice = ({ selectedType, onNext, onBack, index, exercice }) => {
             setMoreExercicesUnclicked(true);
             return;
         }
-        const fuse = new Fuse(allExercices, { keys: ['name'] });
+        setMoreExercicesUnclicked(false);
+        const fuse = new Fuse(allExercices, { keys: ['name.fr'] });
         const results = fuse.search(event.target.value);
         setExercices(results.map(result => result.item));
     };
@@ -109,7 +108,7 @@ const ExerciceChoice = ({ selectedType, onNext, onBack, index, exercice }) => {
                         className='sessionChoice'
                     >
                         <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
-                        <div>{exercice}</div>
+                        <div>{exercice.name.fr}</div>
                     </div>
                 ))}
                 {moreExercicesUnclicked && allExercices.length > 3 && (

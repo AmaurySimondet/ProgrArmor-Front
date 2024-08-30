@@ -73,8 +73,14 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
             showAlert("Tu n'as pas ajouté de série", "danger");
             return;
         }
-        if (sets.some(set => set.value === "") || sets.some(set => !set.value) || sets.some(set => set.weightLoad === "") || sets.some(set => !set.weightLoad)) {
+        // verify that all sets have a value and weightLoad ('' or null)
+        if (sets.some(set => set.value === "") || sets.some(set => typeof set.value !== "number") || sets.some(set => set.weightLoad === "") || sets.some(set => typeof set.weightLoad !== "number")) {
             showAlert("Tu n'as pas rempli tous les champs", "danger");
+            return;
+        }
+        // verify if values are negatives
+        if (sets.some(set => set.value < 0) || sets.some(set => set.weightLoad < 0)) {
+            showAlert("T'as déjà vu quelqu'un faire des répétitions négatives ?", "danger");
             return;
         }
         else {
@@ -88,6 +94,14 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
         const copiedSet = JSON.parse(JSON.stringify(set));
         setSets([...sets, copiedSet]);
     };
+
+    const handleChangeElasticTensionBegin = (e) => {
+        const newElastic = { ...elastic, tension: parseFloat(e.target.value) }
+        if (!newElastic.use) {
+            newElastic.use = 'resistance';
+        }
+        setElastic(newElastic);
+    }
 
 
     return (
@@ -157,7 +171,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
                                     className="form-control"
                                     type="number"
                                     value={elastic.tension}
-                                    onChange={(e) => setElastic((prev) => ({ ...prev, tension: parseFloat(e.target.value) }))}
+                                    onChange={(e) => handleChangeElasticTensionBegin(e)}
                                     placeholder="Tension (kg)"
                                     style={{ width: '100%', maxWidth: '200px' }}
                                     inputMode='decimal'
