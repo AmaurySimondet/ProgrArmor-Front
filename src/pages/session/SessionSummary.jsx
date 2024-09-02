@@ -48,7 +48,7 @@ const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selecte
                         <span onClick={handleDateClick} className='clickable'>{selectedDate}</span>
                     </h2>
 
-                    <div style={{ maxHeight: '200px', overflowY: 'auto', paddingRight: '10px' }}>
+                    <div style={{ maxHeight: '300px', overflowY: 'auto', paddingRight: '10px' }}>
                         {exercicesWithPR.map((exercice, idx) =>
                             <div
                                 key={idx}

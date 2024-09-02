@@ -131,6 +131,9 @@ export default {
   getSeanceSets: function (send) {
     return axios.get(`${burl}/user/sets`, { headers: headers, params: send });
   },
+  getTopExercices: function (send) {
+    return axios.get(`${burl}/user/topExercices`, { headers: headers, params: send });
+  },
 
 
   // EXERCICE TYPES

@@ -607,23 +607,6 @@ table.profile-table {
     background-color: #f9f9f9;
 }
 
-.sessionChoiceBig {
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-    background-color: #EBCCCC;
-    width: 300px;
-    height: 400px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    transition: background-color 0.3s, color 0.3s;
-    opacity: 0;
-    animation: popIn 1s forwards;
-}
-
 .sessionChoice {
     cursor: pointer;
     padding: 20px;
@@ -642,15 +625,43 @@ table.profile-table {
     animation: popIn 1s forwards;
 }
 
+.sessionChoiceSmall {
+    cursor: pointer;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    text-align: center;
+    background-color: #9b0000;
+    width: 175px;
+    height: 150px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.3s, color 0.3s;
+    opacity: 0;
+    animation: popIn 1s forwards;
+    color: white;
+}
+
 .sessionChoice:hover {
     background-color: #9b0000;
     color: white;
+}
+
+.sessionChoiceSmall:hover {
+    background-color: black;
 }
 
 @media (max-width: 500px) {
     .sessionChoice {
         width: 175px;
         height: 175px;
+    }
+
+    .sessionChoiceSmall {
+        width: 125px;
+        height: 125px;
     }
 }
 

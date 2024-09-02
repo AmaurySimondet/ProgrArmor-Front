@@ -275,6 +275,15 @@ const Session = () => {
     setStep(6);
   }
 
+  const handleFavorite = (exercice, categories) => {
+    setSelectedExercice({
+      exercice: exercice,
+      categories: categories.map(category => ({ _id: category.category._id, name: category.category.name })),
+      sets: []
+    });
+    setStep(8);
+  }
+
   return (
     <div>
       <div className="page-container">
@@ -308,7 +317,7 @@ const Session = () => {
             <SeanceDateChoice onNext={handleNextDateChoice} onBack={() => setStep(2)} />
           )}
           {step === 4 && (
-            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => setStep(3)} onDelete={(index) => handleOnDeleteExercice(index)} onSearch={(exerciceName) => handleSearchExercice(exerciceName)} index={editingExerciceIndex} onGoToSeries={() => setStep(8)} exercice={selectedExercice} onGoToCategories={handleGoToCategories} />
+            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => setStep(3)} onDelete={(index) => handleOnDeleteExercice(index)} onSearch={(exerciceName) => handleSearchExercice(exerciceName)} index={editingExerciceIndex} onGoToSeries={() => setStep(8)} exercice={selectedExercice} onGoToCategories={handleGoToCategories} onFavorite={handleFavorite} />
           )}
           {step === 5 && (
             <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => setStep(4)} index={editingExerciceIndex} exercice={selectedExercice} />

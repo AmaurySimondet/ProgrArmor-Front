@@ -6,7 +6,7 @@ import Alert from '../../components/Alert';
 
 const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
     const [sets, setSets] = useState(editingSets);
-    const [unit, setUnit] = useState('reps'); // Default to 'reps'
+    const [unit, setUnit] = useState('repetitions'); // Default to 'repetitions'
     const [value, setValue] = useState('');
     const [weightLoad, setWeightLoad] = useState(0);
     const [elastic, setElastic] = useState({});
@@ -69,6 +69,10 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
     };
 
     const handleNextExercice = () => {
+        // si la serie en cours n'as pas été ajoutée, on l'ajoute
+        if (value !== "" && weightLoad !== "" && typeof value === "number" && typeof weightLoad === "number") {
+            handleAddSet();
+        }
         if (sets.length === 0) {
             showAlert("Tu n'as pas ajouté de série", "danger");
             return;

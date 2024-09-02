@@ -1,12 +1,15 @@
 import API from "./API";
 
+/**
+ * Check if a set is a personal record
+ * @param {object} set set object with the following structure: {unit, value, weightLoad, elastic}
+ * @param {string} exercice id of the exercice
+ * @param {list} categories writen as [{category: "id"}]
+ * @returns {string} "PR" if it is a personal record, "SB" if it is the same best, null if it is not a personal record
+ */
 export const isPersonalRecord = async (set, exercice, categories) => {
     // Extract necessary data from the set
     const { unit, value, weightLoad, elastic } = set;
-
-    if (set.value === 0) {
-        return false;
-    }
 
     // Call the API to check if this set is a personal record
     try {
@@ -19,8 +22,11 @@ export const isPersonalRecord = async (set, exercice, categories) => {
         };
         if (value) query.value = { $gte: value };
         if (weightLoad) query.weightLoad = { $gte: weightLoad };
-        if (elastic && elastic.use && elastic.use === "resistance") query.elastic = { tension: { $gte: elastic.tension } };
-        if (elastic && elasitc.use && elastic.use === "assistance") query.elastic = { tension: { $lte: elastic.tension } };
+        if (elastic && elastic.use) {
+            if (elastic.use === "resistance") { query.elastic = { tension: { $gte: elastic.tension } } };
+            if (elastic.use === "assistance") { query.elastic = { tension: { $lte: elastic.tension } } };
+        }
+        console.log("Query:", query);
 
         let sets = await API.getSeanceSets(query);
         sets = sets.data.sets;

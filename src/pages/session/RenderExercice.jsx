@@ -7,6 +7,8 @@ const RenderExercice = ({ exercice, sets }) => {
         setsToRender = sets;
     }
 
+    console.log(exercice.categories);
+
     return <div
         className="sessionSummaryExercice popInElement"
     >

@@ -6,7 +6,7 @@ import { useWindowDimensions } from '../../utils/useEffect';
 import Fuse from 'fuse.js';
 import RenderExercice from './RenderExercice';
 
-const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToSeries, onGoToCategories, exercice }) => {
+const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToSeries, onGoToCategories, exercice, onFavorite }) => {
     const [exercices, setExercices] = useState([]);
     const [exerciceTypes, setExerciceTypes] = useState([]);
     const [allExerciceTypes, setAllExerciceTypes] = useState([]);
@@ -16,6 +16,7 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
     const [emojis, setEmojis] = useState([]);
     const [searchQuery, setSearchQuery] = useState(''); // Track the search input
     const { width } = useWindowDimensions();
+    const [favoriteExercices, setFavoriteExercices] = useState([]);
 
     useEffect(() => {
         // Fetch exercise types from the API
@@ -63,6 +64,55 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
         setExercices(results.map(result => result.item));
     };
 
+    useEffect(() => {
+        API.getTopExercices({ userId: localStorage.getItem('id') })
+            .then(response => {
+                let favoriteExercices = response.data.topExercices;
+
+                // Use Promise.all to fetch all the needed information in parallel
+                const fetchDetailsPromises = favoriteExercices.map(async exercice => {
+                    // Fetch exercise details
+                    const exerciceDetails = await API.getExercice({ id: exercice.exercice, fields: ["name", "_id"] });
+
+                    // Fetch category details for each category in the categories array
+                    let categories = [];
+                    if (exercice.categories && exercice.categories.length > 0) {
+                        const categoryDetailsPromises = exercice.categories.map(async (categoryObj) => {
+                            const categoryDetails = await API.getCategory({ id: categoryObj.category, fields: ["name", "_id"] });
+                            return {
+                                ...categoryObj,
+                                category: categoryDetails.data.categoryReturned
+                            };
+                        });
+
+                        // Wait for all category details to be fetched
+                        categories = await Promise.all(categoryDetailsPromises);
+                    }
+
+                    // Return the exercise object with the added details
+                    return {
+                        ...exercice,
+                        exercice: exerciceDetails.data.exerciceReturned,
+                        categories: categories // Replace categories with full details
+                    };
+                });
+
+                // Wait for all exercises to be processed
+                Promise.all(fetchDetailsPromises)
+                    .then(completedExercices => {
+                        favoriteExercices = completedExercices;
+                        setFavoriteExercices(favoriteExercices);
+                    })
+                    .catch(error => {
+                        console.error("Error completing favorite exercices:", error);
+                    });
+            })
+            .catch(error => {
+                console.error("Error fetching favorite exercices:", error);
+            });
+    }, []);
+
+
 
     if (loading) {
         return <Loader />;
@@ -80,7 +130,8 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h2>
 
-            <h1>{index !== null ? "Modifier" : "Choisir"} le type d'exercice</h1>
+            <h1 style={{ margin: 0 }}
+            >{index !== null ? "Modifier" : "Choisir"} un exercice</h1>
 
             <RenderExercice exercice={exercice} />
 
@@ -101,6 +152,48 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
                     </button>
                 </div>
             }
+
+            {/* Favorite Exercices */}
+            {favoriteExercices.length > 0 &&
+                <div>
+                    <h3 style={{ color: '#9b0000' }}>Exercices favoris</h3>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '10px',
+                            justifyContent: 'flex-start',  // Align items to the start of the scrollable area
+                            alignItems: 'center',
+                            maxWidth: '95vw',
+                            margin: '0 auto',
+                            maxHeight: '250px',
+                            overflowX: 'auto',  // Enable horizontal scrolling
+                            whiteSpace: 'nowrap',  // Prevent items from wrapping to the next line
+                        }}
+                    >
+                        {favoriteExercices.map((favorite) => (
+                            <div
+                                key={favorite.id}  // Use a unique identifier instead of index for key
+                                onClick={() => onFavorite(favorite.exercice, favorite.categories)}
+                                className='sessionChoiceSmall'
+                                style={{
+                                    display: 'inline-block',  // Ensure each item stays inline
+                                    textAlign: 'center',  // Center text within each item
+                                    minWidth: '200px',  // Set a minimum width for each item for better alignment
+                                    whiteSpace: 'normal',  // Allow text to wrap within this div
+                                }}
+                            >
+                                <div style={{ fontSize: width < 500 ? '20px' : '40px' }}>🌟</div>
+                                <div>{favorite.exercice.name.fr}</div>
+                                <div style={{ fontSize: '0.66rem', wordWrap: 'break-word', whiteSpace: 'normal' }}>
+                                    {favorite.categories.map(category => category.category.name.fr).join(', ')}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            }
+
+
 
             {/* Search Bar */}
             <input
