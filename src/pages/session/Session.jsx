@@ -187,7 +187,7 @@ const Session = () => {
     }
     setSelectedCategoryType('');
     setSelectedCategory('');
-    setStep(4); // Set step to exercice choice
+    setStep(8);
   };
 
 
@@ -317,7 +317,7 @@ const Session = () => {
             <SeanceDateChoice onNext={handleNextDateChoice} onBack={() => setStep(2)} />
           )}
           {step === 4 && (
-            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => setStep(3)} onDelete={(index) => handleOnDeleteExercice(index)} onSearch={(exerciceName) => handleSearchExercice(exerciceName)} index={editingExerciceIndex} onGoToSeries={() => setStep(8)} exercice={selectedExercice} onGoToCategories={handleGoToCategories} onFavorite={handleFavorite} />
+            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => setStep(3)} onSearch={(exerciceName) => handleSearchExercice(exerciceName)} index={editingExerciceIndex} exercice={selectedExercice} onFavorite={handleFavorite} />
           )}
           {step === 5 && (
             <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => setStep(4)} index={editingExerciceIndex} exercice={selectedExercice} />
@@ -334,7 +334,11 @@ const Session = () => {
               onBack={() => setStep(7)}
               onNext={handleNextExercice}
               editingSets={selectedExercices ? selectedExercices[editingExerciceIndex] ? selectedExercices[editingExerciceIndex].sets : [] : []}
+              index={editingExerciceIndex}
               exercice={selectedExercice}
+              onDelete={(index) => handleOnDeleteExercice(index)}
+              onGoToCategories={handleGoToCategories}
+              onGoToExerciceType={() => setStep(4)}
             />
           )}
         </div>

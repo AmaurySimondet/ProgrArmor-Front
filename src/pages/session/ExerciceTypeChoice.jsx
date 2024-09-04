@@ -6,7 +6,7 @@ import { useWindowDimensions } from '../../utils/useEffect';
 import Fuse from 'fuse.js';
 import RenderExercice from './RenderExercice';
 
-const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToSeries, onGoToCategories, exercice, onFavorite }) => {
+const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavorite }) => {
     const [exercices, setExercices] = useState([]);
     const [exerciceTypes, setExerciceTypes] = useState([]);
     const [allExerciceTypes, setAllExerciceTypes] = useState([]);
@@ -118,10 +118,6 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
         return <Loader />;
     }
 
-    const handleDelete = () => {
-        onDelete(index);
-    }
-
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <h2
@@ -134,24 +130,6 @@ const ExerciceTypeChoice = ({ onNext, onDelete, onBack, onSearch, index, onGoToS
             >{index !== null ? "Modifier" : "Choisir"} un exercice</h1>
 
             <RenderExercice exercice={exercice} />
-
-            {index !== null &&
-                <div style={{
-                    "display": "flex",
-                    "flexDirection": "row",
-                    "justifyContent": "center",
-                }}>
-                    <button onClick={() => onGoToSeries()} className='btn btn-white m-2'>
-                        Modifier les séries
-                    </button>
-                    <button onClick={() => onGoToCategories()} className='btn btn-white m-2'>
-                        Modifier les catégories
-                    </button>
-                    <button onClick={handleDelete} className='btn btn-black m-2'>
-                        Supprimer l'exercice
-                    </button>
-                </div>
-            }
 
             {/* Favorite Exercices */}
             {favoriteExercices.length > 0 &&

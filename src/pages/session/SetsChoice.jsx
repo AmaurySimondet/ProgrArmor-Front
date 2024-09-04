@@ -4,7 +4,7 @@ import { Tooltip } from 'react-tooltip';
 import RenderExercice from './RenderExercice';
 import Alert from '../../components/Alert';
 
-const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
+const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, onGoToExerciceType }) => {
     const [sets, setSets] = useState(editingSets);
     const [unit, setUnit] = useState('repetitions'); // Default to 'repetitions'
     const [value, setValue] = useState('');
@@ -120,6 +120,24 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
 
             <RenderExercice exercice={exercice} sets={sets} />
 
+            {index !== null &&
+                <div style={{
+                    "display": "flex",
+                    "flexDirection": "row",
+                    "justifyContent": "center",
+                }}>
+                    <button onClick={() => onGoToExerciceType()} className='btn btn-white m-2'>
+                        Modifier l'exercice
+                    </button>
+                    <button onClick={() => onGoToCategories()} className='btn btn-white m-2'>
+                        Modifier les catégories
+                    </button>
+                    <button onClick={() => onDelete(index)} className='btn btn-black m-2'>
+                        Supprimer l'exercice
+                    </button>
+                </div>
+            }
+
             {sets.length === 0 && (
                 <div>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
@@ -164,7 +182,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index }) => {
                                 data-tooltip-html={tooltipText}
                                 data-tooltip-place="top"
                             >
-                                Elastique
+                                Elastique (?)
                             </a>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center' }}>
                                 <select className="custom-select" value={elastic.use} onChange={(e) => setElastic((prev) => ({ ...prev, use: e.target.value }))} style={{ width: '100%', maxWidth: '200px' }}>
