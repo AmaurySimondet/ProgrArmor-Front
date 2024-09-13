@@ -14,6 +14,8 @@ import SessionProgressBar from "./SessionProgressBar";
 import API from "../../utils/API";
 import { setsToSeance } from "../../utils/sets";
 import Loader from "../../components/Loader";
+import SessionPost from "./SessionPost";
+import { COLORS } from "../../utils/colors";
 
 const Session = () => {
   const [step, setStep] = useState(1);
@@ -126,14 +128,20 @@ const Session = () => {
       ...selectedExercice,
       sets: sets
     };
+
+    // If we are editing an existing exercice, replace it in the array
     if (editingExerciceIndex !== null) {
       const updatedExercices = [...selectedExercices];
       updatedExercices[editingExerciceIndex] = newExercice;
       setSelectedExercices(updatedExercices);
       setEditingExerciceIndex(null);
-    } else {
+    }
+    // Otherwise, add the new exercice to the array
+    else {
       setSelectedExercices([...selectedExercices, newExercice]);
     }
+
+    // Reset the exercice state
     setSelectedType('');
     setSelectedExercice({
       exercice: { name: { fr: '' }, _id: '' },
@@ -143,7 +151,14 @@ const Session = () => {
     setSelectedCategoryType('');
     setSelectedCategory('');
     setSelectedSets([]);
-    setStep(4);
+
+    // if we are editing an existing exercice, edit the next one's sets
+    if (editingExerciceIndex !== null) {
+      setEditingExerciceIndex(editingExerciceIndex + 1);
+      handleExerciceClick(editingExerciceIndex + 1);
+    } else {
+      setStep(4);
+    }
   };
 
   const handleOnDeleteExercice = (index) => {
@@ -160,7 +175,7 @@ const Session = () => {
       selectedDate,
       selectedExercices
     })}`);
-    // Optionally reset or redirect to another page
+    setStep(9);
   };
 
   const handleExerciceClick = (index) => {
@@ -285,28 +300,31 @@ const Session = () => {
   }
 
   return (
-    <div>
+    <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
       <div className="page-container">
         <NavigBar location="session" />
         <div className="content-wrap">
-          <SessionProgressBar
-            selectedName={selectedName}
-            selectedDate={selectedDate}
-            selectedExercices={selectedExercices}
-            selectedExercice={selectedExercice}
-          />
-          <SessionSummary
-            selectedName={selectedName}
-            selectedDate={selectedDate}
-            selectedExercices={selectedExercices}
-            selectedExercice={selectedExercice}
-            handleExerciceClick={handleExerciceClick}
-            onFinish={handleFinish}
-            index={editingExerciceIndex}
-            handleDateClick={() => setStep(3)}
-            handleNameClick={() => setStep(2)}
-            onNewExercice={handleNewExercice}
-          />
+          {step != 9 && (<div>
+            <SessionProgressBar
+              selectedName={selectedName}
+              selectedDate={selectedDate}
+              selectedExercices={selectedExercices}
+              selectedExercice={selectedExercice}
+            />
+            <SessionSummary
+              selectedName={selectedName}
+              selectedDate={selectedDate}
+              selectedExercices={selectedExercices}
+              selectedExercice={selectedExercice}
+              handleExerciceClick={handleExerciceClick}
+              onFinish={handleFinish}
+              index={editingExerciceIndex}
+              handleDateClick={() => setStep(3)}
+              handleNameClick={() => setStep(2)}
+              onNewExercice={handleNewExercice}
+            />
+          </div>
+          )}
           {step === 1 && (
             <SeanceChoice onNext={handleNextSeanceChoice} />
           )}
@@ -339,6 +357,15 @@ const Session = () => {
               onDelete={(index) => handleOnDeleteExercice(index)}
               onGoToCategories={handleGoToCategories}
               onGoToExerciceType={() => setStep(4)}
+            />
+          )}
+          {step === 9 && (
+            <SessionPost
+              onBack={() => setStep(8)}
+              selectedName={selectedName}
+              selectedDate={selectedDate}
+              selectedExercices={selectedExercices}
+              selectedExercice={selectedExercice}
             />
           )}
         </div>

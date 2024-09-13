@@ -26,11 +26,9 @@ export const isPersonalRecord = async (set, exercice, categories) => {
             if (elastic.use === "resistance") { query.elastic = { tension: { $gte: elastic.tension } } };
             if (elastic.use === "assistance") { query.elastic = { tension: { $lte: elastic.tension } } };
         }
-        console.log("Query:", query);
 
         let sets = await API.getSeanceSets(query);
         sets = sets.data.sets;
-        console.log("Sets:", sets);
 
         // Check if the set is a personal record
         if (sets.length === 0) {

@@ -1,7 +1,7 @@
 import API from './API';
 import React from 'react';
 
-const renderSets = (sets) => {
+const renderSets = (sets, className = "set-item") => {
     // Count identical sets
     const setCount = sets.reduce((acc, set) => {
         const setKey = JSON.stringify({
@@ -27,14 +27,19 @@ const renderSets = (sets) => {
         const set = JSON.parse(setKey);
 
         return (
-            <li key={setKey} className={`set-item ${PR ? 'personal-record' : ''}`} style={PR === 'PR' ? { backgroundColor: "#e0ffe0", border: "2px solid #00c853" } : PR === "SB" ? { backgroundColor: "#fff9c4", border: "2px solid #ffeb3b" } : {}}>
+            <li key={setKey}
+                className={`${className} ${PR ? 'personal-record' : ''}`.trim()}
+                style={PR === 'PR' ? { backgroundColor: "#e0ffe0", border: "2px solid #00c853" } : PR === "SB" ? { backgroundColor: "#fff9c4", border: "2px solid #ffeb3b" } : {}}>
+
                 {`${count} x ${set.value} ${set.unit} ${set.weightLoad ? `@ ${set.weightLoad} kg` : ''} ${set.elastic && set.elastic.tension ? `Elastique: ${set.elastic.use} ${set.elastic.tension} kg` : ''}`}
+
                 {PR && (
                     // if PR green, if SB yellow
                     <span className="pr-badge" style={PR === 'PR' ? { color: "#00c853" } : { color: "rgb(255 178 59)" }}>
                         🎉 {PR}! 🎉
                     </span>
                 )}
+
             </li>
         );
     });

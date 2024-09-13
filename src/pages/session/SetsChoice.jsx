@@ -4,7 +4,7 @@ import { Tooltip } from 'react-tooltip';
 import RenderExercice from './RenderExercice';
 import Alert from '../../components/Alert';
 
-const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, onGoToExerciceType }) => {
+const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, onGoToExerciceType, onGoToCategories }) => {
     const [sets, setSets] = useState(editingSets);
     const [unit, setUnit] = useState('repetitions'); // Default to 'repetitions'
     const [value, setValue] = useState('');
@@ -286,7 +286,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
 
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <button onClick={handleNextExercice} className='btn btn-dark'>
-                    Valider
+                    Valider et passer à l'exercice suivant
                 </button>
             </div>
 
