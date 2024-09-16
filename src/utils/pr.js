@@ -11,6 +11,8 @@ export const isPersonalRecord = async (set, exercice, categories) => {
     // Extract necessary data from the set
     const { unit, value, weightLoad, elastic } = set;
 
+    if (value === 0) return null; // Ignore sets with 0 reps
+
     // Call the API to check if this set is a personal record
     try {
         const userId = localStorage.getItem("id");

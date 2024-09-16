@@ -12,7 +12,7 @@ import SetsChoice from "./SetsChoice";
 import SessionSummary from "./SessionSummary";
 import SessionProgressBar from "./SessionProgressBar";
 import API from "../../utils/API";
-import { setsToSeance } from "../../utils/sets";
+import { setsToSeance, addPrToSets } from "../../utils/sets";
 import Loader from "../../components/Loader";
 import SessionPost from "./SessionPost";
 import { COLORS } from "../../utils/colors";
@@ -47,9 +47,14 @@ const Session = () => {
           const selectedSessionSets = response.data.sets; // Adjust if needed
           setsToSeance(selectedSessionSets, selectedSession.name, selectedSession.date).then(seance => {
             setSelectedName(selectedSession.name);
-            setSelectedExercices(seance.exercices);
+            // setSelectedExercices(seance.exercices);
             setStep(3);
             setLoading(false);
+
+            // Check for PRs
+            addPrToSets(seance.exercices, null, null).then(updatedExercices => {
+              setSelectedExercices(updatedExercices);
+            });
           }
           );
         })
@@ -133,12 +138,20 @@ const Session = () => {
     if (editingExerciceIndex !== null) {
       const updatedExercices = [...selectedExercices];
       updatedExercices[editingExerciceIndex] = newExercice;
-      setSelectedExercices(updatedExercices);
+      // setSelectedExercices(updatedExercices);
       setEditingExerciceIndex(null);
+      // Check for PRs
+      addPrToSets(updatedExercices, newExercice, editingExerciceIndex).then(updatedExercices => {
+        setSelectedExercices(updatedExercices);
+      });
     }
     // Otherwise, add the new exercice to the array
     else {
-      setSelectedExercices([...selectedExercices, newExercice]);
+      // setSelectedExercices([...selectedExercices, newExercice]);
+      // Check for PRs
+      addPrToSets(selectedExercices, newExercice, selectedExercices.length).then(updatedExercices => {
+        setSelectedExercices(updatedExercices);
+      });
     }
 
     // Reset the exercice state
@@ -315,7 +328,6 @@ const Session = () => {
               selectedName={selectedName}
               selectedDate={selectedDate}
               selectedExercices={selectedExercices}
-              selectedExercice={selectedExercice}
               handleExerciceClick={handleExerciceClick}
               onFinish={handleFinish}
               index={editingExerciceIndex}

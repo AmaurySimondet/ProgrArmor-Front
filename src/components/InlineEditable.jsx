@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-export const InlineEditable = ({ value, onChange, style, autoFocus }) => {
+export const InlineEditable = ({ value, onChange, style, autoFocus, placeholder }) => {
     const [text, setText] = useState(value);
 
     useEffect(() => {
@@ -12,21 +12,30 @@ export const InlineEditable = ({ value, onChange, style, autoFocus }) => {
     };
 
     const handleKeyPress = (e) => {
-        if (e.key === 'Enter') {
+        if (e.key === 'Enter' && !e.shiftKey) { // Check if Enter is pressed without Shift
+            e.preventDefault(); // Prevent default action (e.g., new line)
             if (onChange) onChange(text);
         }
     };
 
     return (
-        <input
-            type="text"
+        <textarea
+            placeholder={placeholder}
             value={text}
             onChange={(e) => setText(e.target.value)}
             onBlur={handleBlur}
             onKeyPress={handleKeyPress}
-            // make the input dont look like an input
             autoFocus={autoFocus}
-            style={{ ...style, width: '100%', border: 'none', borderBottom: "none", outline: "none" }}
+            style={{
+                ...style,
+                width: '100%',
+                border: 'none',
+                outline: 'none',
+                resize: 'none', // Prevent resizing
+                overflow: 'auto', // Allow scroll if needed
+                whiteSpace: 'pre-wrap', // Preserve whitespace and line breaks
+                wordBreak: 'break-word', // Break long words if necessary
+            }}
         />
     );
 };

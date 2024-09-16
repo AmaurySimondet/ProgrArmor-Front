@@ -1,5 +1,6 @@
 import API from './API';
 import React from 'react';
+import { isPersonalRecord } from './pr';
 
 const renderSets = (sets, className = "set-item") => {
     // Count identical sets
@@ -49,7 +50,7 @@ const renderSets = (sets, className = "set-item") => {
 // Convert IDs to names using async functions
 const getCategoryById = async (categoryId) => {
     try {
-        const response = await API.getCategory({ id: categoryId, fields: ["name", "_id"] });
+        const response = await API.getCategory({ id: categoryId, fields: ["name", "_id", "type"] });
         const fetchedCategory = response.data.categoryReturned
         return fetchedCategory
     } catch (error) {
@@ -136,5 +137,65 @@ const setsToSeance = async (sessionSets, name, date) => {
     return seance;
 };
 
+const seanceToSets = (seanceId, selectedExercices, userId) => {
+    const seanceSets = [];
 
-export { setsToSeance, renderSets };
+    selectedExercices.forEach((exercise, exerciseIndex) => {
+        const { exercice, exerciseType, categories, sets } = exercise;
+        const exerciceId = exercice._id;
+        const exerciseTypeId = exerciseType._id;
+        const categoryIds = categories.map(category => ({ category: category._id, categoryType: category.type }));
+
+        sets.forEach((set, setIndex) => {
+            const seanceSet = {
+                user: userId,
+                exercice: exerciceId,
+                exerciceType: exerciseTypeId,
+                categories: categoryIds,
+                seance: seanceId,
+                exerciceOrder: exerciseIndex + 1,
+                exerciceTotal: selectedExercices.length,
+                setOrder: setIndex + 1,
+                setTotal: sets.length,
+                unit: set.unit,
+                weightLoad: set.weightLoad,
+                value: set.value,
+                elastic: set.elastic || null,
+                PR: set.PR || null,
+            };
+
+            seanceSets.push(seanceSet);
+        });
+    });
+
+    return seanceSets;
+};
+
+const addPrToSets = async (selectedExercices, selectedExercice, index) => {
+    const exercicesToRender = [...selectedExercices];
+
+    // Place selectedExercice at the correct position
+    if (selectedExercice && index !== null) {
+        exercicesToRender.splice(index, 0, selectedExercice);
+    } else if (selectedExercice) {
+        exercicesToRender.push(selectedExercice);
+    }
+
+    // Check for PRs
+    const exercicesWithPRStatus = await Promise.all(
+        exercicesToRender.map(async (exercice) => {
+            console.log('Querying PR for:', exercice.exercice.name.fr + " (" + exercice.exercice._id + ") " + exercice.categories.map((category) => (category.name.fr + " (" + category._id + ") ")).join(', '));
+            const updatedSets = await Promise.all(
+                exercice.sets.map(async (set) => {
+                    const isPR = await isPersonalRecord(set, exercice.exercice._id, exercice.categories.map((category) => ({ category: category._id })));
+                    return { ...set, PR: isPR };
+                })
+            );
+            return { ...exercice, sets: updatedSets };
+        })
+    );
+
+    return exercicesWithPRStatus;
+};
+
+export { setsToSeance, renderSets, seanceToSets, addPrToSets };

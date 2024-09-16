@@ -1,41 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { isPersonalRecord } from '../../utils/pr';
+import React from 'react';
 import { renderSets } from '../../utils/sets';
 
-const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selectedExercice, handleExerciceClick, onFinish, index, handleDateClick, handleNameClick, onNewExercice }) => {
-    const [exercicesWithPR, setExercicesWithPR] = useState([]);
-
-    useEffect(() => {
-        const preprocessExercices = async () => {
-            const exercicesToRender = [...selectedExercices];
-
-            // Place selectedExercice at the correct position
-            if (selectedExercice && index !== null) {
-                exercicesToRender.splice(index, 0, selectedExercice);
-            } else if (selectedExercice) {
-                exercicesToRender.push(selectedExercice);
-            }
-
-            // Check for PRs
-            const exercicesWithPRStatus = await Promise.all(
-                exercicesToRender.map(async (exercice) => {
-                    console.log('Querying PR for:', exercice.exercice.name.fr + " (" + exercice.exercice._id + ") " + exercice.categories.map((category) => (category.name.fr + " (" + category._id + ") ")).join(', '));
-                    const updatedSets = await Promise.all(
-                        exercice.sets.map(async (set) => {
-                            const isPR = await isPersonalRecord(set, exercice.exercice._id, exercice.categories.map((category) => ({ category: category._id })));
-                            return { ...set, PR: isPR };
-                        })
-                    );
-                    return { ...exercice, sets: updatedSets };
-                })
-            );
-
-            setExercicesWithPR(exercicesWithPRStatus);
-        };
-
-        preprocessExercices();
-    }, [selectedExercices, selectedExercice, index]);
-
+const SessionSummary = ({ selectedName, selectedDate, selectedExercices, handleExerciceClick, onFinish, index, handleDateClick, handleNameClick, onNewExercice }) => {
     return (
         <div>
             {selectedName && selectedDate && (
@@ -49,7 +15,7 @@ const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selecte
                     </h2>
 
                     <div style={{ maxHeight: '300px', overflowY: 'auto', paddingRight: '10px' }}>
-                        {exercicesWithPR.map((exercice, idx) =>
+                        {selectedExercices.map((exercice, idx) =>
                             <div
                                 key={idx}
                                 onClick={() => handleExerciceClick(index !== null && idx > index ? idx - 1 : idx)}
