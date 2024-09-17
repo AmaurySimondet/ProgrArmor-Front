@@ -1,0 +1,69 @@
+import { React } from 'react';
+import { InlineEditable } from '../../components/InlineEditable';
+import { useWindowDimensions } from '../../utils/useEffect';
+import PostStats from './PostStats';
+import InstagramCarousel from './InstagramCarousel';
+
+function SessionPostChild({ user, postTitle, setPostTitle, postDescription, setPostDescription, selectedName, selectedExercices, recordSummary, selectedDate, stats, backgroundColors, editable }) {
+    const { width } = useWindowDimensions();
+
+    return (
+        <div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <img
+                    className="icon-navbar"
+                    src={require('../../images/profilepic.webp')}
+                    alt='compte'
+                    style={{
+                        borderRadius: "50%",
+                        border: "1px solid black",
+                    }}
+                />
+                <div>
+                    {user ? <strong>{user.fName} {user.lName}</strong> : <strong>Prénom Nom</strong>}
+                    <br />
+                    <i>{selectedDate}</i>
+                </div>
+            </div>
+
+
+            {/* Post Title - Editable */}
+            {editable ?
+                <InlineEditable
+                    value={postTitle}
+                    onChange={setPostTitle}
+                    style={{
+                        fontSize: width < 500 ? '25px' : '30px',
+                        marginBottom: "10px",
+                        height: "40px"
+                    }}
+                    autoFocus={true}
+                    placeholder={"Titre"}
+                />
+                :
+                <h1 style={{ fontSize: width < 500 ? '25px' : '30px', marginBottom: "10px" }}>{postTitle}</h1>
+            }
+
+
+            {/* Post Description - Editable */}
+            {editable ?
+                <InlineEditable
+                    value={postDescription}
+                    onChange={setPostDescription}
+                    placeholder={"Description (optionnel)"}
+                    style={{ fontSize: '1rem', marginBottom: '20px', textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4", height: "125px" }}
+                />
+                :
+                <p style={{ fontSize: '1rem', marginBottom: '20px', textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4" }}>{postDescription}</p>
+            }
+
+            {/* Stats */}
+            <PostStats stats={stats} />
+
+            {/* Session Summary */}
+            <InstagramCarousel selectedName={selectedName} selectedExercices={selectedExercices} recordSummary={recordSummary} backgroundColors={backgroundColors} />
+        </div >
+    );
+}
+
+export default SessionPostChild;

@@ -65,8 +65,8 @@ function NavigBar(props) {
                         <div className={toggled ? "param-choice-toggle visible" : "param-choice-toggle not-visible"} >
 
                             <div style={{ display: "flex", flexDirection: "row", justifyContent: "center" }}>
-                                <input class="form-control mr-2" type="search" placeholder="Maître Yoyo" aria-label="Search" />
-                                <button class="btn btn-black" type="submit">Go</button>
+                                <input className="form-control mr-2" type="search" placeholder="Maître Yoyo" aria-label="Search" />
+                                <button className="btn btn-black" type="submit">Go</button>
                             </div>
                             <hr style={{ borderColor: "black" }} />
                             <a className="nav-link" href="/dashboard"><img className="icon-navbar" src={require('../images/icons/home.webp')} alt='home' /> Dashboard</a>

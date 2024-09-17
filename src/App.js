@@ -1,6 +1,6 @@
-import { React, useState, useEffect } from "react";
+import { React } from "react";
 import { Route, Routes } from "react-router-dom";
-import Dashboard from "./components/Dashboard/Dashboard.js";
+import DashBoard from "./pages/dashboard/DashBoard.jsx";
 import Inscription from "./components/Inscription";
 import Connexion from "./components/Connexion";
 import CGU from "./components/CGU";
@@ -14,10 +14,6 @@ import Compte from "./components/Dashboard/Compte";
 import Admin from "./components/Dashboard/Admin.jsx";
 import InstallApp from "./components/Dashboard/Help/InstallApp.jsx";
 import Aide from "./components/Dashboard/Aide.jsx";
-import Programme from "./components/Dashboard/Programme.jsx";
-import Profil from "./components/Dashboard/Profil.jsx";
-import Accomplissements from "./components/Dashboard/Accomplissements.jsx";
-import ProgrammeCreator from "./components/Dashboard/ProgrammeCreator.jsx";
 
 // import eruda from "eruda";
 
@@ -43,7 +39,7 @@ function App() {
             <Route exact path="/token/*" element={<Token />} />
 
             <Route path="/dashboard/*" element={<PrivateRoute />}>
-                <Route exact path='/dashboard/*' element={<Dashboard />} />
+                <Route exact path='/dashboard/*' element={<DashBoard />} />
             </Route>
 
             <Route path="/stats/*" element={<PrivateRoute />}>
@@ -54,42 +50,18 @@ function App() {
                 <Route exact path='/programme/*' element={<Travaux />} />
             </Route>
 
-            {/* <Route path="/programme/*" element={<PrivateRoute />}>
-                <Route exact path='/programme/*' element={<Programme />} />
-            </Route> */}
-
-            <Route path="/programmeCreator/*" element={<PrivateRoute />}>
-                <Route exact path='/programmeCreator/*' element={<ProgrammeCreator />} />
-            </Route>
-
-            <Route path="/profil/*" element={<PrivateRoute />}>
-                <Route exact path='/profil/*' element={<Profil />} />
-            </Route>
-
-            <Route path="/social/*" element={<PrivateRoute />}>
-                <Route exact path='/social/*' element={<Travaux />} />
+            <Route path="/programme/*" element={<PrivateRoute />}>
+                <Route exact path='/programme/*' element={<Travaux />} />
             </Route>
 
             <Route path="/compte/*" element={<PrivateRoute />}>
                 <Route exact path='/compte/*' element={<Compte />} />
             </Route>
 
-            <Route path="/a_propos/*" element={<PrivateRoute />}>
-                <Route exact path='/a_propos/*' element={<Travaux />} />
-            </Route>
-
-            {/* <Route path="/accomplissements/*" element={<PrivateRoute />}>
-                <Route exact path='/accomplissements/*' element={<Accomplissements />} />
-            </Route> */}
-            <Route path="/accomplissements/*" element={<PrivateRoute />}>
-                <Route exact path='/accomplissements/*' element={<Travaux />} />
-            </Route>
-
             <Route path="/notifications/*" element={<PrivateRoute />}>
                 <Route exact path='/notifications/*' element={<Travaux />} />
             </Route>
 
-            {/* AIDE */}
             <Route path="/aide" element={<PrivateRoute />}>
                 <Route exact path='/aide' element={<Aide />} />
                 <Route exact path='/aide/InstallApp/*' element={<InstallApp />} />

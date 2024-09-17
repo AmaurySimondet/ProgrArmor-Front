@@ -1,13 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
-import { InlineEditable } from '../../components/InlineEditable';
 import { getUserById } from '../../utils/user';
 import Loader from '../../components/Loader';
-import { randomBodybuildingEmojis } from '../../utils/emojis';
-import InstagramCarousel from './InstagramCarousel';
-import PostStats from './PostStats';
 import { seanceToSets } from "../../utils/sets";
 import Alert from '../../components/Alert';
+import SessionPostChild from './SessionPostChild';
 
 
 const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) => {
@@ -28,10 +25,6 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
     const handleClose = () => {
         setAlert(null);
     };
-
-    useEffect(() => {
-        setEmojis(randomBodybuildingEmojis(selectedExercices.length));
-    }, [selectedExercices]);
 
     useEffect(() => {
         // Record Summary
@@ -81,9 +74,9 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
         // Stats
         const nSets = selectedExercices.reduce((acc, exercice) => acc + exercice.sets.length, 0);
         const nReps = selectedExercices.reduce((acc, exercice) => acc + exercice.sets.reduce((acc, set) => acc + set.value, 0), 0);
-        const intervalReps = `${selectedExercices.reduce((acc, exercice) => Math.min(acc, ...exercice.sets.map(set => set.value)), 0)}-${selectedExercices.reduce((acc, exercice) => Math.max(acc, ...exercice.sets.map(set => set.value)), 0)}`;
+        const intervalReps = `${selectedExercices.reduce((acc, exercice) => Math.min(acc, ...exercice.sets.map(set => set.value)), Infinity)}-${selectedExercices.reduce((acc, exercice) => Math.max(acc, ...exercice.sets.map(set => set.value)), -Infinity)}`;
         const totalWeight = selectedExercices.reduce((acc, exercice) => acc + exercice.sets.reduce((acc, set) => acc + set.weightLoad, 0), 0);
-        const intervalWeight = `${selectedExercices.reduce((acc, exercice) => Math.min(acc, ...exercice.sets.map(set => set.weightLoad)), 0)}-${selectedExercices.reduce((acc, exercice) => Math.max(acc, ...exercice.sets.map(set => set.weightLoad)), 0)}`;
+        const intervalWeight = `${selectedExercices.reduce((acc, exercice) => Math.min(acc, ...exercice.sets.map(set => set.weightLoad)), Infinity)}-${selectedExercices.reduce((acc, exercice) => Math.max(acc, ...exercice.sets.map(set => set.weightLoad)), -Infinity)}`;
         const stats = { nSets, nReps, intervalReps, totalWeight, intervalWeight };
         setStats(stats);
 
@@ -103,6 +96,7 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
             date: new Date(selectedDate),
             user: localStorage.getItem("id"),
             stats: stats,
+            recordSummary: recordSummary,
         };
         const seanceSets = seanceToSets("id", selectedExercices, localStorage.getItem("id"));
         console.log('Seance:', seance);
@@ -122,57 +116,19 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
             </h2>
             <div className="session-post" style={width < 400 ? { padding: '5px', margin: "80px 0 0 0" } : width < 550 ? { padding: '10px', margin: "80px 10px 0 10px" } : { padding: '20px' }}>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <img
-                        className="icon-navbar"
-                        src={require('../../images/profilepic.webp')}
-                        alt='compte'
-                        style={{
-                            borderRadius: "50%",
-                            border: "1px solid black",
-                        }}
-                    />
-                    <div>
-                        {user ? <strong>{user.fName} {user.lName}</strong> : <strong>Prénom Nom</strong>}
-                        <br />
-                        <i>{selectedDate}</i>
-                    </div>
-                </div>
-
-
-                {/* Post Title - Editable */}
-                <InlineEditable
-                    value={postTitle}
-                    onChange={setPostTitle}
-                    style={{
-                        fontSize: width < 500 ? '25px' : '30px',
-                        marginBottom: "10px",
-                        height: "40px"
-                    }}
-                    autoFocus={true}
-                    placeholder={"Titre"}
+                <SessionPostChild
+                    user={user}
+                    postTitle={postTitle}
+                    setPostTitle={setPostTitle}
+                    postDescription={postDescription}
+                    setPostDescription={setPostDescription}
+                    selectedName={selectedName}
+                    selectedExercices={selectedExercices}
+                    recordSummary={recordSummary}
+                    selectedDate={selectedDate}
+                    stats={stats}
+                    backgroundColors={backgroundColors}
                 />
-
-                {/* Location - Editable
-                <InlineEditable
-                    value={location}
-                    onChange={setLocation}
-                    style={{ fontSize: '1.2rem', marginBottom: '20px' }}
-                /> */}
-
-                {/* Post Description - Editable */}
-                <InlineEditable
-                    value={postDescription}
-                    onChange={setPostDescription}
-                    placeholder={"Description (optionnel)"}
-                    style={{ fontSize: '1rem', marginBottom: '20px', textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4", height: "125px" }}
-                />
-
-                {/* Stats */}
-                <PostStats stats={stats} />
-
-                {/* Session Summary */}
-                <InstagramCarousel selectedName={selectedName} selectedExercices={selectedExercices} recordSummary={recordSummary} backgroundColors={backgroundColors} emojis={emojis} />
 
                 {/* Submit Button */}
                 <button onClick={handlePostSubmit} className="btn btn-black mt-2" style={{ width: '100%' }}>

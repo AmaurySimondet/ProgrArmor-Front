@@ -1,29 +1,19 @@
 import React, { useState, useRef } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import { renderSets } from '../../utils/sets';
+import { randomBodybuildingEmojis } from '../../utils/emojis';
 
 
-function InstagramCarousel({ selectedName, selectedExercices, recordSummary, backgroundColors, emojis }) {
-    const [currentSlideIndex, setCurrentSlideIndex] = useState(1);
+function InstagramCarousel({ selectedName, selectedExercices, recordSummary, backgroundColors }) {
+    const emojis = randomBodybuildingEmojis(selectedExercices.length);
     const { width } = useWindowDimensions();
     const carouselRef = useRef(null);
 
     const totalSlides = selectedExercices.length % 2 === 0 ? selectedExercices.length / 2 : Math.ceil(selectedExercices.length / 2) + 1;
 
-    // Function to handle scroll and update current slide index
-    const handleScroll = () => {
-        if (carouselRef.current) {
-            const scrollLeft = carouselRef.current.scrollLeft;
-            const slideWidth = carouselRef.current.clientWidth + 20; // Includes gap between slides
-            const newIndex = Math.round(scrollLeft / slideWidth) + 1; // Calculate slide index
-            setCurrentSlideIndex(newIndex);
-        }
-    };
-
     return (
         <div
             ref={carouselRef}
-            onScroll={handleScroll}
             style={{
                 display: 'flex',
                 overflowX: 'auto',
@@ -47,7 +37,7 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
                 <p><strong>{selectedName}</strong></p>
                 <h3>Résumé des records</h3>
                 <ul style={{ listStyleType: 'none', padding: 0 }}>
-                    {recordSummary && recordSummary.map((record, idx) => (
+                    {recordSummary.length > 0 ? recordSummary.map((record, idx) => (
                         <li key={record.PR}
                             className={`${record.PR ? 'personal-record' : ''}`.trim()}
                             style={record.PR === 'PR' ? { backgroundColor: "#e0ffe0", border: "2px solid #00c853" } : record.PR === "SB" ? { backgroundColor: "#fff9c4", border: "2px solid #ffeb3b" } : {}}>
@@ -55,7 +45,7 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
                                 🎉 {record.PR} x {record.number} 🎉
                             </span>
                         </li>
-                    ))}
+                    )) : <li>Pas de record pour cette séance</li>}
                 </ul>
             </div>
 

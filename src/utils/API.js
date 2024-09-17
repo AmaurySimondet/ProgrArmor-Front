@@ -2,20 +2,7 @@ import axios from "axios";
 const headers = {
   "Content-Type": "application/json"
 };
-const burl = "http://10.0.200.207:8800";
-
-function paramsToString(params) {
-  let string = "";
-  let keyArray = [];
-  Object.keys(params).forEach(key => { keyArray.push(key) });
-  Object.values(params).forEach((param, index) => {
-    string = string + keyArray[index] + "=" + param
-    if (index !== (Object.values(params).length - 1)) {
-      string = string + "&"
-    };
-  })
-  return string
-}
+const burl = "http://10.0.200.208:8800";
 
 export default {
 
@@ -76,34 +63,12 @@ export default {
 
 
 
-  //SESSION
-  debutantform: function (send) {
-    return axios.post(`${burl}/user/debutantform`, send, { headers: headers });
-
-  },
-  supprSeance: function (send) {
-    return axios.post(`${burl}/user/supprSeance`, send, { headers: headers });
-
-  },
-  workouts: function (params) {
-    let string = paramsToString(params);
-
-    return axios.get(`${burl}/user/workouts?` + string, { headers: headers });
-
-  },
-  loadSeance: function (params) {
-    let string = paramsToString(params);
-
-    return axios.get(`${burl}/user/loadSeance?` + string + "&id=" + localStorage.getItem("id"), { headers: headers });
-
-  },
+  //USER
   getUser: function (id) {
     return axios.post(`${burl}/user/getUser`, id, { headers: headers });
-
   },
-  priseDeNote: function (send) {
-    return axios.post(`${burl}/user/priseDeNote`, send, { headers: headers });
-
+  getUsers: function () {
+    return axios.get(`${burl}/user/getUsers`, { headers: headers });
   },
 
 
@@ -121,6 +86,9 @@ export default {
   },
   getSeance: function (send) {
     return axios.get(`${burl}/user/seance`, { headers: headers, params: send });
+  },
+  getSeances: function (send) {
+    return axios.get(`${burl}/user/seances`, { headers: headers, params: send });
   },
 
 

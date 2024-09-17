@@ -2080,7 +2080,7 @@ table.hometable td.inscription-img-td {
     }
 
     .ProgrArmor {
-        opacity: 0;
+        font-size: 22px !important;
     }
 }
 
@@ -2092,6 +2092,9 @@ table.hometable td.inscription-img-td {
 
     }
 
+    .ProgrArmor {
+        opacity: 0;
+    }
 
     .watermark-piechart:after {
         top: -110px;
