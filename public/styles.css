@@ -828,6 +828,12 @@ table.profile-table {
     border-radius: 20px;
     margin: 80px 20px 0 20px;
     width: 95%;
+    transition: 0.5s;
+}
+
+.session-post:hover {
+    box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+    transform: scale(1.02);
 }
 
 .instagramPost {

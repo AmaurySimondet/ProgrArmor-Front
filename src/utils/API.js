@@ -105,6 +105,10 @@ export default {
   getTopExercices: function (send) {
     return axios.get(`${burl}/user/topExercices`, { headers: headers, params: send });
   },
+  createSet: function (send) {
+    return axios.post(`${burl}/user/createSet`, send, { headers: headers, params: send });
+  },
+
 
 
   // EXERCICE TYPES

@@ -5,7 +5,7 @@ import Loader from '../../components/Loader';
 import { seanceToSets } from "../../utils/sets";
 import Alert from '../../components/Alert';
 import SessionPostChild from './SessionPostChild';
-
+import API from '../../utils/API';
 
 const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) => {
     const [postTitle, setPostTitle] = useState('');
@@ -15,7 +15,6 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
     const { width } = useWindowDimensions();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [emojis, setEmojis] = useState([]);
     const [stats, setStats] = useState({});
     const [alert, setAlert] = useState(null);
 
@@ -98,9 +97,26 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
             stats: stats,
             recordSummary: recordSummary,
         };
-        const seanceSets = seanceToSets("id", selectedExercices, localStorage.getItem("id"));
-        console.log('Seance:', seance);
-        console.log('SeanceSets:', seanceSets);
+
+        API.createSeance({ seance: seance }).then((response) => {
+            const createdSeance = response.data.newSeance;
+
+            // for each set in selectedExercices, create a seanceSet
+            const seanceSets = seanceToSets(createdSeance._id, selectedExercices, localStorage.getItem("id"));
+            seanceSets.forEach((seanceSet) => {
+                API.createSet({ set: seanceSet }).then((response)).catch((error) => {
+                    setAlert({ message: "Erreur lors de la création du set: " + error.response.data.message, type: "danger" });
+                });
+            });
+
+            // when all seanceSets are created, redirect to the dashboard
+            setAlert({ message: "Séance créée avec succès!", type: "success" });
+            setTimeout(() => {
+                window.location.href = `/dashboard`
+            }, 2000);
+        }).catch((error) => {
+            setAlert({ message: "Erreur lors de la création de la séance: " + error.response.data.message, type: "danger" });
+        });
     };
 
     if (loading) {
@@ -128,6 +144,7 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
                     selectedDate={selectedDate}
                     stats={stats}
                     backgroundColors={backgroundColors}
+                    editable={true}
                 />
 
                 {/* Submit Button */}
