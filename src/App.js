@@ -10,7 +10,7 @@ import Stats from "./components/Dashboard/Stats";
 import PrivateRoute from "./components/PrivateRoute.js";
 import Travaux from "./components/Dashboard/Travaux";
 import Session from "./pages/session/Session.jsx";
-import Compte from "./components/Dashboard/Compte";
+import Compte from "./pages/compte/Compte.jsx";
 import Admin from "./components/Dashboard/Admin.jsx";
 import InstallApp from "./components/Dashboard/Help/InstallApp.jsx";
 import Aide from "./components/Dashboard/Aide.jsx";

@@ -1,23 +1,14 @@
 import { React, useState, useEffect, useRef } from "react";
-import NavigBar from "../NavigBar.jsx"
-import API from "../../utils/API";
-import Footer from "../Footer.jsx";
+import NavigBar from "../../components/NavigBar.jsx";
+import API from "../../utils/API.js";
+import Footer from "../../components/Footer.jsx";
 import { Upload } from "upload-js";
-import { alpha, styled } from '@mui/material/styles';
-import { red } from '@mui/material/colors';
-import Switch from '@mui/material/Switch';
-
-const GreenSwitch = styled(Switch)(({ theme }) => ({
-  '& .MuiSwitch-switchBase.Mui-checked': {
-    color: red['A700'],
-    '&:hover': {
-      backgroundColor: alpha(red['A700'], theme.palette.action.hoverOpacity),
-    },
-  },
-  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-    backgroundColor: red['A700'],
-  },
-}));
+import { COLORS } from "../../utils/colors.js";
+import { useWindowDimensions } from "../../utils/useEffect.js";
+import Loader from "../../components/Loader.jsx";
+import { fetchSeancesData } from "../../utils/seance.js";
+import SessionPostChild from "../session/SessionPostChild.jsx";
+import { stringToDate } from "../../utils/dates.js";
 
 function Compte() {
   const upload = Upload({ apiKey: "free" });
@@ -27,26 +18,6 @@ function Compte() {
   const [formInfo, setFormInfo] = useState({})
   const [modifyInfo, setModifyInfo] = useState(false);
   const [modifyPassword, setModifyPassword] = useState(false);
-  const [switched, setSwitched] = useState();
-
-  async function updateMode() {
-    if (switched != user.modeSombre) {
-      const res = await API.modifyUser({ id: localStorage.getItem("id"), modeSombre: "" + switched })
-      console.log(res)
-
-      window.location = '/compte'
-    }
-  }
-
-  function handleChangeSwitch(event) {
-    event.preventDefault();
-
-    setSwitched(!switched);
-  }
-
-  useEffect(() => {
-    updateMode();
-  }, [switched])
 
   async function disconnect() {
     // await API.logout();
@@ -133,28 +104,6 @@ function Compte() {
   }
 
 
-  const boxRef = useRef();
-  const [x, setX] = useState();
-  const [y, setY] = useState();
-  // This function calculate X and Y
-  const getPosition = () => {
-    const x = boxRef.current.offsetLeft;
-    setX(x);
-    const y = boxRef.current.offsetTop;
-    setY(y);
-  };
-
-  // Get the position of the red box in the beginning
-  useEffect(() => {
-    getPosition();
-  }, []);
-
-  // Re-calculate X and Y of the red box when the window is resized by the user
-  useEffect(() => {
-    window.addEventListener("resize", getPosition);
-  }, []);
-
-
   async function onFileSelected(event) {
     const [file] = event.target.files;
     const { fileUrl } = await upload.uploadFile(
@@ -172,11 +121,8 @@ function Compte() {
     window.location = "/compte"
   }
 
-  return (
-    <div>
-      <NavigBar show={true} location="gear" />
-      <div ref={boxRef}></div>
-
+  function UserInfo() {
+    return <div>
       {modifyInfo ?
         <form className="modify-info-form">
           <div className="form-group row">
@@ -277,57 +223,6 @@ function Compte() {
           <div className="Compte">
             <input style={{ display: "none" }} type="file" onChange={onFileSelected} ref={inputFile} />
 
-            <table className="profile-table">
-              <tbody>
-                <tr>
-
-                  {user.profilePic ?
-                    <td className="profile-td">
-                      <div onClick={() => inputFile.current.click()} className="relative">
-                        <img className="inner-img" src={require('../../images/icons/camera.webp')} alt="camera" />
-                        <img className="profile-pic" src={user.profilePic} alt="profile-pic" />
-                        <p> {text} </p>
-                      </div>
-                    </td>
-                    :
-                    <td>
-                      <div onClick={() => inputFile.current.click()} className="relative">
-                        <img className="inner-img" src={require('../../images/icons/camera.webp')} alt="camera" />
-                        <img className="unknown-profile-pic profile-pic" src={require('../../images/profilepic.webp')} alt='unknown-profile-pic' />
-                        <p> {text} </p>
-                      </div>
-                    </td>
-                  }
-
-                  {user ?
-                    <td className="profile-td">
-                      <h1> {user.fName} {user.lName} </h1>
-                      <h1 className="profile-email"> {user.email} </h1>
-                    </td>
-                    : null}
-
-                  <td>
-
-                    <button className="btn btn-dark profile-btn" onClick={handleModifyForm} block="true" type="submit">
-                      Modifier les infos
-                    </button>
-                    <br />
-
-                    <button className="btn btn-dark" onClick={handleModifyPasswordForm} block="true" type="submit">
-                      Modifier le mot de passe
-                    </button>
-
-                    <p className="session-div-switch">
-                      Mode clair
-                      <GreenSwitch onChange={handleChangeSwitch} checked={!!user.modeSombre} />
-                      Mode Sombre
-                    </p>
-
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
             <div className="small-profile">
 
               {user.profilePic ?
@@ -346,38 +241,160 @@ function Compte() {
 
               {user ?
                 <div>
-                  <h1> {user.fName} {user.lName} </h1>
-                  <h1 className="profile-email"> {user.email} </h1>
+                  <h2> {user.fName} {user.lName} </h2>
+                  <h2 className="profile-email"> {user.email} </h2>
                 </div>
                 : null}
 
-              <button className="btn btn-dark profile-btn profile-btn-small" onClick={handleModifyForm} block="true" type="submit">
+              <button className="btn btn-dark m-2" onClick={handleModifyForm} block="true" type="submit">
                 Modifier les infos
               </button>
               <br />
 
-              <button className="btn btn-dark" onClick={handleModifyPasswordForm} block="true" type="submit">
+              <button className="btn btn-dark m-2" onClick={handleModifyPasswordForm} block="true" type="submit">
                 Modifier le mot de passe
               </button>
-
-              <p className="session-div-switch">
-                Mode clair
-                <GreenSwitch onChange={handleChangeSwitch} checked={!!user.modeSombre} />
-                Mode Sombre </p>
             </div>
 
-            <button className='btn btn-dark btn-lg' disabled={true}
-              style={{ margin: "40px 20px" }}
-              onClick={() => { window.location = "/profil?id=" + user.id }}>
-              Voir profil en ligne
-            </button>
             <button className="btn btn-black btn-lg profile-disconnect-btn" onClick={disconnect} block="true" type="submit">
               Se déconnecter
             </button>
           </div>
       }
+    </div>
+  }
 
-      <Footer warnref={y} />
+  function Seances() {
+    const { width } = useWindowDimensions();
+    const [loading, setLoading] = useState(true);
+    const [seances, setSeances] = useState(null);
+    const [users, setUsers] = useState(null);
+
+    useEffect(() => {
+      // SEANCES
+      // wait for fetchSeancesData to complete before setting the loading state to false
+      const fetchSeances = async () => {
+        const seances = await fetchSeancesData(localStorage.getItem("id"));
+        setSeances(seances);
+      };
+      fetchSeances();
+
+      // USERS
+      const fetchUsersData = async () => {
+        try {
+          const response = await API.getUsers();
+          setUsers(response.data.users);
+        } catch (error) {
+          console.error("Error fetching users data:", error);
+        }
+      };
+      fetchUsersData();
+    }, []);
+
+    // when users and seances are loaded, set loading to false
+    useEffect(() => {
+      if (seances && users) {
+        setLoading(false);
+      }
+    }, [seances, users]);
+
+    useEffect(() => {
+      console.log('Seances:', seances);
+    }, [seances]);
+
+    if (loading) {
+      return <Loader />
+    }
+
+    const backgroundColors = ["#9C005D", "#9C1B00", "#9B0000", "#8B009C", "#9C3600"];
+
+    return (
+      <div>
+
+        {/* USERS */}
+        <div className='basic-flex popInElement' style={{ flexDirection: 'column', alignItems: 'center', padding: width < 400 ? "5px" : width < 550 ? "10px" : "20px" }}>
+          <h1 style={{ marginTop: '40px', marginBottom: '20px' }}>
+            Tu connais ces gens?</h1>
+          <div className='basic-flex' style={{
+            flexDirection: 'column', gap: '20px', display: 'flex',
+            height: '70px',
+            overflowX: 'auto',
+            overflowY: 'hidden',
+            scrollSnapType: 'x mandatory',
+            paddingBottom: '20px',
+            scrollbarWidth: 'none',
+            position: 'relative', // Required for the index positioning
+            maxWidth: '600px',
+          }}>
+            {users && users.length > 0 ? (
+              users.map((user, index) => (
+                <div key={user._id} className='basic-flex' style={{ gap: '20px', alignItems: 'center' }}>
+                  <img
+                    className="icon-navbar"
+                    src={require('../../images/profilepic.webp')}
+                    alt='compte'
+                    style={{
+                      borderRadius: "50%",
+                      border: "1px solid black",
+                    }}
+                  />
+                  <div>
+                    <div>{user.fName} {user.lName}</div>
+                    <button className="btn btn-black">Suivre</button>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div>No users available</div>
+            )}
+          </div>
+        </div>
+
+        {/* SEANCES */}
+        <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '40px', alignItems: 'center' }}>
+          {seances && seances.length > 0 ? (
+            seances.map((seance, index) => (
+              <div className="session-post" style={
+                width < 400 ? { padding: '5px', margin: "20px 0 0 0" } :
+                  width < 550 ? { padding: '10px', margin: "20px 10px 0 10px" } :
+                    { padding: '20px', margin: "20px 20px 0 20px" }}>
+                <SessionPostChild
+                  key={seance._id} // Always provide a key when rendering lists
+                  user={seance.user}
+                  postTitle={seance.title ? seance.title : "N/A"}
+                  postDescription={seance.description}
+                  selectedName={seance.name}
+                  selectedDate={stringToDate(seance.date)}
+                  selectedExercices={seance.exercices}
+                  stats={seance.stats ? seance.stats : { nSets: "N/A", nReps: "N/A", intervalReps: "N/A", totalWeight: "N/A", intervalWeight: "N/A" }}
+                  backgroundColors={backgroundColors}
+                  recordSummary={seance.recordSummary ? seance.recordSummary : []}
+                  editable={false}
+                />
+              </div>
+            ))
+          ) : (
+            <div>No seances available</div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
+      <div className="page-container">
+        <NavigBar location="session" />
+
+
+        <div className="content-wrap">
+          {UserInfo()}
+
+          {Seances()}
+        </div>
+
+        <Footer />
+      </div>
     </div>
   )
 }

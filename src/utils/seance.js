@@ -4,11 +4,12 @@ import API from "./API";
 
 /**
  * Fetches seances data from the API and updates the state with the transformed seances
+ * @param {string} user - The user ID to filter seances by
  * @returns {Promise} A promise that resolves with the transformed seances
  */
-const fetchSeancesData = async () => {
+const fetchSeancesData = async (user) => {
     try {
-        const response = await API.getSeances();
+        const response = await API.getSeances(user ? { user } : {});
         const seancesFetched = response.data.seances;
 
         // Fetch seance sets for all seances
