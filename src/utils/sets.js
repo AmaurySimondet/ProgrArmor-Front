@@ -13,10 +13,10 @@ const renderSets = (sets, className = "set-item") => {
         });
 
         if (!acc[setKey]) {
-            acc[setKey] = { count: 1, PR: set.PR || false };
+            acc[setKey] = { count: 1, type: set.type || false };
         } else {
             acc[setKey].count += 1;
-            acc[setKey].PR = acc[setKey].PR || set.PR;
+            acc[setKey].PR = acc[setKey].PR || set.type;
         }
 
         return acc;
@@ -161,7 +161,7 @@ const seanceToSets = (seanceId, selectedExercices, userId) => {
                 weightLoad: set.weightLoad,
                 value: set.value,
                 elastic: set.elastic || null,
-                PR: set.PR || null,
+                PR: set.type || null,
             };
 
             seanceSets.push(seanceSet);
@@ -188,6 +188,7 @@ const addPrToSets = async (selectedExercices, selectedExercice, index) => {
             const updatedSets = await Promise.all(
                 exercice.sets.map(async (set) => {
                     const isPR = await isPersonalRecord(set, exercice.exercice._id, exercice.categories.map((category) => ({ category: category._id })));
+                    console.log('PR status:', isPR);
                     return { ...set, PR: isPR };
                 })
             );

@@ -514,7 +514,7 @@ function Dashboard() {
 
         csv.push(["Ce tableau est une exportation de Prograrmor"])
         csv.push(["ProgrArmor outil ultime de la progression sportive: journal et historique programme statistiques de tes amis et autre"])
-        csv.push(["http://10.0.200.208:8800/"])
+        csv.push(["http://10.0.51.241:8800/"])
         csv.push([])
         for (let i = 1; i < rows.length; i++) {
             let row = [], cols = rows[i].querySelectorAll("td, th");

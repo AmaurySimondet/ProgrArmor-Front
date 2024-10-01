@@ -6,9 +6,8 @@ import Footer from '../../components/Footer';
 import { COLORS } from '../../utils/colors';
 import API from '../../utils/API';
 import SessionPostChild from '../session/SessionPostChild';
-import { getUserById } from '../../utils/user';
-import { setsToSeance } from '../../utils/sets';
 import { stringToDate } from '../../utils/dates';
+import { fetchSeancesData } from '../../utils/seance';
 
 const DashBoard = () => {
     const { width } = useWindowDimensions();
@@ -18,47 +17,12 @@ const DashBoard = () => {
 
     useEffect(() => {
         // SEANCES
-        const fetchSeancesData = async () => {
-            try {
-                const response = await API.getSeances();
-                const seancesFetched = response.data.seances;
-
-                // Fetch seance sets for all seances
-                const seanceSetsPromises = seancesFetched.map(async (seance) => {
-                    const seanceSetsResponse = await API.getSeanceSets({ seanceId: seance._id });
-                    seance.seanceSets = seanceSetsResponse.data.sets;
-                    return seance;
-                });
-
-                // Fetch user data for all users in the seances
-                const userPromises = seancesFetched.map(async (seance) => {
-                    const userResponse = await getUserById(seance.user);
-                    seance.user = userResponse;
-                    return seance;
-                });
-
-                // Wait for all seance sets and user data to be fetched
-                await Promise.all([...seanceSetsPromises, ...userPromises]);
-
-                // Transform seanceSets to exercices
-                const transformedSeancePromises = seancesFetched.map(async (seance) => {
-                    const transformedSeance = await setsToSeance(seance.seanceSets);
-                    seance.exercices = transformedSeance.exercices;
-                    return seance;
-                });
-
-                // Wait for all transformations to complete
-                const transformedSeances = await Promise.all(transformedSeancePromises);
-
-                // Update state with the transformed seances
-                setSeances(transformedSeances);
-            } catch (error) {
-                console.error("Error fetching seances data:", error);
-            } finally {
-                setLoading(false);
-            }
+        // wait for fetchSeancesData to complete before setting the loading state to false
+        const fetchSeances = async () => {
+            const seances = await fetchSeancesData();
+            setSeances(seances);
         };
-        fetchSeancesData();
+        fetchSeances();
 
         // USERS
         const fetchUsersData = async () => {
@@ -70,8 +34,14 @@ const DashBoard = () => {
             }
         };
         fetchUsersData();
-
     }, []);
+
+    // when users and seances are loaded, set loading to false
+    useEffect(() => {
+        if (seances && users) {
+            setLoading(false);
+        }
+    }, [seances, users]);
 
     useEffect(() => {
         console.log('Seances:', seances);

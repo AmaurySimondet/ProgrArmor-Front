@@ -2,7 +2,7 @@ import axios from "axios";
 const headers = {
   "Content-Type": "application/json"
 };
-const burl = "http://10.0.200.208:8800";
+const burl = "http://10.0.51.241:8800";
 
 export default {
 
@@ -89,6 +89,9 @@ export default {
   },
   getSeances: function (send) {
     return axios.get(`${burl}/user/seances`, { headers: headers, params: send });
+  },
+  createSeance: function (send) {
+    return axios.post(`${burl}/user/createSeance`, send, { headers: headers, params: send });
   },
 
 
