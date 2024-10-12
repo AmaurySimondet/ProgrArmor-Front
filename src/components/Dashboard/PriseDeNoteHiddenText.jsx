@@ -29,7 +29,7 @@ function PriseDeNoteHiddenText() {
             <strong> C'est quoi la prise de note rapide ? </strong> <br />
             <br />
             On est tous d'accord, écrire une séance en mode normal c'est fastidieux, surtout la toute première fois <br />
-            Mais tu sais bien que ProgrArmor est l'outil ultime de tracking, on ne va pas se contenter du mode normal <br />
+            Mais tu sais bien que ProgArmor est l'outil ultime de tracking, on ne va pas se contenter du mode normal <br />
             En prise de note rapide, tu vas écrire ta séance plus ou moins comme tu le ferais dans tes notes de téléphone <br />
             Sauf qu'ici notre programme va générer tout seul la séance à partir des notes et tu pourras bénéficier de tous les autres avantages du site <br />
             <br />

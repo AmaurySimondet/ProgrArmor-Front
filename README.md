@@ -1,6 +1,6 @@
-# Amaury Simondet - ProgrArmor 💪
+# Amaury Simondet - ProgArmor 💪
 
-![Design preview for ProgrArmor](./client/src/images/designs/inscription.webp)
+![Design preview for ProgArmor](./client/src/images/designs/inscription.webp)
 
 ## Salut ! 👋
 
@@ -9,15 +9,15 @@ J'ai réalisé ce site d'outils d'aide à la musculation en projet personnel !
 De par ce projet, j'ai pu approfondir mes connaissances en React, CSS et surtout Node Javascript.
 Le front-end React communique avec l'API back-end Node pour gérer la base de donnée MongoDB.
 
-![Security preview for ProgrArmor](./client/src/images/designs/security.webp)
+![Security preview for ProgArmor](./client/src/images/designs/security.webp)
 
 ## Designs 📸
 
-![Design preview for ProgrArmor](./client/src/images/designs/welcome.webp)
-![Design preview for ProgrArmor](./client/src/images/designs/session.webp)
-![Design preview for ProgrArmor](./client/src/images/designs/historique.webp)
-![Design preview for ProgrArmor](./client/src/images/designs/stats.webp)
-![Design preview for ProgrArmor](./client/src/images/designs/compte.webp)
+![Design preview for ProgArmor](./client/src/images/designs/welcome.webp)
+![Design preview for ProgArmor](./client/src/images/designs/session.webp)
+![Design preview for ProgArmor](./client/src/images/designs/historique.webp)
+![Design preview for ProgArmor](./client/src/images/designs/stats.webp)
+![Design preview for ProgArmor](./client/src/images/designs/compte.webp)
 
 ## Un commentaire ? / Got feedback for me?
 
@@ -43,4 +43,4 @@ This project is my property only and you can't share it for commercial purpose. 
 - npm run build
 - download repository from github
 - load repository on server public_html
-- unzip and rename folder to ProgrArmor
+- unzip and rename folder to ProgArmor

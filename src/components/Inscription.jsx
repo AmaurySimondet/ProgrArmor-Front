@@ -248,7 +248,7 @@ function Inscription() {
                         <h2 className="h2-inscription">
                             Ne perds pas ton temps à écrire tes séances, nous le faisons pour toi ! <br />
                             <br />
-                            ProgrArmor te propose de charger une séance précédente, tu n'auras plus qu'a modifier les changements ! <br />
+                            ProgArmor te propose de charger une séance précédente, tu n'auras plus qu'a modifier les changements ! <br />
                             <br />
                             Tu peux aussi créer tes propres séances avec le mode prise de note rapide ! <br />
                         </h2>
@@ -325,7 +325,7 @@ function Inscription() {
                     <div style={{ width: "90%", margin: "auto" }}>
                         <h1 className="h1-inscription"> Ta progression doit être ta priorité. </h1>
                         <h2 className="h2-inscription">
-                            Utilises ProgrArmor dès maintenant et améliore ta pratique sportive, c'est gratuit. <br />
+                            Utilises ProgArmor dès maintenant et améliore ta pratique sportive, c'est gratuit. <br />
                             <br />
                             <button className="btn btn-lg btn-dark" onClick={scrollToTop}>
                                 Je suis prêt !

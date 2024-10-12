@@ -32,7 +32,7 @@ function PoidsInput(props) {
             <br />
             La force relative à ton poids (<i>par exemple un developpé couché à 100% de ton poids</i>) est une information bien plus intéressante que la force absolue (<i>un developpé couché à 100kg</i>) <br />
             <br />
-            Ton poids permet donc à <strong> ProgrArmor </strong> de: <br />
+            Ton poids permet donc à <strong> ProgArmor </strong> de: <br />
             - Te comparer de manière équitable avec tes amis <br />
             - De suivre ta progression quelque soit ta prise de muscle ou perte de poids <br />
             <br />

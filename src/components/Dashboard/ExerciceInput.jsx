@@ -432,7 +432,7 @@ function ExerciceInput(props) {
                     <div className="form-group row">
                         <div>
                             <p className="info-own-exercice">
-                                <u>Attention:</u> Pour une experience optimale de ProgrArmor, choisis un exercice parmis la liste précédente <br />
+                                <u>Attention:</u> Pour une experience optimale de ProgArmor, choisis un exercice parmis la liste précédente <br />
                                 {"Tu accèderas à plus de choix en selectionnant le mode Expert avec l'interrupteur"}
                             </p>
                         </div>

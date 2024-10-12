@@ -3,9 +3,9 @@ import React from "react";
 function CategorieHiddenText() {
     return (
         <div className="hidden-text">
-            <strong> Comment comprendre les categories sur ProgrArmor ? </strong> <br />
+            <strong> Comment comprendre les categories sur ProgArmor ? </strong> <br />
             <br />
-            Les categories sur ProgrArmor permettent de caractériser au mieux vos exercices, de les différencier et de les suivre. <br />
+            Les categories sur ProgArmor permettent de caractériser au mieux vos exercices, de les différencier et de les suivre. <br />
             {"Nous avons fait le parti pris de réduire au minimum le nombre d'exercices mais de multiplier les catégories / variantes."} <br />
             {"Nous tentons ainsi d'inclure toutes les communautés sportives dans leur diversité de manière compréhensible pour tous."} <br />
             <br />
@@ -25,12 +25,12 @@ function CategorieHiddenText() {
             <br />
             {"Vous pouvez tout à fait garder une notation telle que ' Curl: 12kg 4*12 reps ' tant que vous vous comprenez."} <br />
             {"Sachez en tout cas que ces outils seront là le jour où vous en aurez besoin."} <br />
-            {"Un problème de temps ? ProgrArmor a mis tout en oeuvre pour faciliter votre prise de note avec ses outils."} <br />
-            {"Un problème de place ? ProgrArmor c'est une page infinie sans aucune marge, ecrivez, effacez, modifiez autant que vous voulez."} <br />
+            {"Un problème de temps ? ProgArmor a mis tout en oeuvre pour faciliter votre prise de note avec ses outils."} <br />
+            {"Un problème de place ? ProgArmor c'est une page infinie sans aucune marge, ecrivez, effacez, modifiez autant que vous voulez."} <br />
             <br />
-            <strong> ProgrArmor : Tout ce dont vous avez besoin </strong> <br />
+            <strong> ProgArmor : Tout ce dont vous avez besoin </strong> <br />
             <br />
-            Le but de ProgrArmor va bien au delà de celui du cahier: <br />
+            Le but de ProgArmor va bien au delà de celui du cahier: <br />
             Il vous permet de savoir où, quand, comment, dans quels conditions... vous avez réaliser tel ou tel exercice le tout retrouvable en quelques clics. <br />
             Vous beneficez aussi de statistiques enrichissantes sur votre pratique et pouvez suivre la progression de vos amis. <br />
             {"Essayez, c'est gratuit !"} <br />

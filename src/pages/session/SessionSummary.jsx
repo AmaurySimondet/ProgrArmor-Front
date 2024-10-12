@@ -1,7 +1,7 @@
 import React from 'react';
 import { renderSets } from '../../utils/sets';
 
-const SessionSummary = ({ selectedName, selectedDate, selectedExercices, handleExerciceClick, onFinish, index, handleDateClick, handleNameClick, onNewExercice }) => {
+const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selectedExercice, handleExerciceClick, onFinish, index, handleDateClick, handleNameClick, onNewExercice }) => {
     return (
         <div>
             {selectedName && selectedDate && (
@@ -21,8 +21,8 @@ const SessionSummary = ({ selectedName, selectedDate, selectedExercices, handleE
                                 onClick={() => handleExerciceClick(index !== null && idx > index ? idx - 1 : idx)}
                                 className={"sessionSummaryExercice"}
                             >
-                                <h3 className={idx === index ? 'clickable' : "clickable prograrmor-red"}>
-                                    {idx === index && "---> "}{index !== null && idx === index + 1 && "<--- "}{exercice.exercice.name.fr && exercice.exercice.name.fr}{exercice.categories.length > 0 && " - " + exercice.categories.map((category) => category.name.fr).join(', ')}
+                                <h3 className={idx === index ? 'clickable' : "clickable progarmor-red"}>
+                                    {idx === index && "---> "}{exercice.exercice.name.fr && exercice.exercice.name.fr}{exercice.categories.length > 0 && " - " + exercice.categories.map((category) => category.name.fr).join(', ')}
                                 </h3>
                                 {exercice.sets && exercice.sets.length > 0 && (
                                     <ul style={{ listStyleType: 'none', padding: 0, textAlign: "-webkit-center" }}>

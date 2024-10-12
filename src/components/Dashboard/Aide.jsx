@@ -48,7 +48,7 @@ function Aide() {
                     onClick={handleClickInstallApp}
                     id="InstallApp">
 
-                    Installer l'application ProgrArmor
+                    Installer l'application ProgArmor
 
                     <img className={clickInstallApp ? "expert-toggle rotated" : "expert-toggle not-rotated"}
                         src={require('../../images/icons/icons8-expand-arrow-90.webp')} />

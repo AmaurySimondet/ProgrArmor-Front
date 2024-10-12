@@ -43,7 +43,7 @@ function Accomplissements() {
         try {
             imageSrc = require('../../images/accomplissements/' + id + '.webp');
         } catch (error) {
-            imageSrc = require('../../images/accomplissements/ProgrArmor.webp');;
+            imageSrc = require('../../images/accomplissements/ProgArmor.webp');;
         }
         return imageSrc;
     }

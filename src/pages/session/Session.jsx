@@ -328,6 +328,7 @@ const Session = () => {
               selectedName={selectedName}
               selectedDate={selectedDate}
               selectedExercices={selectedExercices}
+              selectedExercice={selectedExercice}
               handleExerciceClick={handleExerciceClick}
               onFinish={handleFinish}
               index={editingExerciceIndex}

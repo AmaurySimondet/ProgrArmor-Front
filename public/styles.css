@@ -113,7 +113,7 @@ a:hover {
 
 
 /* TAGS */
-.prograrmor-red {
+.progarmor-red {
     color: #9b0000;
 }
 
@@ -1321,17 +1321,17 @@ table.Stats-table {
 
 }
 
-.ProgrArmor {
+.ProgArmor {
     margin: auto;
     color: white;
     transition: 0.5s;
 }
 
-.ProgrArmor:hover {
+.ProgArmor:hover {
     color: #9a9a9a;
 }
 
-.ProgrArmor-a:hover {
+.ProgArmor-a:hover {
     text-decoration: none;
 
 }
@@ -2075,7 +2075,7 @@ table.hometable td.inscription-img-td {
         overflow-x: visible;
     }
 
-    .ProgrArmor {
+    .ProgArmor {
         font-size: 22px !important;
     }
 }
@@ -2088,7 +2088,7 @@ table.hometable td.inscription-img-td {
 
     }
 
-    .ProgrArmor {
+    .ProgArmor {
         opacity: 0;
     }
 

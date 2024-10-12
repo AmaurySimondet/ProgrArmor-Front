@@ -50,7 +50,7 @@ function NavigBar(props) {
                 </button>
                 <a className="navbar-brand" href="/dashboard"><img className="logo-navbar" src={require('../images/icons/logo-navbar.webp')} alt="logo" /></a>
                 <a className="navbar-brand" href="/dashboard">
-                    <h1 className="ProgrArmor">ProgrArmor
+                    <h1 className="ProgArmor">ProgArmor
                         <sub style={{ fontSize: "0.5em" }}>alpha</sub>
                     </h1>
                 </a>
@@ -94,8 +94,8 @@ function NavigBar(props) {
                                 <p className="La-croix" onClick={handleClickWarning}> <strong>  X </strong> </p>
                                 <p className="attention" > <strong> Attention ! </strong>  </p>
                                 <p> Ce site est encore en version pré-alpha, cela signifie : </p>
-                                <p> - que ProgrArmor se garde tout droit concernant votre accès à ce site, </p>
-                                <p> - que ProgrArmor se garde tout droit concernant vos données,
+                                <p> - que ProgArmor se garde tout droit concernant votre accès à ce site, </p>
+                                <p> - que ProgArmor se garde tout droit concernant vos données,
                                     et que celles-ci pourraient être supprimées pour des raisons de développement ou pour tout autre raison, </p>
                                 <p> - que le site peut comporter de nombreux bugs et manquer de fonctionnalités, </p>
                                 <br />

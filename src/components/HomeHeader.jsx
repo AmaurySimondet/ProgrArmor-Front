@@ -10,7 +10,7 @@ function HomeHeader() {
         <span className="navbar-toggler-icon"></span>
       </button>
       <a className="navbar-brand" href="/inscription"><img className="logo-navbar" src={require('../images/icons/logo-navbar.webp')} alt="logo" /></a>
-      {dimensions.width > 500 ? <a className="ProgrArmor-a" href="/inscription"><h1 className="ProgrArmor">ProgrArmor</h1></a> : null}
+      {dimensions.width > 500 ? <a className="ProgArmor-a" href="/inscription"><h1 className="ProgArmor">ProgArmor</h1></a> : null}
       <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
 
         <ul className="navbar-nav mr-auto mt-2 mt-lg-0 navbar-elements">

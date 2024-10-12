@@ -6,7 +6,7 @@ function InstallApp(props) {
             <div className="basic-div">
                 <div>
                     <div >
-                        <div >Rendez-vous sur ProgrArmor en 1 clic grâce à notre application web
+                        <div >Rendez-vous sur ProgArmor en 1 clic grâce à notre application web
                         </div>
                         <div >
                         </div>
@@ -26,13 +26,13 @@ function InstallApp(props) {
 
 
                 <div className="large-margin-top" id="iphone" >
-                    <h2 >Télécharger ProgrArmor sur Iphone
+                    <h2 >Télécharger ProgArmor sur Iphone
                     </h2>
                     <div >
-                        <div >Si vous utilisez Safari, voici les étapes pour télécharger l&#x27;application web ProgrArmor : <br />
+                        <div >Si vous utilisez Safari, voici les étapes pour télécharger l&#x27;application web ProgArmor : <br />
                             <br />
                             <ol className="ol-installapp">
-                                <li>Rendez-vous sur le site ProgrArmor sur Safari</li>
+                                <li>Rendez-vous sur le site ProgArmor sur Safari</li>
                                 <li>Cliquez sur l&#x27;icône en bas au centre de votre écran (avec une flèche qui sort d&#x27;un carré) </li>
                                 <li>Descendez et cliquez sur &quot;Sur l&#x27;écran d&#x27;accueil&quot;</li>
                             </ol>‍
@@ -40,7 +40,7 @@ function InstallApp(props) {
                             <br />‍
                         </div>
                         <div >
-                            <img src={require('../../../images/help/InstallApp_ProgrArmor_iPhone.webp')} className="img-installapp" alt="img-installapp" />
+                            <img src={require('../../../images/help/InstallApp_ProgArmor_iPhone.webp')} className="img-installapp" alt="img-installapp" />
                         </div>
                     </div>
                 </div>
@@ -48,19 +48,19 @@ function InstallApp(props) {
 
 
                 <div className="large-margin-updown" id="samsung" >
-                    <h2 >Télécharger ProgrArmor sur un autre smartphone
+                    <h2 >Télécharger ProgArmor sur un autre smartphone
                     </h2>
                     <div >
                         <div >La manipulation sera identique sur tous les navigateurs hormis Safari, voyons cela :<br />
                             <br />
                             <ol className="ol-installapp">
-                                <li>Rendez-vous sur le site ProgrArmor sur votre navigateur</li>
+                                <li>Rendez-vous sur le site ProgArmor sur votre navigateur</li>
                                 <li>Cliquez sur les 3 points (ou 3 barres) qui permettent d&#x27;ouvrir un menu sur le navigateur </li>
                                 <li>Cliquez sur "Ajouter à l'écran d'acceuil"</li>
                             </ol>‍
                         </div>
                         <div >
-                            <img src={require('../../../images/help/InstallApp_ProgrArmor_Samsung.webp')} className="img-installapp" alt="img-installapp" />
+                            <img src={require('../../../images/help/InstallApp_ProgArmor_Samsung.webp')} className="img-installapp" alt="img-installapp" />
                         </div>
                     </div>
                 </div>
