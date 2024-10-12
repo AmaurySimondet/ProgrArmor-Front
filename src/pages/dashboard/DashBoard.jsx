@@ -137,6 +137,7 @@ const DashBoard = () => {
                                     />
                                 </div>
                             ))
+
                         ) : (
                             <div>Aucune séances</div>
                         )}
