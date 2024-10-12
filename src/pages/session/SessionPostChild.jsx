@@ -26,6 +26,13 @@ function SessionPostChild({ user, postTitle, setPostTitle, postDescription, setP
                 </div>
             </div>
 
+            {/* SI le postTitle est N/A, affichier une banniere rouge expliquant que la seance provient de la version pré alpha et manque de données */}
+            {postTitle === "N/A" &&
+                <div style={{ backgroundColor: "#f9f4f4", padding: "10px", marginTop: "10px", marginBottom: "10px", borderRadius: "5px" }}>
+                    <strong style={{ color: "red" }}>Attention:</strong> Cette séance provient de la version pré-alpha de ProgArmor et manque donc de données.
+                </div>
+            }
+
 
             {/* Post Title - Editable */}
             {editable ?

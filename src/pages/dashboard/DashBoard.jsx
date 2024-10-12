@@ -138,7 +138,7 @@ const DashBoard = () => {
                                 </div>
                             ))
                         ) : (
-                            <div>No seances available</div>
+                            <div>Aucune séances</div>
                         )}
                     </div>
                 </div>

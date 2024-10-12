@@ -7,16 +7,16 @@ import Fuse from 'fuse.js';
 import RenderExercice from './RenderExercice';
 
 const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavorite }) => {
-    const [exercices, setExercices] = useState([]);
-    const [exerciceTypes, setExerciceTypes] = useState([]);
-    const [allExerciceTypes, setAllExerciceTypes] = useState([]);
-    const [allExercices, setAllExercices] = useState([]);
+    const [exercices, setExercices] = useState(null);
+    const [exerciceTypes, setExerciceTypes] = useState(null);
+    const [allExerciceTypes, setAllExerciceTypes] = useState(null);
+    const [allExercices, setAllExercices] = useState(null);
     const [loading, setLoading] = useState(true);
     const [moreTypesUnclicked, setMoreTypesUnclicked] = useState(true); // Track whether to show more types
-    const [emojis, setEmojis] = useState([]);
+    const [emojis, setEmojis] = useState(null);
     const [searchQuery, setSearchQuery] = useState(''); // Track the search input
     const { width } = useWindowDimensions();
-    const [favoriteExercices, setFavoriteExercices] = useState([]);
+    const [favoriteExercices, setFavoriteExercices] = useState(null);
 
     useEffect(() => {
         // Fetch exercise types from the API
@@ -25,11 +25,9 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 const fetchedTypes = response.data.exerciceTypes || [];
                 setAllExerciceTypes(fetchedTypes);
                 setExerciceTypes(fetchedTypes.slice(0, 3)); // Show only the first 3 types initially
-                setLoading(false);
             })
             .catch(error => {
                 console.error("Error fetching exercise types:", error);
-                setLoading(false);
             });
 
         // Fetch all exercise names from the API for the search feature
@@ -41,30 +39,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
             .catch(error => {
                 console.error("Error fetching exercise names:", error);
             });
-    }, []);
 
-    useEffect(() => {
-        setEmojis(randomBodybuildingEmojis(allExerciceTypes.length));
-    }, [allExerciceTypes]);
-
-    const handleMoreTypes = () => {
-        setExerciceTypes(allExerciceTypes); // Show all exercise types
-        setMoreTypesUnclicked(false); // Hide the "More Types" button
-    };
-
-    const handleSearch = (event) => {
-        setSearchQuery(event.target.value);
-        if (event.target.value === '') {
-            setExercices(allExercices.slice(0, 3));
-            setMoreExercicesUnclicked(true);
-            return;
-        }
-        const fuse = new Fuse(allExercices, { keys: ['name.fr'] });
-        const results = fuse.search(event.target.value);
-        setExercices(results.map(result => result.item));
-    };
-
-    useEffect(() => {
         API.getTopExercices({ userId: localStorage.getItem('id') })
             .then(response => {
                 let favoriteExercices = response.data.topExercices;
@@ -111,6 +86,36 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 console.error("Error fetching favorite exercices:", error);
             });
     }, []);
+
+    //when everything is loaded, set loading to false
+    useEffect(() => {
+        if (allExerciceTypes && allExercices && favoriteExercices) {
+            setLoading(false);
+        }
+    }, [allExerciceTypes, allExercices, favoriteExercices]);
+
+    useEffect(() => {
+        if (allExerciceTypes) {
+            setEmojis(randomBodybuildingEmojis(allExerciceTypes.length));
+        }
+    }, [allExerciceTypes]);
+
+    const handleMoreTypes = () => {
+        setExerciceTypes(allExerciceTypes); // Show all exercise types
+        setMoreTypesUnclicked(false); // Hide the "More Types" button
+    };
+
+    const handleSearch = (event) => {
+        setSearchQuery(event.target.value);
+        if (event.target.value === '') {
+            setExercices(allExercices.slice(0, 3));
+            setMoreExercicesUnclicked(true);
+            return;
+        }
+        const fuse = new Fuse(allExercices, { keys: ['name.fr'] });
+        const results = fuse.search(event.target.value);
+        setExercices(results.map(result => result.item));
+    };
 
 
 

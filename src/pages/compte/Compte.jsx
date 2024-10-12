@@ -352,6 +352,8 @@ function Compte() {
 
         {/* SEANCES */}
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '40px', alignItems: 'center' }}>
+          <h1 style={{ marginTop: '40px', marginBottom: '0' }}>
+            Mes séances</h1>
           {seances && seances.length > 0 ? (
             seances.map((seance, index) => (
               <div className="session-post" style={
@@ -374,7 +376,7 @@ function Compte() {
               </div>
             ))
           ) : (
-            <div>No seances available</div>
+            <div>Tu n'as pas encore de séance enregistrée !</div>
           )}
         </div>
       </div>
