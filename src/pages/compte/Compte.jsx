@@ -9,15 +9,27 @@ import Loader from "../../components/Loader.jsx";
 import { fetchSeancesData } from "../../utils/seance.js";
 import SessionPostChild from "../session/SessionPostChild.jsx";
 import { stringToDate } from "../../utils/dates.js";
+import Fuse from 'fuse.js';
 
 function Compte() {
   const upload = Upload({ apiKey: "free" });
+  const { width } = useWindowDimensions();
   const inputFile = useRef(null);
   const [text, setText] = useState();
   const [user, setUser] = useState({})
   const [formInfo, setFormInfo] = useState({})
   const [modifyInfo, setModifyInfo] = useState(false);
   const [modifyPassword, setModifyPassword] = useState(false);
+  const [searchExerciceQuery, setSearchExerciceQuery] = useState('');
+  const [allExercices, setAllExercices] = useState([]);
+  const [exercices, setExercices] = useState([]);
+  const [searchCategoryQuery, setSearchCategoryQuery] = useState('');
+  const [allCategories, setAllCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [PRSearchQuery, setPRSearchQuery] = useState({});
+  const [PRSearchTitle, setPRSearchTitle] = useState({});
+  const [PRSearchResults, setPRSearchResults] = useState([]);
+
 
   async function disconnect() {
     // await API.logout();
@@ -42,6 +54,26 @@ function Compte() {
 
   useEffect(() => {
     setTimeout(getUser, 50);
+    API.getExercices() // Replace with the actual method to fetch exercices
+      .then(response => {
+        let fetchedExercices = response.data.exercices || [];
+        setAllExercices(fetchedExercices);
+        setExercices(fetchedExercices.slice(0, 3)); // Show only the first 3 exercices initially
+      })
+      .catch(error => {
+        console.error("Error fetching exercices:", error);
+        setLoading(false);
+      });
+    API.getCategories() // Replace with the actual method to fetch categories
+      .then(response => {
+        let fetchedCategories = response.data.categories || [];
+        setAllCategories(fetchedCategories);
+        setCategories(fetchedCategories.slice(0, 3)); // Show only the first 3 categories initially
+      })
+      .catch(error => {
+        console.error("Error fetching categories:", error);
+        setLoading(false);
+      });
   }, []);
 
   function handleChange(event) {
@@ -62,6 +94,97 @@ function Compte() {
   function handleModifyPasswordForm() {
     setModifyPassword(!modifyPassword);
   }
+
+  const handleSearchExercice = (event) => {
+    setSearchExerciceQuery(event.target.value);
+    if (event.target.value === '') {
+      setExercices(allExercices.slice(0, 3));
+      return;
+    }
+    const fuse = new Fuse(allExercices, { keys: ['name.fr'] });
+    const results = fuse.search(event.target.value);
+    setExercices(results.map(result => result.item));
+  };
+
+  const handleSearchCategory = (event) => {
+    setSearchCategoryQuery(event.target.value);
+    if (event.target.value === '') {
+      setCategories(allCategories.slice(0, 3));
+      return;
+    }
+    const fuse = new Fuse(allCategories, { keys: ['name.fr'] });
+    const results = fuse.search(event.target.value);
+    setCategories(results.map(result => result.item));
+  };
+
+  const addExerciceSearch = (exercice) => {
+    // Add the selected exercice to the PR search query and PR search title
+    setPRSearchQuery({ ...PRSearchQuery, exercice: exercice._id });
+    setPRSearchTitle({ ...PRSearchTitle, exercice: exercice.name.fr });
+    setSearchExerciceQuery('');
+  };
+
+  const addCategorySearch = (category) => {
+    // Add the selected category to the PR search query and PR search title
+    setPRSearchQuery({ ...PRSearchQuery, categories: [...(PRSearchQuery.categories || []), { category: category._id }] });
+    setPRSearchTitle({ ...PRSearchTitle, categories: [...(PRSearchTitle.categories || []), category.name.fr] });
+    setSearchCategoryQuery('');
+  };
+
+  const handleClearPRSearch = () => {
+    setPRSearchQuery({});
+    setPRSearchTitle({});
+    setSearchExerciceQuery('');
+    setSearchCategoryQuery('');
+  };
+
+  const handlePRSearch = async () => {
+    console.log('PR search query:', PRSearchQuery);
+    API.getPRs({ ...PRSearchQuery, userId: localStorage.getItem("id") }).then(response => {
+      console.log('PR search results:', response.data.prs);
+      setPRSearchResults(response.data.prs);
+    }
+    ).catch(error => {
+      console.error("Error fetching PRs:", error);
+    });
+  }
+
+  const PRTable = ({ PRSearchResults }) => {
+    return (
+      <div>
+        <h2 style={{ margin: "40px" }}>Records Personels (PR)</h2>
+        <table border="1" style={{ width: '100%', textAlign: 'center', backgroundColor: 'white' }}>
+          <thead>
+            <tr>
+              <th>Plage de répétition</th>
+              <th>Repetitions (Valeur)</th>
+              <th>Repetitions (Chargement)</th>
+              <th>Repetitions (Elastique)</th>
+              <th>Seconds (Valeur)</th>
+              <th>Seconds (Chargement)</th>
+              <th>Seconds (Elastique)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {Object.keys(PRSearchResults).map(category => (
+              <tr key={category}>
+                <td>{category}</td>
+                {/* Repetitions data */}
+                <td>{PRSearchResults[category].repetitions?.value || 'N/A'}</td>
+                <td>{PRSearchResults[category].repetitions?.weightLoad || 'N/A'}</td>
+                <td>{PRSearchResults[category].repetitions?.elastic?.tension || 'N/A'}</td>
+                {/* Seconds data */}
+                <td>{PRSearchResults[category].seconds?.value || 'N/A'}</td>
+                <td>{PRSearchResults[category].seconds?.weightLoad || 'N/A'}</td>
+                <td>{PRSearchResults[category].seconds?.elastic?.tension || 'N/A'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
 
   async function handleClickUpdateUser(event) {
     event.preventDefault();
@@ -265,7 +388,6 @@ function Compte() {
   }
 
   function Seances() {
-    const { width } = useWindowDimensions();
     const [loading, setLoading] = useState(true);
     const [seances, setSeances] = useState(null);
     const [users, setUsers] = useState(null);
@@ -310,7 +432,6 @@ function Compte() {
 
     return (
       <div>
-
         {/* USERS */}
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', alignItems: 'center', padding: width < 400 ? "5px" : width < 550 ? "10px" : "20px" }}>
           <h1 style={{ marginTop: '40px', marginBottom: '20px' }}>
@@ -379,7 +500,7 @@ function Compte() {
             <div>Tu n'as pas encore de séance enregistrée !</div>
           )}
         </div>
-      </div>
+      </div >
     );
   }
 
@@ -391,6 +512,95 @@ function Compte() {
 
         <div className="content-wrap">
           {UserInfo()}
+
+          {/* PR SEARCH */}
+          <div className='basic-flex popInElement' style={{ flexDirection: 'column', alignItems: 'center' }}>
+            <h1 style={{ marginTop: '40px', marginBottom: '20px' }}>
+              Recherche de PR</h1>
+            <div >
+              <div style={{ width: '90vw', textAlign: 'center' }}>
+                {/* EXERCICE SEARCH */}
+                <input
+                  type="text"
+                  value={searchExerciceQuery}
+                  onChange={handleSearchExercice}
+                  placeholder="Exercice"
+                  style={{
+                    padding: '10px',
+                    fontSize: '1rem',
+                    margin: '20px 0',
+                    width: '80%',
+                    maxWidth: '400px',
+                    borderRadius: '5px',
+                  }}
+                />
+                {searchExerciceQuery && (
+                  <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
+                    {exercices.length ? (
+                      exercices.map((exercice, index) => (
+                        <div
+                          key={index}
+                          onClick={() => addExerciceSearch(exercice)}
+                          className="inputClickable"
+                        >
+                          {exercice.name.fr}
+                        </div>
+                      ))
+                    ) : (
+                      <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
+                    )}
+                  </div>
+                )}
+
+                {/* CATEGORY SEARCH */}
+                <br />
+                <input
+                  type="text"
+                  value={searchCategoryQuery}
+                  onChange={handleSearchCategory}
+                  placeholder="Catégorie"
+                  style={{
+                    padding: '10px',
+                    fontSize: '1rem',
+                    margin: '20px 0',
+                    width: '80%',
+                    maxWidth: '400px',
+                    borderRadius: '5px',
+                  }}
+                />
+                {searchCategoryQuery && (
+                  <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
+                    {categories.length ? (
+                      categories.map((category, index) => (
+                        <div
+                          key={index}
+                          onClick={() => addCategorySearch(category)}
+                          className="inputClickable"
+                        >
+                          {category.name.fr}
+                        </div>
+                      ))
+                    ) : (
+                      <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
+                    )}
+                  </div>
+                )}
+
+                {/* PR SEARCH TITLE */}
+                <br />
+                {PRSearchTitle.exercice && (<h3>{PRSearchTitle.exercice}</h3>)}
+                {PRSearchTitle.categories && (<h3>{PRSearchTitle.categories.join(', ')}</h3>)}
+
+                {/* SEARCH BUTTON */}
+                <br />
+                <button className="btn btn-white m-2" onClick={handleClearPRSearch}> Effacer </button>
+                <button className="btn btn-black" onClick={handlePRSearch}>Rechercher</button>
+
+                {/* PR SEARCH RESULTS */}
+                {PRSearchResults && <PRTable PRSearchResults={PRSearchResults} />}
+              </div>
+            </div>
+          </div>
 
           {Seances()}
         </div>

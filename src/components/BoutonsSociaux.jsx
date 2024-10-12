@@ -1,7 +1,7 @@
 import React from "react";
 
 function BoutonsSociaux(props) {
-  const url = "http://192.168.1.77:8800";
+  const url = "http://192.0.0.2:8800";
 
   return (
     <div>
