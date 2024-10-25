@@ -44,6 +44,7 @@ export const isPersonalRecord = async (set, exercice, categories) => {
                 if (current.elastic && current.elastic.tension > best.elastic.tension) return current;
                 return best;
             });
+            console.log('bestSet:', bestSet);
 
             // Check if the current set is the best set using values
             let isBestSet = true;

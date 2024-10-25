@@ -10,6 +10,7 @@ import { fetchSeancesData } from "../../utils/seance.js";
 import SessionPostChild from "../session/SessionPostChild.jsx";
 import { stringToDate } from "../../utils/dates.js";
 import Fuse from 'fuse.js';
+import { isPersonalRecord } from "../../utils/pr.js";
 
 function Compte() {
   const upload = Upload({ apiKey: "free" });
@@ -20,16 +21,22 @@ function Compte() {
   const [formInfo, setFormInfo] = useState({})
   const [modifyInfo, setModifyInfo] = useState(false);
   const [modifyPassword, setModifyPassword] = useState(false);
-  const [searchExerciceQuery, setSearchExerciceQuery] = useState('');
+  const [searchExerciceQueryPrTable, setSearchExerciceQueryPrTable] = useState('');
   const [allExercices, setAllExercices] = useState([]);
-  const [exercices, setExercices] = useState([]);
-  const [searchCategoryQuery, setSearchCategoryQuery] = useState('');
   const [allCategories, setAllCategories] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [PRSearchQuery, setPRSearchQuery] = useState({});
-  const [PRSearchTitle, setPRSearchTitle] = useState({});
-  const [PRSearchResults, setPRSearchResults] = useState([]);
-
+  // PR Table states
+  const [exercicesPrTable, setExercicesPrTable] = useState([]);
+  const [searchCategoryQueryPrTable, setSearchCategoryQueryPrTable] = useState('');
+  const [categoriesPrTable, setCategoriesPrTable] = useState([]);
+  const [PrTableQuery, setPrTableQuery] = useState({});
+  const [PrTableTitle, setPrTableTitle] = useState({});
+  const [PrTableResults, setPrTableResults] = useState(null);
+  // PR Search states
+  const [exercicesPrSearch, setExercicesPrSearch] = useState(null);
+  const [categoriesPrSearch, setCategoriesPrSearch] = useState([]);
+  const [searchExerciceQueryPrSearch, setSearchExerciceQueryPrSearch] = useState('');
+  const [searchCategoryQueryPrSearch, setSearchCategoryQueryPrSearch] = useState('');
+  const [PrSearchTitle, setPrSearchTitle] = useState({});
 
   async function disconnect() {
     // await API.logout();
@@ -95,96 +102,6 @@ function Compte() {
     setModifyPassword(!modifyPassword);
   }
 
-  const handleSearchExercice = (event) => {
-    setSearchExerciceQuery(event.target.value);
-    if (event.target.value === '') {
-      setExercices(allExercices.slice(0, 3));
-      return;
-    }
-    const fuse = new Fuse(allExercices, { keys: ['name.fr'] });
-    const results = fuse.search(event.target.value);
-    setExercices(results.map(result => result.item));
-  };
-
-  const handleSearchCategory = (event) => {
-    setSearchCategoryQuery(event.target.value);
-    if (event.target.value === '') {
-      setCategories(allCategories.slice(0, 3));
-      return;
-    }
-    const fuse = new Fuse(allCategories, { keys: ['name.fr'] });
-    const results = fuse.search(event.target.value);
-    setCategories(results.map(result => result.item));
-  };
-
-  const addExerciceSearch = (exercice) => {
-    // Add the selected exercice to the PR search query and PR search title
-    setPRSearchQuery({ ...PRSearchQuery, exercice: exercice._id });
-    setPRSearchTitle({ ...PRSearchTitle, exercice: exercice.name.fr });
-    setSearchExerciceQuery('');
-  };
-
-  const addCategorySearch = (category) => {
-    // Add the selected category to the PR search query and PR search title
-    setPRSearchQuery({ ...PRSearchQuery, categories: [...(PRSearchQuery.categories || []), { category: category._id }] });
-    setPRSearchTitle({ ...PRSearchTitle, categories: [...(PRSearchTitle.categories || []), category.name.fr] });
-    setSearchCategoryQuery('');
-  };
-
-  const handleClearPRSearch = () => {
-    setPRSearchQuery({});
-    setPRSearchTitle({});
-    setSearchExerciceQuery('');
-    setSearchCategoryQuery('');
-  };
-
-  const handlePRSearch = async () => {
-    console.log('PR search query:', PRSearchQuery);
-    API.getPRs({ ...PRSearchQuery, userId: localStorage.getItem("id") }).then(response => {
-      console.log('PR search results:', response.data.prs);
-      setPRSearchResults(response.data.prs);
-    }
-    ).catch(error => {
-      console.error("Error fetching PRs:", error);
-    });
-  }
-
-  const PRTable = ({ PRSearchResults }) => {
-    return (
-      <div>
-        <h2 style={{ margin: "40px" }}>Records Personels (PR)</h2>
-        <table border="1" style={{ width: '100%', textAlign: 'center', backgroundColor: 'white' }}>
-          <thead>
-            <tr>
-              <th>Plage de répétition</th>
-              <th>Repetitions (Valeur)</th>
-              <th>Repetitions (Chargement)</th>
-              <th>Repetitions (Elastique)</th>
-              <th>Seconds (Valeur)</th>
-              <th>Seconds (Chargement)</th>
-              <th>Seconds (Elastique)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {Object.keys(PRSearchResults).map(category => (
-              <tr key={category}>
-                <td>{category}</td>
-                {/* Repetitions data */}
-                <td>{PRSearchResults[category].repetitions?.value || 'N/A'}</td>
-                <td>{PRSearchResults[category].repetitions?.weightLoad || 'N/A'}</td>
-                <td>{PRSearchResults[category].repetitions?.elastic?.tension || 'N/A'}</td>
-                {/* Seconds data */}
-                <td>{PRSearchResults[category].seconds?.value || 'N/A'}</td>
-                <td>{PRSearchResults[category].seconds?.weightLoad || 'N/A'}</td>
-                <td>{PRSearchResults[category].seconds?.elastic?.tension || 'N/A'}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    );
-  };
-
 
   async function handleClickUpdateUser(event) {
     event.preventDefault();
@@ -226,7 +143,6 @@ function Compte() {
     }
   }
 
-
   async function onFileSelected(event) {
     const [file] = event.target.files;
     const { fileUrl } = await upload.uploadFile(
@@ -242,6 +158,187 @@ function Compte() {
     console.log(res)
 
     window.location = "/compte"
+  }
+
+  function PrTable() {
+    const handleSearchExercice = (event) => {
+      setSearchExerciceQueryPrTable(event.target.value);
+      if (event.target.value === '') {
+        setExercicesPrTable(allExercices.slice(0, 3));
+        return;
+      }
+      const fuse = new Fuse(allExercices, { keys: ['name.fr'] });
+      const results = fuse.search(event.target.value);
+      setExercicesPrTable(results.map(result => result.item));
+    };
+
+    const handleSearchCategory = (event) => {
+      setSearchCategoryQueryPrTable(event.target.value);
+      if (event.target.value === '') {
+        setCategoriesPrTable(allCategories.slice(0, 3));
+        return;
+      }
+      const fuse = new Fuse(allCategories, { keys: ['name.fr'] });
+      const results = fuse.search(event.target.value);
+      setCategoriesPrTable(results.map(result => result.item));
+    };
+
+    const addExerciceSearch = (exercice) => {
+      // Add the selected exercice to the PR search query and PR search title
+      setPrTableQuery({ ...PrTableQuery, exercice: exercice._id });
+      setPrTableTitle({ ...PrTableTitle, exercice: exercice.name.fr });
+      setSearchExerciceQueryPrTable('');
+    };
+
+    const addCategorySearch = (category) => {
+      // Add the selected category to the PR search query and PR search title
+      setPrTableQuery({ ...PrTableQuery, categories: [...(PrTableQuery.categories || []), { category: category._id }] });
+      setPrTableTitle({ ...PrTableTitle, categories: [...(PrTableTitle.categories || []), category.name.fr] });
+      setSearchCategoryQueryPrTable('');
+    };
+
+    const handleClearPrTable = () => {
+      setPrTableQuery({});
+      setPrTableTitle({});
+      setSearchExerciceQueryPrTable('');
+      setSearchCategoryQueryPrTable('');
+    };
+
+    const handlePrTable = async () => {
+      console.log('PR search query:', PrTableQuery);
+      API.getPRs({ ...PrTableQuery, userId: localStorage.getItem("id") }).then(response => {
+        console.log('PR search results:', response.data.prs);
+        setPrTableResults(response.data.prs);
+      }
+      ).catch(error => {
+        console.error("Error fetching PRs:", error);
+      });
+    }
+
+    const PrTableElement = ({ PrTableResults }) => {
+      return (
+        <div>
+          <h2 style={{ margin: "40px" }}>Records Personels (PR)</h2>
+          <table border="1" style={{ width: '100%', textAlign: 'center', backgroundColor: 'white' }}
+            className="table table-striped table-bordered">
+            <thead className="thead-dark">
+              <tr>
+                <th>Plage de répétition</th>
+                <th>Repetitions</th>
+                <th>Charge</th>
+                <th>Elastique</th>
+                <th style={{ color: "#aaaaaa" }}>Secondes</th>
+                <th style={{ color: "#aaaaaa" }}>Charge</th>
+                <th style={{ color: "#aaaaaa" }}>Elastique</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.keys(PrTableResults).map(category => (
+                <tr key={category}>
+                  <td>{category}</td>
+                  {/* Repetitions data */}
+                  <td>{PrTableResults[category].repetitions?.value || '-'}</td>
+                  <td>{PrTableResults[category].repetitions?.weightLoad || '-'}</td>
+                  <td>{PrTableResults[category].repetitions?.elastic?.tension || '-'}</td>
+                  {/* Seconds data */}
+                  <td>{PrTableResults[category].seconds?.value || '-'}</td>
+                  <td>{PrTableResults[category].seconds?.weightLoad || '-'}</td>
+                  <td>{PrTableResults[category].seconds?.elastic?.tension || '-'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    };
+
+    return <div className='basic-flex popInElement' style={{ flexDirection: 'column', alignItems: 'center' }}>
+      <h1 style={{ marginTop: '40px', marginBottom: '20px' }}>
+        Tableau de PR</h1>
+      <div >
+        <div style={{ width: '90vw', textAlign: 'center' }}>
+          {/* EXERCICE SEARCH */}
+          <input
+            type="text"
+            value={searchExerciceQueryPrTable}
+            onChange={handleSearchExercice}
+            placeholder="Exercice"
+            style={{
+              padding: '10px',
+              fontSize: '1rem',
+              margin: '20px 0',
+              width: '80%',
+              maxWidth: '400px',
+              borderRadius: '5px',
+            }}
+          />
+          {searchExerciceQueryPrTable && (
+            <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
+              {exercicesPrTable.length ? (
+                exercicesPrTable.map((exercice, index) => (
+                  <div
+                    key={index}
+                    onClick={() => addExerciceSearch(exercice)}
+                    className="inputClickable"
+                  >
+                    {exercice.name.fr}
+                  </div>
+                ))
+              ) : (
+                <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
+              )}
+            </div>
+          )}
+
+          {/* CATEGORY SEARCH */}
+          <br />
+          <input
+            type="text"
+            value={searchCategoryQueryPrTable}
+            onChange={handleSearchCategory}
+            placeholder="Catégorie"
+            style={{
+              padding: '10px',
+              fontSize: '1rem',
+              margin: '20px 0',
+              width: '80%',
+              maxWidth: '400px',
+              borderRadius: '5px',
+            }}
+          />
+          {searchCategoryQueryPrTable && (
+            <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
+              {categoriesPrTable.length ? (
+                categoriesPrTable.map((category, index) => (
+                  <div
+                    key={index}
+                    onClick={() => addCategorySearch(category)}
+                    className="inputClickable"
+                  >
+                    {category.name.fr}
+                  </div>
+                ))
+              ) : (
+                <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
+              )}
+            </div>
+          )}
+
+          {/* PR SEARCH TITLE */}
+          <br />
+          {PrTableTitle.exercice && (<h3>{PrTableTitle.exercice}</h3>)}
+          {PrTableTitle.categories && (<h3>{PrTableTitle.categories.join(', ')}</h3>)}
+
+          {/* SEARCH BUTTON */}
+          <br />
+          <button className="btn btn-white m-2" onClick={handleClearPrTable}> Effacer </button>
+          <button className="btn btn-black" onClick={handlePrTable}>Rechercher</button>
+
+          {/* PR SEARCH RESULTS */}
+          {PrTableResults && <PrTableElement PrTableResults={PrTableResults} />}
+        </div>
+      </div>
+    </div>
   }
 
   function UserInfo() {
@@ -504,6 +601,223 @@ function Compte() {
     );
   }
 
+
+  function PrSearch() {
+    const [set, setSet] = useState({ unit: 'repetitions', value: '', weightLoad: '', elastic: '' });
+    const [prStatus, setPrStatus] = useState(null);
+
+    const handleSearchExercicePrSearch = (event) => {
+      const query = event.target.value;
+      setSearchExerciceQueryPrSearch(query);
+      if (query === '') {
+        setExercicesPrSearch(allExercices.slice(0, 3));
+        return;
+      }
+      const fuse = new Fuse(allExercices, { keys: ['name.fr'] });
+      const results = fuse.search(query);
+      setExercicesPrSearch(results.map(result => result.item));
+    };
+
+    const handleSearchCategoryPrSearch = (event) => {
+      const query = event.target.value;
+      setSearchCategoryQueryPrSearch(query);
+      if (query === '') {
+        setCategoriesPrSearch(allCategories.slice(0, 3));
+        return;
+      }
+      const fuse = new Fuse(allCategories, { keys: ['name.fr'] });
+      const results = fuse.search(query);
+      setCategoriesPrSearch(results.map(result => result.item));
+    };
+
+    const handleAddSet = (event) => {
+      const { name, value } = event.target;
+      setSet(prevSet => ({ ...prevSet, [name]: value }));
+    };
+
+    const addExerciceSearchPrSearch = (exercice) => {
+      setPrSearchTitle(prevTitle => ({ ...prevTitle, exercice }));
+      setSearchExerciceQueryPrSearch('');
+    };
+
+    const addCategorySearchPrSearch = (category) => {
+      setPrSearchTitle(prevTitle => ({
+        ...prevTitle,
+        categories: [...(prevTitle.categories || []), category]
+      }));
+      setSearchCategoryQueryPrSearch('');
+    };
+
+    const handleCheckPrStatus = async () => {
+      setPrSearchTitle({ ...PrSearchTitle, set });
+
+      if (PrSearchTitle.exercice && set.unit && set.value && set.weightLoad) {
+        try {
+          console.log('Checking PR status for:', PrSearchTitle);
+          let status = await isPersonalRecord(set, PrSearchTitle.exercice._id, PrSearchTitle.categories ? PrSearchTitle.categories.map(cat => ({ category: cat._id })) : []);
+          // if status is null, "Not a PR" is displayed
+          status = status || "Not a PR";
+          setPrStatus(status);
+        } catch (error) {
+          console.error("Error checking PR status:", error);
+        }
+      }
+    };
+
+    const handleClearPrSearch = () => {
+      setPrSearchTitle({});
+      setPrStatus(null);
+      setSet({ unit: 'repetitions', value: '', weightLoad: '', elastic: '' });
+      setSearchExerciceQueryPrSearch('');
+      setSearchCategoryQueryPrSearch('');
+    }
+
+    return (
+      <div className="basic-flex popInElement" style={{ flexDirection: 'column', alignItems: 'center' }}>
+        <h1 style={{ marginTop: '40px', marginBottom: '20px' }}>Est-ce un PR ?</h1>
+
+        <div style={{ width: '90vw', textAlign: 'center' }}>
+          {/* Exercise Search Input */}
+          <input
+            type="text"
+            value={searchExerciceQueryPrSearch}
+            onChange={handleSearchExercicePrSearch}
+            placeholder="Exercice"
+            style={{
+              padding: '10px',
+              fontSize: '1rem',
+              margin: '20px',
+              width: '80%',
+              maxWidth: '400px',
+              borderRadius: '5px',
+            }}
+          />
+          {searchExerciceQueryPrSearch && (
+            <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
+              {exercicesPrSearch.length ? (
+                exercicesPrSearch.map((exercice, index) => (
+                  <div
+                    key={index}
+                    onClick={() => addExerciceSearchPrSearch(exercice)}
+                    className="inputClickable"
+                  >
+                    {exercice.name.fr}
+                  </div>
+                ))
+              ) : (
+                <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
+              )}
+            </div>
+          )}
+
+          {/* Category Search Input */}
+          <input
+            type="text"
+            value={searchCategoryQueryPrSearch}
+            onChange={handleSearchCategoryPrSearch}
+            placeholder="Catégorie"
+            style={{
+              padding: '10px',
+              fontSize: '1rem',
+              margin: '20px',
+              width: '80%',
+              maxWidth: '400px',
+              borderRadius: '5px',
+            }}
+          />
+          {searchCategoryQueryPrSearch && (
+            <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
+              {categoriesPrSearch.length ? (
+                categoriesPrSearch.map((category, index) => (
+                  <div
+                    key={index}
+                    onClick={() => addCategorySearchPrSearch(category)}
+                    className="inputClickable"
+                  >
+                    {category.name.fr}
+                  </div>
+                ))
+              ) : (
+                <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
+              )}
+            </div>
+          )}
+
+          {/* Set Details Inputs */}
+          <div style={{ marginTop: '20px', display: "flex", flexDirection: "row", gap: '20px' }}>
+            <label style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+              Unité
+              <select name="unit" value={set.unit} onChange={handleAddSet} style={{
+                padding: '10px',
+                fontSize: '1rem',
+                margin: '20px 0',
+                width: '80%',
+                maxWidth: '400px',
+                borderRadius: '5px',
+              }}>
+                <option value="repetitions" selected>Repetitions</option>
+                <option value="seconds">Seconds</option>
+              </select>
+            </label>
+            <label style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+              Valeur
+              <input type="number" name="value" value={set.value} onChange={handleAddSet} style={{
+                padding: '10px',
+                fontSize: '1rem',
+                margin: '20px 0',
+                width: '80%',
+                maxWidth: '400px',
+                borderRadius: '5px',
+              }} />
+            </label>
+            <label style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+              Charge
+              <input type="number" name="weightLoad" value={set.weightLoad} onChange={handleAddSet} style={{
+                padding: '10px',
+                fontSize: '1rem',
+                margin: '20px 0',
+                width: '80%',
+                maxWidth: '400px',
+                borderRadius: '5px',
+              }} />
+            </label>
+            <label style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+              Elastique
+              <input type="text" name="elastic" value={set.elastic} onChange={handleAddSet} style={{
+                padding: '10px',
+                fontSize: '1rem',
+                margin: '20px 0',
+                width: '80%',
+                maxWidth: '400px',
+                borderRadius: '5px',
+              }} />
+            </label>
+          </div>
+
+          {/* PR SEARCH TITLE */}
+          <br />
+          {PrSearchTitle.exercice && (<h3>{PrSearchTitle.exercice.name.fr}</h3>)}
+          {PrSearchTitle.categories && (<h3>{PrSearchTitle.categories.map(cat => cat.name.fr).join(', ')}</h3>)}
+          {PrSearchTitle.set && (
+            <h3> {PrSearchTitle.set.value} {PrSearchTitle.set.unit} {` @ ${PrSearchTitle.set.weightLoad} kg`} {PrSearchTitle.set.elastic && `Elastique: ${PrSearchTitle.set.elastic}`} </h3>
+          )}
+
+          {/* Check PR Button */}
+          <br />
+          <button className="btn btn-white m-2" onClick={handleClearPrSearch}> Effacer </button>
+          <button className="btn btn-black" onClick={handleCheckPrStatus}>Vérifier le PR</button>
+
+          {/* Display PR Status */}
+          {prStatus && (
+            <div style={{ marginTop: '20px', fontSize: '1.5rem', color: prStatus === "PR" ? 'green' : (prStatus === "SB" ? 'orange' : 'red') }}>
+              {prStatus === "PR" ? "PR : Record Personnel !" : prStatus === "SB" ? "SB : Même meilleur résultat" : "Pas un PR"}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
       <div className="page-container">
@@ -513,94 +827,9 @@ function Compte() {
         <div className="content-wrap">
           {UserInfo()}
 
-          {/* PR SEARCH */}
-          <div className='basic-flex popInElement' style={{ flexDirection: 'column', alignItems: 'center' }}>
-            <h1 style={{ marginTop: '40px', marginBottom: '20px' }}>
-              Recherche de PR</h1>
-            <div >
-              <div style={{ width: '90vw', textAlign: 'center' }}>
-                {/* EXERCICE SEARCH */}
-                <input
-                  type="text"
-                  value={searchExerciceQuery}
-                  onChange={handleSearchExercice}
-                  placeholder="Exercice"
-                  style={{
-                    padding: '10px',
-                    fontSize: '1rem',
-                    margin: '20px 0',
-                    width: '80%',
-                    maxWidth: '400px',
-                    borderRadius: '5px',
-                  }}
-                />
-                {searchExerciceQuery && (
-                  <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
-                    {exercices.length ? (
-                      exercices.map((exercice, index) => (
-                        <div
-                          key={index}
-                          onClick={() => addExerciceSearch(exercice)}
-                          className="inputClickable"
-                        >
-                          {exercice.name.fr}
-                        </div>
-                      ))
-                    ) : (
-                      <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
-                    )}
-                  </div>
-                )}
+          {PrSearch()}
 
-                {/* CATEGORY SEARCH */}
-                <br />
-                <input
-                  type="text"
-                  value={searchCategoryQuery}
-                  onChange={handleSearchCategory}
-                  placeholder="Catégorie"
-                  style={{
-                    padding: '10px',
-                    fontSize: '1rem',
-                    margin: '20px 0',
-                    width: '80%',
-                    maxWidth: '400px',
-                    borderRadius: '5px',
-                  }}
-                />
-                {searchCategoryQuery && (
-                  <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
-                    {categories.length ? (
-                      categories.map((category, index) => (
-                        <div
-                          key={index}
-                          onClick={() => addCategorySearch(category)}
-                          className="inputClickable"
-                        >
-                          {category.name.fr}
-                        </div>
-                      ))
-                    ) : (
-                      <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
-                    )}
-                  </div>
-                )}
-
-                {/* PR SEARCH TITLE */}
-                <br />
-                {PRSearchTitle.exercice && (<h3>{PRSearchTitle.exercice}</h3>)}
-                {PRSearchTitle.categories && (<h3>{PRSearchTitle.categories.join(', ')}</h3>)}
-
-                {/* SEARCH BUTTON */}
-                <br />
-                <button className="btn btn-white m-2" onClick={handleClearPRSearch}> Effacer </button>
-                <button className="btn btn-black" onClick={handlePRSearch}>Rechercher</button>
-
-                {/* PR SEARCH RESULTS */}
-                {PRSearchResults && <PRTable PRSearchResults={PRSearchResults} />}
-              </div>
-            </div>
-          </div>
+          {PrTable()}
 
           {Seances()}
         </div>
