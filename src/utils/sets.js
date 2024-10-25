@@ -2,7 +2,7 @@ import API from './API';
 import React from 'react';
 import { isPersonalRecord } from './pr';
 
-const renderSets = (sets, className = "set-item") => {
+const renderSets = (sets, editingSets, className = "set-item") => {
     // Count identical sets
     const setCount = sets.reduce((acc, set) => {
         const setKey = JSON.stringify({
@@ -21,6 +21,20 @@ const renderSets = (sets, className = "set-item") => {
 
         return acc;
     }, {});
+
+    // if editingSets and sets !== editingSets, render the editingSets
+    if (editingSets && sets !== editingSets) {
+        return Object.keys(setCount).map((setKey) => {
+            const { count, PR } = setCount[setKey];
+            const set = JSON.parse(setKey);
+
+            return (
+                <li key={setKey} className={className}>
+                    {`${count} x ${set.value} ${set.unit} ${set.weightLoad ? `@ ${set.weightLoad} kg` : ''} ${set.elastic && set.elastic.tension ? `Elastique: ${set.elastic.use} ${set.elastic.tension} kg` : ''}`}
+                </li>
+            );
+        });
+    }
 
     // Render the sets
     return Object.keys(setCount).map((setKey) => {
@@ -176,7 +190,7 @@ const addPrToSets = async (selectedExercices, selectedExercice, index) => {
 
     // Place selectedExercice at the correct position
     if (selectedExercice && index !== null) {
-        exercicesToRender.splice(index, 0, selectedExercice);
+        exercicesToRender.splice(index, 1, selectedExercice);
     } else if (selectedExercice) {
         exercicesToRender.push(selectedExercice);
     }
@@ -184,7 +198,7 @@ const addPrToSets = async (selectedExercices, selectedExercice, index) => {
     // Check for PRs
     const exercicesWithPRStatus = await Promise.all(
         exercicesToRender.map(async (exercice) => {
-            console.log('Querying PR for:', exercice.exercice.name.fr + " (" + exercice.exercice._id + ") " + exercice.categories.map((category) => (category.name.fr + " (" + category._id + ") ")).join(', '));
+            // console.log('Querying PR for:', exercice.exercice.name.fr + " (" + exercice.exercice._id + ") " + exercice.categories.map((category) => (category.name.fr + " (" + category._id + ") ")).join(', '));
             const updatedSets = await Promise.all(
                 exercice.sets.map(async (set) => {
                     const isPR = await isPersonalRecord(set, exercice.exercice._id, exercice.categories.map((category) => ({ category: category._id })));

@@ -1,13 +1,11 @@
 import React from "react";
 import { renderSets } from "../../utils/sets";
 
-const RenderExercice = ({ exercice, sets }) => {
+const RenderExercice = ({ exercice, sets, editingSets }) => {
     let setsToRender = exercice.sets;
     if (sets) {
         setsToRender = sets;
     }
-
-    console.log(exercice.categories);
 
     return <div
         className="sessionSummaryExercice popInElement"
@@ -17,7 +15,7 @@ const RenderExercice = ({ exercice, sets }) => {
         </h3>
         {setsToRender && setsToRender.length > 0 && (
             <ul style={{ listStyleType: 'none', padding: 0, textAlign: "-webkit-center" }}>
-                {renderSets(setsToRender)}
+                {renderSets(setsToRender, editingSets)}
             </ul>
         )}
     </div>;

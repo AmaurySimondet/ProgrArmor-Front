@@ -134,27 +134,14 @@ const Session = () => {
       sets: sets
     };
 
-    // If we are editing an existing exercice, replace it in the array
-    if (editingExerciceIndex !== null) {
-      const updatedExercices = [...selectedExercices];
-      updatedExercices[editingExerciceIndex] = newExercice;
-      // setSelectedExercices(updatedExercices);
-      setEditingExerciceIndex(null);
-      // Check for PRs
-      addPrToSets(updatedExercices, newExercice, editingExerciceIndex).then(updatedExercices => {
-        setSelectedExercices(updatedExercices);
-      });
-    }
-    // Otherwise, add the new exercice to the array
-    else {
-      // setSelectedExercices([...selectedExercices, newExercice]);
-      // Check for PRs
-      addPrToSets(selectedExercices, newExercice, selectedExercices.length).then(updatedExercices => {
-        setSelectedExercices(updatedExercices);
-      });
-    }
+    // Handle exercise replacement or addition
+    const updateExercices = async () => {
+      const finalExercices = await addPrToSets(selectedExercices, newExercice, editingExerciceIndex ?? updatedExercices.length);
+      setSelectedExercices(finalExercices);
+    };
+    updateExercices();
 
-    // Reset the exercice state
+    // Reset the exercise state
     setSelectedType('');
     setSelectedExercice({
       exercice: { name: { fr: '' }, _id: '' },
@@ -164,14 +151,8 @@ const Session = () => {
     setSelectedCategoryType('');
     setSelectedCategory('');
     setSelectedSets([]);
-
-    // if we are editing an existing exercice, edit the next one's sets
-    if (editingExerciceIndex !== null) {
-      setEditingExerciceIndex(editingExerciceIndex + 1);
-      handleExerciceClick(editingExerciceIndex + 1);
-    } else {
-      setStep(4);
-    }
+    setEditingExerciceIndex(null);
+    setStep(4);
   };
 
   const handleOnDeleteExercice = (index) => {

@@ -10,7 +10,7 @@ const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selecte
                     {/* Name and Date */}
                     <h2 className='popInElement'>
                         <span onClick={handleNameClick} className='clickable'> {selectedName}</span>
-                        -
+                        {" - "}
                         <span onClick={handleDateClick} className='clickable'>{selectedDate}</span>
                     </h2>
 

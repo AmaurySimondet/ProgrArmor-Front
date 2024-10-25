@@ -1,4 +1,5 @@
 import { React, useState, useEffect, useRef } from "react";
+import { useSearchParams } from "react-router-dom";
 import NavigBar from "../../components/NavigBar.jsx";
 import API from "../../utils/API.js";
 import Footer from "../../components/Footer.jsx";
@@ -24,6 +25,8 @@ function Compte() {
   const [searchExerciceQueryPrTable, setSearchExerciceQueryPrTable] = useState('');
   const [allExercices, setAllExercices] = useState([]);
   const [allCategories, setAllCategories] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [loading, setLoading] = useState(true);
   // PR Table states
   const [exercicesPrTable, setExercicesPrTable] = useState([]);
   const [searchCategoryQueryPrTable, setSearchCategoryQueryPrTable] = useState('');
@@ -46,7 +49,7 @@ function Compte() {
   };
 
   async function getUser() {
-    const { data } = await API.getUser({ id: localStorage.getItem("id") });
+    const { data } = await API.getUser({ id: searchParams.get('id') });
     if (data.success === false) {
       alert(data.message);
     } else {
@@ -65,7 +68,6 @@ function Compte() {
       .then(response => {
         let fetchedExercices = response.data.exercices || [];
         setAllExercices(fetchedExercices);
-        setExercices(fetchedExercices.slice(0, 3)); // Show only the first 3 exercices initially
       })
       .catch(error => {
         console.error("Error fetching exercices:", error);
@@ -75,7 +77,6 @@ function Compte() {
       .then(response => {
         let fetchedCategories = response.data.categories || [];
         setAllCategories(fetchedCategories);
-        setCategories(fetchedCategories.slice(0, 3)); // Show only the first 3 categories initially
       })
       .catch(error => {
         console.error("Error fetching categories:", error);
@@ -121,7 +122,7 @@ function Compte() {
         const res = await API.modifyUser({ id: localStorage.getItem("id"), fName: fName, lName: lName, email: email })
         console.log(res)
 
-        window.location = "/compte"
+        window.location = `/compte?id=${localStorage.getItem('id')}`
       }
     }
 
@@ -134,7 +135,7 @@ function Compte() {
         const res = await API.modifyUser({ id: localStorage.getItem("id"), password: password })
         console.log(res)
 
-        window.location = "/compte"
+        window.location = `/compte?id=${localStorage.getItem('id')}`
       }
     }
 
@@ -157,7 +158,7 @@ function Compte() {
     const res = await API.modifyUser({ id: localStorage.getItem("id"), profilePic: fileUrl })
     console.log(res)
 
-    window.location = "/compte"
+    window.location = `/compte?id=${localStorage.getItem('id')}`
   }
 
   function PrTable() {
@@ -205,9 +206,7 @@ function Compte() {
     };
 
     const handlePrTable = async () => {
-      console.log('PR search query:', PrTableQuery);
-      API.getPRs({ ...PrTableQuery, userId: localStorage.getItem("id") }).then(response => {
-        console.log('PR search results:', response.data.prs);
+      API.getPRs({ ...PrTableQuery, userId: searchParams.get('id') }).then(response => {
         setPrTableResults(response.data.prs);
       }
       ).catch(error => {
@@ -219,7 +218,7 @@ function Compte() {
       return (
         <div>
           <h2 style={{ margin: "40px" }}>Records Personels (PR)</h2>
-          <table border="1" style={{ width: '100%', textAlign: 'center', backgroundColor: 'white' }}
+          <table border="1" style={{ width: '100%', textAlign: 'center', backgroundColor: 'white', overflowX: 'auto' }}
             className="table table-striped table-bordered">
             <thead className="thead-dark">
               <tr>
@@ -459,26 +458,33 @@ function Compte() {
                 </div>
               }
 
-              {user ?
+              {user && searchParams.get('id') === localStorage.getItem('id') ?
                 <div>
                   <h2> {user.fName} {user.lName} </h2>
                   <h2 className="profile-email"> {user.email} </h2>
                 </div>
-                : null}
+                : <div>
+                  <h2> {user.fName} {user.lName} </h2>
+                </div>}
 
-              <button className="btn btn-dark m-2" onClick={handleModifyForm} block="true" type="submit">
-                Modifier les infos
-              </button>
-              <br />
+              {searchParams.get('id') === localStorage.getItem('id') &&
+                <div>
+                  <button className="btn btn-dark m-2" onClick={handleModifyForm} block="true" type="submit">
+                    Modifier les infos
+                  </button>
+                  <br />
 
-              <button className="btn btn-dark m-2" onClick={handleModifyPasswordForm} block="true" type="submit">
-                Modifier le mot de passe
-              </button>
+                  <button className="btn btn-dark m-2" onClick={handleModifyPasswordForm} block="true" type="submit">
+                    Modifier le mot de passe
+                  </button>
+                </div>}
             </div>
 
-            <button className="btn btn-black btn-lg profile-disconnect-btn" onClick={disconnect} block="true" type="submit">
-              Se déconnecter
-            </button>
+            {searchParams.get('id') === localStorage.getItem('id') &&
+              <button className="btn btn-black btn-lg profile-disconnect-btn" onClick={disconnect} block="true" type="submit">
+                Se déconnecter
+              </button>
+            }
           </div>
       }
     </div>
@@ -493,7 +499,7 @@ function Compte() {
       // SEANCES
       // wait for fetchSeancesData to complete before setting the loading state to false
       const fetchSeances = async () => {
-        const seances = await fetchSeancesData(localStorage.getItem("id"));
+        const seances = await fetchSeancesData(searchParams.get('id'));
         setSeances(seances);
       };
       fetchSeances();
@@ -571,7 +577,7 @@ function Compte() {
         {/* SEANCES */}
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '40px', alignItems: 'center' }}>
           <h1 style={{ marginTop: '40px', marginBottom: '0' }}>
-            Mes séances</h1>
+            Séances</h1>
           {seances && seances.length > 0 ? (
             seances.map((seance, index) => (
               <div className="session-post" style={
@@ -594,7 +600,7 @@ function Compte() {
               </div>
             ))
           ) : (
-            <div>Tu n'as pas encore de séance enregistrée !</div>
+            <div>Pas encore de séance enregistrée !</div>
           )}
         </div>
       </div >
@@ -755,7 +761,7 @@ function Compte() {
                 maxWidth: '400px',
                 borderRadius: '5px',
               }}>
-                <option value="repetitions" selected>Repetitions</option>
+                <option value="repetitions">Repetitions</option>
                 <option value="seconds">Seconds</option>
               </select>
             </label>

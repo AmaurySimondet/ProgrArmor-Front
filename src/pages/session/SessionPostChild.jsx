@@ -18,9 +18,10 @@ function SessionPostChild({ user, postTitle, setPostTitle, postDescription, setP
                         borderRadius: "50%",
                         border: "1px solid black",
                     }}
+                    onClick={() => window.location.href = `/compte?id=${user.id}`}
                 />
                 <div>
-                    {user ? <strong>{user.fName} {user.lName}</strong> : <strong>Prénom Nom</strong>}
+                    {user ? <strong><a href={`/compte?id=${user.id}`}>{user.fName} {user.lName}</a></strong> : <strong>Prénom Nom</strong>}
                     <br />
                     <i>{selectedDate}</i>
                 </div>

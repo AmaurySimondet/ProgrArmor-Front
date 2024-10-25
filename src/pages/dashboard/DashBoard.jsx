@@ -15,8 +15,8 @@ const DashBoard = () => {
     const [seances, setSeances] = useState(null);
     const [users, setUsers] = useState(null);
 
+    // SEANCES & USERS
     useEffect(() => {
-        // SEANCES
         // wait for fetchSeancesData to complete before setting the loading state to false
         const fetchSeances = async () => {
             const seances = await fetchSeancesData();
@@ -29,6 +29,7 @@ const DashBoard = () => {
             try {
                 const response = await API.getUsers();
                 setUsers(response.data.users);
+                console.log('Users:', response.data.users);
             } catch (error) {
                 console.error("Error fetching users data:", error);
             }
@@ -92,7 +93,7 @@ const DashBoard = () => {
                         }}>
                             {users && users.length > 0 ? (
                                 users.map((user, index) => (
-                                    <div key={user._id} className='basic-flex' style={{ gap: '20px', alignItems: 'center' }}>
+                                    <div key={user.id} className='basic-flex' style={{ gap: '20px', alignItems: 'center' }}>
                                         <img
                                             className="icon-navbar"
                                             src={require('../../images/profilepic.webp')}
@@ -101,9 +102,11 @@ const DashBoard = () => {
                                                 borderRadius: "50%",
                                                 border: "1px solid black",
                                             }}
+                                            onClick={() => window.location.href = `/compte?id=${user.id}`}
                                         />
                                         <div>
-                                            <div>{user.fName} {user.lName}</div>
+                                            <div><a href={`/compte?id=${user.id}`}>
+                                                {user.fName} {user.lName} </a> </div>
                                             <button className="btn btn-black">Suivre</button>
                                         </div>
                                     </div>

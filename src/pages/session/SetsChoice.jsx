@@ -118,7 +118,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                 {index !== null ? "Modifier" : "Ajouter"} les séries
             </h1>
 
-            <RenderExercice exercice={exercice} sets={sets} />
+            <RenderExercice exercice={exercice} sets={sets} editingSets={editingSets} />
 
             {index !== null &&
                 <div style={{
@@ -286,7 +286,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
 
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <button onClick={handleNextExercice} className='btn btn-dark'>
-                    Valider et passer à l'exercice suivant
+                    Valider
                 </button>
             </div>
 
