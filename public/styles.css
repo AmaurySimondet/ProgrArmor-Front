@@ -12,7 +12,7 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    width: 85vw;
+    width: 60vw;
     text-align: -webkit-center;
 }
 
@@ -1632,7 +1632,7 @@ table.hometable td.inscription-img-td {
     background-color: #9b0000;
     width: 100%;
     height: 600px;
-    top: 70px;
+    top: 60px;
     z-index: 0;
     position: absolute;
     right: 0;
@@ -1652,7 +1652,7 @@ table.hometable td.inscription-img-td {
 .navigbar {
     padding-top: 0;
     z-index: 2;
-    height: 70px;
+    height: 60px;
 }
 
 .param-choice-toggle {

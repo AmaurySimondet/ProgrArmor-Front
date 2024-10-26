@@ -22,7 +22,7 @@ const renderSets = (sets, editingSets, className = "set-item") => {
         return acc;
     }, {});
 
-    // if editingSets and sets !== editingSets, render the editingSets
+    // if editingSets and sets !== editingSets, don't show PR (as it's not relevant)
     if (editingSets && sets !== editingSets) {
         return Object.keys(setCount).map((setKey) => {
             const { count, PR } = setCount[setKey];
@@ -48,7 +48,7 @@ const renderSets = (sets, editingSets, className = "set-item") => {
 
                 {`${count} x ${set.value} ${set.unit} ${set.weightLoad ? `@ ${set.weightLoad} kg` : ''} ${set.elastic && set.elastic.tension ? `Elastique: ${set.elastic.use} ${set.elastic.tension} kg` : ''}`}
 
-                {PR && (
+                {PR && className !== "" && (
                     // if PR green, if SB yellow
                     <span className="pr-badge" style={PR === 'PR' ? { color: "#00c853" } : { color: "rgb(255 178 59)" }}>
                         🎉 {PR}! 🎉
