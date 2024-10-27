@@ -18,7 +18,7 @@ const SessionSummary = ({ selectedName, selectedDate, selectedExercices, selecte
                         {selectedExercices.map((exercice, idx) =>
                             <div
                                 key={idx}
-                                onClick={() => handleExerciceClick(index !== null && idx > index ? idx - 1 : idx)}
+                                onClick={() => handleExerciceClick(idx)}
                                 className={"sessionSummaryExercice"}
                             >
                                 <h3 className={idx === index ? 'clickable' : "clickable progarmor-red"}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import NavigBar from "../../components/NavigBar";
 import Footer from "../../components/Footer";
 import SeanceChoice from "./SeanceChoice";
@@ -34,6 +34,11 @@ const Session = () => {
   const [selectedSets, setSelectedSets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingExerciceIndex, setEditingExerciceIndex] = useState(null);
+  const myElementRef = useRef(null);
+
+  const scrollToElement = () => {
+    myElementRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
 
   useEffect(() => {
     if (!selectedSession) return;
@@ -78,21 +83,25 @@ const Session = () => {
   const handleNextSeanceChoice = (session) => {
     setSelectedSession(session);
     setStep(2);
+    scrollToElement();
   };
 
   const handleNextNameChoice = (name) => {
     setSelectedName(name);
     setStep(3);
+    scrollToElement();
   };
 
   const handleNextDateChoice = (date) => {
     setSelectedDate(date);
     setStep(4);
+    scrollToElement();
   };
 
   const handleNextExerciceTypeChoice = (type) => {
     setSelectedType(type);
     setStep(5);
+    scrollToElement();
   };
 
   const handleNextExerciceChoice = (exercice) => {
@@ -103,11 +112,13 @@ const Session = () => {
     };
     setSelectedExercice(newExercice);
     setStep(6);
+    scrollToElement();
   };
 
   const handleNextCategoryTypeChoice = (categoryType) => {
     setSelectedCategoryType(categoryType);
     setStep(7);
+    scrollToElement();
   };
 
   const handleNextCategoryChoice = (category) => {
@@ -117,6 +128,7 @@ const Session = () => {
     };
     setSelectedExercice(newExercice);
     setStep(6); // Loop back to choosing the next category type
+    scrollToElement();
   };
 
   const handleAddSet = (set) => {
@@ -126,6 +138,7 @@ const Session = () => {
     };
     setSelectedExercice(newExercice);
     setStep(8);
+    scrollToElement();
   };
 
   const handleNextExercice = (sets) => {
@@ -153,6 +166,7 @@ const Session = () => {
     setSelectedSets([]);
     setEditingExerciceIndex(null);
     setStep(4);
+    scrollToElement();
   };
 
   const handleOnDeleteExercice = (index) => {
@@ -197,6 +211,7 @@ const Session = () => {
     setSelectedCategoryType('');
     setSelectedCategory('');
     setStep(8);
+    scrollToElement();
   };
 
 
@@ -212,6 +227,7 @@ const Session = () => {
         };
         setSelectedExercice(newExercice);
         setStep(6);
+        scrollToElement();
       })
       .catch((error) => {
         console.error('Error during exercise search:', error);
@@ -236,6 +252,7 @@ const Session = () => {
         };
         setSelectedExercice(newExercice);
         setStep(6);
+        scrollToElement();
       })
       .catch((error) => {
         console.error('Error during category search:', error);
@@ -274,6 +291,7 @@ const Session = () => {
     setSelectedSets([]);
     setEditingExerciceIndex(null);
     setStep(4);
+    scrollToElement();
   }
 
   const handleGoToCategories = () => {
@@ -282,6 +300,7 @@ const Session = () => {
       categories: []
     })
     setStep(6);
+    scrollToElement();
   }
 
   const handleFavorite = (exercice, categories) => {
@@ -291,6 +310,7 @@ const Session = () => {
       sets: []
     });
     setStep(8);
+    scrollToElement();
   }
 
   return (
@@ -313,49 +333,52 @@ const Session = () => {
               handleExerciceClick={handleExerciceClick}
               onFinish={handleFinish}
               index={editingExerciceIndex}
-              handleDateClick={() => setStep(3)}
-              handleNameClick={() => setStep(2)}
+              handleDateClick={() => { setStep(3); scrollToElement(); }}
+              handleNameClick={() => { setStep(2); scrollToElement(); }}
               onNewExercice={handleNewExercice}
             />
           </div>
           )}
+
+          <div ref={myElementRef}></div>
+
           {step === 1 && (
             <SeanceChoice onNext={handleNextSeanceChoice} />
           )}
           {step === 2 && (
-            <SeanceNameChoice onNext={handleNextNameChoice} onBack={() => setStep(1)} />
+            <SeanceNameChoice onNext={handleNextNameChoice} onBack={() => { setStep(1); scrollToElement() }} />
           )}
           {step === 3 && (
-            <SeanceDateChoice onNext={handleNextDateChoice} onBack={() => setStep(2)} />
+            <SeanceDateChoice onNext={handleNextDateChoice} onBack={() => { setStep(2); scrollToElement() }} />
           )}
           {step === 4 && (
-            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => setStep(3)} onSearch={(exerciceName) => handleSearchExercice(exerciceName)} index={editingExerciceIndex} exercice={selectedExercice} onFavorite={handleFavorite} />
+            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => { setStep(3); scrollToElement() }} onSearch={(exerciceName) => handleSearchExercice(exerciceName)} index={editingExerciceIndex} exercice={selectedExercice} onFavorite={handleFavorite} />
           )}
           {step === 5 && (
-            <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => setStep(4)} index={editingExerciceIndex} exercice={selectedExercice} />
+            <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => { setStep(4); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} />
           )}
           {step === 6 && (
-            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => setStep(5)} index={editingExerciceIndex} onSearch={(categoryName) => handleSearchCategory(categoryName)} exercice={selectedExercice} />
+            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => { setStep(5); scrollToElement() }} index={editingExerciceIndex} onSearch={(categoryName) => handleSearchCategory(categoryName)} exercice={selectedExercice} />
           )}
           {step === 7 && (
-            <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onBack={() => setStep(6)} index={editingExerciceIndex} exercice={selectedExercice} />
+            <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onBack={() => { setStep(6); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} />
           )}
           {step === 8 && (
             <SetsChoice
               onAddSet={handleAddSet}
-              onBack={() => setStep(7)}
+              onBack={() => { setStep(7); scrollToElement() }}
               onNext={handleNextExercice}
               editingSets={selectedExercices ? selectedExercices[editingExerciceIndex] ? selectedExercices[editingExerciceIndex].sets : [] : []}
               index={editingExerciceIndex}
               exercice={selectedExercice}
               onDelete={(index) => handleOnDeleteExercice(index)}
               onGoToCategories={handleGoToCategories}
-              onGoToExerciceType={() => setStep(4)}
+              onGoToExerciceType={() => { setStep(4); scrollToElement() }}
             />
           )}
           {step === 9 && (
             <SessionPost
-              onBack={() => setStep(8)}
+              onBack={() => { setStep(1); scrollToElement() }}
               selectedName={selectedName}
               selectedDate={selectedDate}
               selectedExercices={selectedExercices}

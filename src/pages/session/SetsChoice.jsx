@@ -152,28 +152,40 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                         <label className='sessionChoice'>
                             <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🔢</div>
                             Valeur
-                            <input
+                            <select
                                 className="form-control"
-                                type="number"
                                 value={value}
                                 onChange={(e) => setValue(parseFloat(e.target.value))}
-                                placeholder="Nb Reps / Secs"
                                 style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
-                                inputMode='decimal'
-                            />
+                            >
+                                <option value="" disabled>
+                                    Nb Reps / Secs
+                                </option>
+                                {[...Array(3600).keys()].map((i) => (
+                                    <option key={i} value={i}>
+                                        {i}
+                                    </option>
+                                ))}
+                            </select>
                         </label>
                         <label className='sessionChoice'>
                             <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>⚖️ </div>
                             Charge (kg)
-                            <input
+                            <select
                                 className="form-control"
-                                type="number"
                                 value={weightLoad}
                                 onChange={(e) => setWeightLoad(parseFloat(e.target.value))}
-                                placeholder="Charge (kg)"
                                 style={{ width: '100%', maxWidth: '200px', marginTop: '5px' }}
-                                inputMode='decimal'
-                            />
+                            >
+                                <option value="" disabled>
+                                    Charge (kg)
+                                </option>
+                                {[...Array(2000).keys()].map((i) => (
+                                    <option key={i / 4} value={i / 4}>
+                                        {i / 4}
+                                    </option>
+                                ))}
+                            </select>
                         </label>
                         <label className='sessionChoice' style={{ backgroundColor: '#CCCCCC' }}>
                             <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🪢</div>
@@ -189,15 +201,21 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                     <option value="resistance">Résistance</option>
                                     <option value="assistance">Assistance</option>
                                 </select>
-                                <input
+                                <select
                                     className="form-control"
-                                    type="number"
                                     value={elastic.tension}
-                                    onChange={(e) => handleChangeElasticTensionBegin(e)}
-                                    placeholder="Tension (kg)"
+                                    onChange={handleChangeElasticTensionBegin}
                                     style={{ width: '100%', maxWidth: '200px' }}
-                                    inputMode='decimal'
-                                />
+                                >
+                                    <option value="" disabled>
+                                        Tension (kg)
+                                    </option>
+                                    {[...Array(100).keys()].map((i) => (
+                                        <option key={i} value={i}>
+                                            {i}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                         </label>
                     </div>
@@ -223,25 +241,29 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                     </label>
                                     <label >
                                         <p>🔢</p>
-                                        <input
-                                            className="form-control"
-                                            type="number"
-                                            value={set.value}
-                                            onChange={(e) => handleValueChange(index, e)}
-                                            style={{ maxWidth: '75px' }}
-                                            inputMode='decimal'
-                                        />
+                                        <select className="form-control" value={set.value} onChange={(e) => handleValueChange(index, e)} style={{ maxWidth: '75px' }}>
+                                            <option value="" disabled>
+                                                Nb Reps / Secs
+                                            </option>
+                                            {[...Array(3600).keys()].map((i) => (
+                                                <option key={i} value={i}>
+                                                    {i}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </label>
                                     <label >
                                         <p>⚖️ </p>
-                                        <input
-                                            className="form-control"
-                                            type="number"
-                                            value={set.weightLoad}
-                                            onChange={(e) => handleWeightLoadChange(index, e)}
-                                            style={{ maxWidth: '75px' }}
-                                            inputMode='decimal'
-                                        />
+                                        <select className="form-control" value={set.weightLoad} onChange={(e) => handleWeightLoadChange(index, e)} style={{ maxWidth: '75px' }}>
+                                            <option value="" disabled>
+                                                Charge (kg)
+                                            </option>
+                                            {[...Array(2000).keys()].map((i) => (
+                                                <option key={i / 4} value={i / 4}>
+                                                    {i / 4}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </label>
                                     <label >
                                         <p>🪢</p>
@@ -249,14 +271,16 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                             <option value="resistance">Résistance</option>
                                             <option value="assistance">Assistance</option>
                                         </select>
-                                        <input
-                                            className="form-control"
-                                            type="number"
-                                            value={set.elastic?.tension || ''}
-                                            onChange={(e) => handleChangeElasticTension(index, e)}
-                                            style={{ maxWidth: '75px' }}
-                                            inputMode='decimal'
-                                        />
+                                        <select className="form-control" value={set.elastic?.tension || ''} onChange={(e) => handleChangeElasticTension(index, e)} style={{ maxWidth: '75px' }}>
+                                            <option value="" disabled>
+                                                Tension (kg)
+                                            </option>
+                                            {[...Array(100).keys()].map((i) => (
+                                                <option key={i} value={i}>
+                                                    {i}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </label>
                                 </div>
                             </div>
