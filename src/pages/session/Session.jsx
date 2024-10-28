@@ -309,7 +309,12 @@ const Session = () => {
       categories: categories.map(category => ({ _id: category.category._id, name: category.category.name })),
       sets: []
     });
-    setStep(8);
+    if (categories.length === 0) {
+      setStep(6);
+    }
+    else {
+      setStep(8);
+    }
     scrollToElement();
   }
 
@@ -329,13 +334,14 @@ const Session = () => {
               selectedName={selectedName}
               selectedDate={selectedDate}
               selectedExercices={selectedExercices}
-              selectedExercice={selectedExercice}
               handleExerciceClick={handleExerciceClick}
               onFinish={handleFinish}
               index={editingExerciceIndex}
               handleDateClick={() => { setStep(3); scrollToElement(); }}
               handleNameClick={() => { setStep(2); scrollToElement(); }}
               onNewExercice={handleNewExercice}
+              onDragExercices={(reorderedExercices) => setSelectedExercices(reorderedExercices)}
+              setEditingExerciceIndex={setEditingExerciceIndex}
             />
           </div>
           )}

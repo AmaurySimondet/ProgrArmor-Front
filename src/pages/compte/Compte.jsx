@@ -537,7 +537,7 @@ function Compte() {
       <div>
         {/* USERS */}
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', alignItems: 'center', padding: width < 400 ? "5px" : width < 550 ? "10px" : "20px" }}>
-          <h1 style={{ marginTop: '40px', marginBottom: '20px' }}>
+          <h1 style={{ marginTop: '40px', marginBottom: '20px', textAlign: "-webkit-center" }}>
             Tu connais ces gens?</h1>
           <div className='basic-flex' style={{
             flexDirection: 'column', gap: '20px', display: 'flex',

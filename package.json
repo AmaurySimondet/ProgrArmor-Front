@@ -15,6 +15,7 @@
     "eruda": "^2.6.2",
     "fuse.js": "^7.0.0",
     "react": "^18.2.0",
+    "react-beautiful-dnd": "^13.1.1",
     "react-bootstrap": "^2.10.4",
     "react-card-flip": "^1.2.0",
     "react-custom-scrollbars": "^4.2.1",
