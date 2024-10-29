@@ -3,6 +3,11 @@ a:hover {
     text-decoration: none;
 }
 
+select:hover {
+    cursor: pointer;
+    border: solid;
+}
+
 /* SETS */
 .set-item {
     padding: 5px;
@@ -580,12 +585,12 @@ table.profile-table {
     animation: popIn 1s forwards;
 }
 
-.sessionSummaryExercise {
+.sessionSummaryExercice {
     transition: transform 0.3s ease-in-out;
 }
 
-.sessionSummaryExercise:hover {
-    transform: scale(1.1);
+.sessionSummaryExercice:hover {
+    transform: scale(1.05);
 }
 
 .editingExercise h3 {

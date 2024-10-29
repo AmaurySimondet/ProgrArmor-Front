@@ -36,6 +36,11 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
 
     const handleChangeElasticUse = (index, e) => {
         const updatedSets = [...sets];
+        if (e.target.value === "") {
+            updatedSets[index].elastic = {};
+            setSets(updatedSets);
+            return;
+        }
         updatedSets[index].elastic.use = e.target.value;
         setSets(updatedSets);
     };
@@ -69,10 +74,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     };
 
     const handleNextExercice = () => {
-        // si la serie en cours n'as pas été ajoutée, on l'ajoute
-        if (value !== "" && weightLoad !== "" && typeof value === "number" && typeof weightLoad === "number") {
-            handleAddSet();
-        }
+        console.log("sets", sets);
         if (sets.length === 0) {
             showAlert("Tu n'as pas ajouté de série", "danger");
             return;
@@ -82,9 +84,9 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
             showAlert("Tu n'as pas rempli tous les champs", "danger");
             return;
         }
-        // verify if values are negatives
-        if (sets.some(set => set.value < 0) || sets.some(set => set.weightLoad < 0)) {
-            showAlert("T'as déjà vu quelqu'un faire des répétitions négatives ?", "danger");
+        // verify that elastic is correctly set
+        if (sets.some(set => (set.elastic.use || set.elastic.tension) && (set.elastic.use === "" || set.elastic.tension === "" || typeof set.elastic.tension !== "number"))) {
+            showAlert("Tu n'as pas rempli tous les champs pour l'élastique", "danger");
             return;
         }
         else {
@@ -105,6 +107,14 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
             newElastic.use = 'resistance';
         }
         setElastic(newElastic);
+    }
+
+    const handleChaneElasticUseBegin = (e) => {
+        if (e.target.value === "") {
+            setElastic({});
+            return
+        }
+        setElastic({ ...elastic, use: e.target.value });
     }
 
 
@@ -197,25 +207,28 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                 Elastique (?)
                             </a>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center' }}>
-                                <select className="custom-select" value={elastic.use} onChange={(e) => setElastic((prev) => ({ ...prev, use: e.target.value }))} style={{ width: '100%', maxWidth: '200px' }}>
+                                <select className="custom-select" value={elastic.use || ""} onChange={handleChaneElasticUseBegin} style={{ width: '100%', maxWidth: '200px' }}>
                                     <option value="resistance">Résistance</option>
                                     <option value="assistance">Assistance</option>
+                                    <option value="">Sans</option>
                                 </select>
-                                <select
-                                    className="form-control"
-                                    value={elastic.tension}
-                                    onChange={handleChangeElasticTensionBegin}
-                                    style={{ width: '100%', maxWidth: '200px' }}
-                                >
-                                    <option value="" disabled>
-                                        Tension (kg)
-                                    </option>
-                                    {[...Array(100).keys()].map((i) => (
-                                        <option key={i} value={i}>
-                                            {i}
+                                {elastic.use && (
+                                    <select
+                                        className="form-control"
+                                        value={elastic.tension}
+                                        onChange={handleChangeElasticTensionBegin}
+                                        style={{ width: '100%', maxWidth: '200px' }}
+                                    >
+                                        <option value="" disabled>
+                                            Tension (kg)
                                         </option>
-                                    ))}
-                                </select>
+                                        {[...Array(100).keys()].map((i) => (
+                                            <option key={i} value={i}>
+                                                {i}
+                                            </option>
+                                        ))}
+                                    </select>
+                                )}
                             </div>
                         </label>
                     </div>
@@ -267,20 +280,23 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                     </label>
                                     <label >
                                         <p>🪢</p>
-                                        <select className="custom-select" value={set.elastic?.use || ''} onChange={(e) => handleChangeElasticUse(index, e)} style={{ maxWidth: '75px' }}>
+                                        <select className="custom-select" value={set.elastic.use || ''} onChange={(e) => handleChangeElasticUse(index, e)} style={{ maxWidth: '75px' }}>
                                             <option value="resistance">Résistance</option>
                                             <option value="assistance">Assistance</option>
+                                            <option value="">Sans</option>
                                         </select>
-                                        <select className="form-control" value={set.elastic?.tension || ''} onChange={(e) => handleChangeElasticTension(index, e)} style={{ maxWidth: '75px' }}>
-                                            <option value="" disabled>
-                                                Tension (kg)
-                                            </option>
-                                            {[...Array(100).keys()].map((i) => (
-                                                <option key={i} value={i}>
-                                                    {i}
+                                        {set.elastic.use && (
+                                            <select className="form-control" value={set.elastic?.tension || ''} onChange={(e) => handleChangeElasticTension(index, e)} style={{ maxWidth: '75px' }}>
+                                                <option value="" disabled>
+                                                    Tension (kg)
                                                 </option>
-                                            ))}
-                                        </select>
+                                                {[...Array(100).keys()].map((i) => (
+                                                    <option key={i} value={i}>
+                                                        {i}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        )}
                                     </label>
                                 </div>
                             </div>

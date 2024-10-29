@@ -94,7 +94,12 @@ const Session = () => {
 
   const handleNextDateChoice = (date) => {
     setSelectedDate(date);
-    setStep(4);
+    if (editingExerciceIndex !== null) {
+      setStep(8);
+    }
+    else {
+      setStep(4);
+    }
     scrollToElement();
   };
 
@@ -149,7 +154,7 @@ const Session = () => {
 
     // Handle exercise replacement or addition
     const updateExercices = async () => {
-      const finalExercices = await addPrToSets(selectedExercices, newExercice, editingExerciceIndex ?? updatedExercices.length);
+      const finalExercices = await addPrToSets(selectedExercices, newExercice, editingExerciceIndex);
       setSelectedExercices(finalExercices);
     };
     updateExercices();

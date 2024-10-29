@@ -27,7 +27,6 @@ const SessionSummary = ({
         onDragExercices(reorderedExercices); // Update state with reordered items
         // also update index if it was not null
         if (index !== null) {
-            console.log('New index:', destination.index);
             setEditingExerciceIndex(destination.index);
         }
     };
@@ -58,13 +57,18 @@ const SessionSummary = ({
                                 >
                                     {selectedExercices.map((exercice, idx) => (
                                         <Draggable key={idx} draggableId={String(idx)} index={idx}>
-                                            {(provided) => (
+                                            {(provided, snapshot) => (
                                                 <div
                                                     ref={provided.innerRef}
                                                     {...provided.draggableProps}
                                                     {...provided.dragHandleProps}
                                                     onClick={() => handleExerciceClick(idx)}
                                                     className={"sessionSummaryExercice"}
+                                                    style={{
+                                                        ...provided.draggableProps.style,
+                                                        transition: 'transform 0.2s ease',
+                                                        boxShadow: snapshot.isDragging ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none',
+                                                    }}
                                                 >
                                                     <h3 className={idx === index ? 'clickable' : "clickable progarmor-red"}>
                                                         {idx === index && "---> "}{exercice.exercice.name.fr && exercice.exercice.name.fr}

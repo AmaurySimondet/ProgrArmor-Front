@@ -2,7 +2,7 @@ import axios from "axios";
 const headers = {
   "Content-Type": "application/json"
 };
-const burl = "http://10.0.51.241:8800";
+const burl = "http://10.0.200.207:8800";
 
 export default {
 
