@@ -2,7 +2,7 @@ import API from './API';
 import React from 'react';
 import { isPersonalRecord } from './pr';
 
-const renderSets = (sets, editingSets, className = "set-item") => {
+const renderSets = (sets, hasModifications, className = "set-item") => {
     // Count identical sets
     const setCount = sets.reduce((acc, set) => {
         const setKey = JSON.stringify({
@@ -22,8 +22,8 @@ const renderSets = (sets, editingSets, className = "set-item") => {
         return acc;
     }, {});
 
-    // if editingSets and sets !== editingSets, don't show PR (as it's not relevant)
-    if (editingSets && sets !== editingSets) {
+    // if it hasModifications, don't show PR (as it's not relevant)
+    if (hasModifications) {
         return Object.keys(setCount).map((setKey) => {
             const { count, PR } = setCount[setKey];
             const set = JSON.parse(setKey);

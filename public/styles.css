@@ -609,10 +609,12 @@ table.profile-table {
     padding: 10px;
     cursor: pointer;
     border-bottom: 1px solid #ccc;
+    transition: 0.5s;
 }
 
 .inputClickable:hover {
-    background-color: #f9f9f9;
+    background-color: #EBCCCC;
+    transform: scale(1.02);
 }
 
 .sessionChoice {

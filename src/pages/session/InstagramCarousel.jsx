@@ -80,7 +80,7 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
                                 </h3>
                                 {selectedExercices[idx].sets && selectedExercices[idx].sets.length > 0 && (
                                     <ul style={{ listStyleType: 'none', padding: 0, textAlign: '-webkit-center' }}>
-                                        {renderSets(selectedExercices[idx].sets, null, "")}
+                                        {renderSets(selectedExercices[idx].sets, false, "")}
                                     </ul>
                                 )}
                             </li>
@@ -98,7 +98,7 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
                                     </h3>
                                     {selectedExercices[idx + 1].sets && selectedExercices[idx + 1].sets.length > 0 && (
                                         <ul style={{ listStyleType: 'none', padding: 0, textAlign: '-webkit-center' }}>
-                                            {renderSets(selectedExercices[idx + 1].sets, null, "")}
+                                            {renderSets(selectedExercices[idx + 1].sets, false, "")}
                                         </ul>
                                     )}
                                 </li>

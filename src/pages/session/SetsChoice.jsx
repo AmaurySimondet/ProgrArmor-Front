@@ -85,7 +85,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
             return;
         }
         // verify that elastic is correctly set
-        if (sets.some(set => (set.elastic.use || set.elastic.tension) && (set.elastic.use === "" || set.elastic.tension === "" || typeof set.elastic.tension !== "number"))) {
+        if (sets.some(set => (set.elastic?.use || set.elastic?.tension) && (set.elastic.use === "" || set.elastic.tension === "" || typeof set.elastic.tension !== "number"))) {
             showAlert("Tu n'as pas rempli tous les champs pour l'élastique", "danger");
             return;
         }
@@ -128,7 +128,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                 {index !== null ? "Modifier" : "Ajouter"} les séries
             </h1>
 
-            <RenderExercice exercice={exercice} sets={sets} editingSets={editingSets} />
+            <RenderExercice exercice={exercice} sets={sets} />
 
             {index !== null &&
                 <div style={{
@@ -153,7 +153,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
                         <label className='sessionChoice'>
                             <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>⏱️</div>
-                            Unité
+                            <strong>Unité</strong>
                             <select className="custom-select" value={unit} onChange={(e) => setUnit(e.target.value)} style={{ maxWidth: '200px', marginTop: '5px' }}>
                                 <option value="repetitions">Répetitions</option>
                                 <option value="seconds">Secondes</option>
@@ -161,7 +161,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                         </label>
                         <label className='sessionChoice'>
                             <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🔢</div>
-                            Valeur
+                            <strong>Reps / Secs</strong>
                             <select
                                 className="form-control"
                                 value={value}
@@ -180,7 +180,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                         </label>
                         <label className='sessionChoice'>
                             <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>⚖️ </div>
-                            Charge (kg)
+                            <strong>Charge (kg)</strong>
                             <select
                                 className="form-control"
                                 value={weightLoad}
@@ -204,7 +204,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                 data-tooltip-html={tooltipText}
                                 data-tooltip-place="top"
                             >
-                                Elastique (?)
+                                <strong>Elastique (?)</strong>
                             </a>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center' }}>
                                 <select className="custom-select" value={elastic.use || ""} onChange={handleChaneElasticUseBegin} style={{ width: '100%', maxWidth: '200px' }}>
@@ -279,13 +279,20 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                         </select>
                                     </label>
                                     <label >
-                                        <p>🪢</p>
-                                        <select className="custom-select" value={set.elastic.use || ''} onChange={(e) => handleChangeElasticUse(index, e)} style={{ maxWidth: '75px' }}>
+                                        <p><a
+                                            data-tooltip-id="my-tooltip"
+                                            data-tooltip-html={tooltipText}
+                                            data-tooltip-place="top"
+                                        >
+                                            🪢
+                                        </a>
+                                        </p>
+                                        <select className="custom-select" value={set.elastic?.use || ''} onChange={(e) => handleChangeElasticUse(index, e)} style={{ maxWidth: '75px' }}>
                                             <option value="resistance">Résistance</option>
                                             <option value="assistance">Assistance</option>
                                             <option value="">Sans</option>
                                         </select>
-                                        {set.elastic.use && (
+                                        {set.elastic?.use && (
                                             <select className="form-control" value={set.elastic?.tension || ''} onChange={(e) => handleChangeElasticTension(index, e)} style={{ maxWidth: '75px' }}>
                                                 <option value="" disabled>
                                                     Tension (kg)
@@ -325,6 +332,9 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
 
 
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                <button onClick={handleAddSet} className='btn btn-white'>
+                    Ajouter série
+                </button>
                 <button onClick={handleNextExercice} className='btn btn-dark'>
                     Valider
                 </button>

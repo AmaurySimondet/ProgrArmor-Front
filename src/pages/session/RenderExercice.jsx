@@ -1,7 +1,7 @@
 import React from "react";
 import { renderSets } from "../../utils/sets";
 
-const RenderExercice = ({ exercice, sets, editingSets }) => {
+const RenderExercice = ({ exercice, sets }) => {
     let setsToRender = exercice.sets;
     if (sets) {
         setsToRender = sets;
@@ -15,7 +15,7 @@ const RenderExercice = ({ exercice, sets, editingSets }) => {
         </h3>
         {setsToRender && setsToRender.length > 0 && (
             <ul style={{ listStyleType: 'none', padding: 0, textAlign: "-webkit-center" }}>
-                {renderSets(setsToRender, editingSets)}
+                {renderSets(setsToRender, true)}
             </ul>
         )}
     </div>;

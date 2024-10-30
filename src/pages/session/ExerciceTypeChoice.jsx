@@ -131,8 +131,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h2>
 
-            <h1 style={{ margin: 0 }}
-            >{index !== null ? "Modifier" : "Choisir"} un exercice</h1>
+            <h1>{index !== null ? "Modifier" : "Choisir"} un exercice</h1>
 
             <RenderExercice exercice={exercice} />
 

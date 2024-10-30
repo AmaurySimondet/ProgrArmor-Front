@@ -1,4 +1,4 @@
-import React from 'react';
+import { React, useEffect, useRef } from 'react';
 import { renderSets } from '../../utils/sets';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
@@ -31,6 +31,15 @@ const SessionSummary = ({
         }
     };
 
+    const scrollableContainerRef = useRef(null);
+
+    useEffect(() => {
+        if (scrollableContainerRef.current) {
+            // Scroll to the bottom of the container
+            scrollableContainerRef.current.scrollTop = scrollableContainerRef.current.scrollHeight;
+        }
+    }, [selectedExercices]);
+
     return (
         <div>
             {selectedName && selectedDate && (
@@ -47,7 +56,10 @@ const SessionSummary = ({
                             {(provided) => (
                                 <div
                                     {...provided.droppableProps}
-                                    ref={provided.innerRef}
+                                    ref={(el) => {
+                                        provided.innerRef(el);
+                                        scrollableContainerRef.current = el;
+                                    }}
                                     style={{ maxHeight: '300px', overflowY: 'auto', paddingRight: '10px' }}
                                     // on mouse, show something to indicate that the list can be scrolled
                                     onMouseEnter={() => {
@@ -67,7 +79,6 @@ const SessionSummary = ({
                                                     style={{
                                                         ...provided.draggableProps.style,
                                                         transition: 'transform 0.2s ease',
-                                                        boxShadow: snapshot.isDragging ? '0 4px 8px rgba(0, 0, 0, 0.2)' : 'none',
                                                     }}
                                                 >
                                                     <h3 className={idx === index ? 'clickable' : "clickable progarmor-red"}>
@@ -76,7 +87,7 @@ const SessionSummary = ({
                                                     </h3>
                                                     {exercice.sets && exercice.sets.length > 0 && (
                                                         <ul style={{ listStyleType: 'none', padding: 0, textAlign: "-webkit-center" }}>
-                                                            {renderSets(exercice.sets)}
+                                                            {renderSets(exercice.sets, false)}
                                                         </ul>
                                                     )}
                                                 </div>

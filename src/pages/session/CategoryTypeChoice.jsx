@@ -126,11 +126,6 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice 
                                 key={index}
                                 onClick={() => handleCategoryClick(categorie)} // Use handleCategoryClick for animation
                                 className={`inputClickable ${clickedCategory === categorie ? 'clicked' : ''}`} // Add 'clicked' class when clicked
-                                style={{
-                                    padding: '10px',
-                                    backgroundColor: clickedCategory === categorie ? '#dff0d8' : '#fff', // Highlight background on click
-                                    transition: 'background-color 0.5s', // Smooth background color change
-                                }}
                             >
                                 {categorie}
                             </div>
