@@ -1,19 +1,18 @@
 import { React } from "react";
 import { Route, Routes } from "react-router-dom";
 import DashBoard from "./pages/dashboard/DashBoard.jsx";
-import Inscription from "./components/Inscription";
-import Connexion from "./components/Connexion";
-import CGU from "./components/CGU";
-import Token from "./components/Token";
+import Inscription from "./components/Inscription.jsx";
+import Connexion from "./components/Connexion.jsx";
+import CGU from "./components/CGU.jsx";
+import Token from "./components/Token.jsx";
 
-import Stats from "./components/Dashboard/Stats";
+import Stats from "./components/Stats.jsx";
 import PrivateRoute from "./components/PrivateRoute.js";
-import Travaux from "./components/Dashboard/Travaux";
+import Travaux from "./pages/Travaux.jsx";
 import Session from "./pages/session/Session.jsx";
 import Compte from "./pages/compte/Compte.jsx";
-import Admin from "./components/Dashboard/Admin.jsx";
-import InstallApp from "./components/Dashboard/Help/InstallApp.jsx";
-import Aide from "./components/Dashboard/Aide.jsx";
+import InstallApp from "./pages/aide/InstallApp.jsx";
+import Aide from "./pages/aide/Aide.jsx";
 
 // import eruda from "eruda";
 
@@ -69,10 +68,6 @@ function App() {
 
             <Route path="/session/*" element={<PrivateRoute />}>
                 <Route exact path='/session/*' element={<Session />} />
-            </Route>
-
-            <Route path="/admin" element={<PrivateRoute />}>
-                <Route exact path='/admin' element={<Admin />} />
             </Route>
         </Routes>
     );

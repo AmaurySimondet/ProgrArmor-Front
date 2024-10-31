@@ -37,9 +37,12 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     const handleChangeElasticUse = (index, e) => {
         const updatedSets = [...sets];
         if (e.target.value === "") {
-            updatedSets[index].elastic = {};
+            updatedSets[index].elastic = null;
             setSets(updatedSets);
             return;
+        }
+        if (!updatedSets[index].elastic) {
+            updatedSets[index].elastic = {};
         }
         updatedSets[index].elastic.use = e.target.value;
         setSets(updatedSets);

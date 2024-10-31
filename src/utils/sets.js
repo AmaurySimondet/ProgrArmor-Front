@@ -4,6 +4,7 @@ import { isPersonalRecord } from './pr';
 
 const renderSets = (sets, hasModifications, className = "set-item") => {
     // Count identical sets
+    console.log('Sets:', sets);
     const setCount = sets.reduce((acc, set) => {
         const setKey = JSON.stringify({
             value: set.value,
@@ -21,6 +22,7 @@ const renderSets = (sets, hasModifications, className = "set-item") => {
 
         return acc;
     }, {});
+    console.log('Set count:', setCount);
 
     // if it hasModifications, don't show PR (as it's not relevant)
     if (hasModifications) {
@@ -84,9 +86,9 @@ const getExerciseById = async (exerciseId) => {
     }
 };
 
-const getExerciseTypeById = async (exerciseTypeId) => {
+const getExerciseTypeById = async (exerciceTypeId) => {
     try {
-        const response = await API.getExerciceType({ id: exerciseTypeId, fields: ["name", "_id"] });
+        const response = await API.getExerciceType({ id: exerciceTypeId, fields: ["name", "_id"] });
         const fetchedExerciseType = response.data.exerciceTypeReturned
         return fetchedExerciseType;
     } catch (error) {
@@ -123,7 +125,7 @@ const setsToSeance = async (sessionSets, name, date) => {
         if (!exercisesMap[exerciseCategoryKey]) {
             exercisesMap[exerciseCategoryKey] = {
                 exercice: await getExerciseById(exerciseId),
-                exerciseType: await getExerciseTypeById(set.exerciceType),
+                exerciceType: await getExerciseTypeById(set.exerciceType),
                 categories: categories,
                 sets: [],
             };
@@ -135,6 +137,7 @@ const setsToSeance = async (sessionSets, name, date) => {
             value: set.value,
             weightLoad: set.weightLoad,
             elastic: set.elastic, // Maintain the elastic object if available
+            PR: set.PR,
         });
     }
 
@@ -153,18 +156,19 @@ const setsToSeance = async (sessionSets, name, date) => {
 
 const seanceToSets = (seanceId, selectedExercices, userId) => {
     const seanceSets = [];
+    console.log('Selected exercices:', selectedExercices);
 
     selectedExercices.forEach((exercise, exerciseIndex) => {
-        const { exercice, exerciseType, categories, sets } = exercise;
+        const { exercice, exerciceType, categories, sets } = exercise;
         const exerciceId = exercice._id;
-        const exerciseTypeId = exerciseType._id;
+        const exerciceTypeId = exerciceType._id;
         const categoryIds = categories.map(category => ({ category: category._id, categoryType: category.type }));
 
         sets.forEach((set, setIndex) => {
             const seanceSet = {
                 user: userId,
                 exercice: exerciceId,
-                exerciceType: exerciseTypeId,
+                exerciceType: exerciceTypeId,
                 categories: categoryIds,
                 seance: seanceId,
                 exerciceOrder: exerciseIndex + 1,

@@ -178,7 +178,15 @@ const Session = () => {
     const updatedExercices = [...selectedExercices];
     updatedExercices.splice(index, 1);
     setSelectedExercices(updatedExercices);
+    setSelectedType('');
+    setSelectedExercice({
+      exercice: { name: { fr: '' }, _id: '' },
+      categories: [],
+      sets: []
+    });
+    setSelectedSets([]);
     setEditingExerciceIndex(null);
+    setStep(4);
   };
 
   const handleFinish = () => {
@@ -197,6 +205,7 @@ const Session = () => {
       setSelectedType('');
       setSelectedExercice({
         exercice: { name: { fr: '' }, _id: '' },
+        exerciceType: { name: '', _id: '' },
         categories: [],
         sets: []
       });
@@ -208,6 +217,7 @@ const Session = () => {
       setSelectedExercice({
         exercice: exercice.exercice,
         categories: exercice.categories,
+        exerciceType: exercice.exerciceType,
         sets: exercice.sets
       });
       setSelectedSets(exercice.sets);

@@ -1,9 +1,9 @@
-import Footer from "../Footer";
-import NavigBar from "../NavigBar";
+import Footer from "../../components/Footer";
+import NavigBar from "../../components/NavigBar";
 import { React, useState, useEffect } from "react"
-import InstallApp from "./Help/InstallApp";
+import InstallApp from "./InstallApp";
 import API from "../../utils/API";
-import ConversionBerger from "./Help/ConversionBerger";
+import ConversionBerger from "./ConversionBerger";
 
 function Aide() {
     const [clickInstallApp, setClickInstallApp] = useState(false);

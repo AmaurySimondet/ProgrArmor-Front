@@ -40,7 +40,7 @@ function InstallApp(props) {
                             <br />‍
                         </div>
                         <div >
-                            <img src={require('../../../images/help/InstallApp_ProgArmor_iPhone.webp')} className="img-installapp" alt="img-installapp" />
+                            <img src={require('../../images/help/InstallApp_ProgArmor_iPhone.webp')} className="img-installapp" alt="img-installapp" />
                         </div>
                     </div>
                 </div>
@@ -60,7 +60,7 @@ function InstallApp(props) {
                             </ol>‍
                         </div>
                         <div >
-                            <img src={require('../../../images/help/InstallApp_ProgArmor_Samsung.webp')} className="img-installapp" alt="img-installapp" />
+                            <img src={require('../../images/help/InstallApp_ProgArmor_Samsung.webp')} className="img-installapp" alt="img-installapp" />
                         </div>
                     </div>
                 </div>

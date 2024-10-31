@@ -1347,6 +1347,11 @@ table.Stats-table {
 .nav-link {
     font-size: 20px;
     color: white;
+    transition: 0.5s;
+}
+
+.nav-link:hover {
+    transform: scale(1.02);
 }
 
 /* INSCRIPTION */

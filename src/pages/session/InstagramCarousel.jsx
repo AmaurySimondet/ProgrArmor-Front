@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import { renderSets } from '../../utils/sets';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
@@ -8,8 +8,6 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
     const emojis = randomBodybuildingEmojis(selectedExercices.length);
     const { width } = useWindowDimensions();
     const carouselRef = useRef(null);
-
-    const totalSlides = selectedExercices.length % 2 === 0 ? selectedExercices.length / 2 : Math.ceil(selectedExercices.length / 2) + 1;
 
     return (
         <div

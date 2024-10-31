@@ -1,12 +1,8 @@
 import { React, useState, useEffect, useRef } from "react";
-import NavigBar from "../NavigBar.jsx"
+import NavigBar from "./NavigBar.jsx"
 import { LineChart, YAxis, XAxis, Cell, Tooltip, Label, Legend, BarChart, PieChart, Pie, Sector, CartesianGrid, Line, ResponsiveContainer, Bar, ComposedChart } from 'recharts'
-import API from "../../utils/API";
-import ExerciceInput from "./ExerciceInput"
-import CategorieInput from "./CategorieInput"
-import DetailInput from "./DetailInput"
-import Footer from "../Footer.jsx";
-import ReguHiddenText from "./ReguHiddenText";
+import API from "../utils/API.js";
+import Footer from "./Footer.jsx";
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (active && payload && payload.length) {
@@ -404,7 +400,7 @@ function Stats() {
                                             onClick={handleClickPoids}>
                                             Evolution de ton poids
                                             <img className={poidsHidden ? "expert-toggle not-rotated" : "expert-toggle rotated"}
-                                                src={require('../../images/icons/icons8-expand-arrow-90.webp')} />
+                                                src={require('../images/icons/icons8-expand-arrow-90.webp')} />
                                         </h1>
 
 
@@ -475,7 +471,7 @@ function Stats() {
                                                 onClick={handleClickPerf}>
                                                 Evolution de tes performances
                                                 <img className={perfHidden ? "expert-toggle not-rotated" : "expert-toggle rotated"}
-                                                    src={require('../../images/icons/icons8-expand-arrow-90.webp')} />
+                                                    src={require('../images/icons/icons8-expand-arrow-90.webp')} />
                                             </h1>
 
 
@@ -490,7 +486,7 @@ function Stats() {
 
                                                     <div className="form-group col-4">
                                                         <label onClick={handleClick} className="col-form-label categorie-label">
-                                                            Catégorie <img className={user.modeSombre === true ? "reset-img  questionDark" : "reset-img"} onClick={handleClick} src={require('../../images/icons/reset.webp')} />
+                                                            Catégorie <img className={user.modeSombre === true ? "reset-img  questionDark" : "reset-img"} onClick={handleClick} src={require('../images/icons/reset.webp')} />
                                                         </label>
                                                         <CategorieInput dimensions={dimensions} modeSombre={user.modeSombre === true ? true : false} info="false" click={clicked} id={"catégorie" + 0} categorie={categorie} index={0} dashboard={true} num={0} exercice={exercice.exercice} changeCategorie={changeCategorie} />
                                                     </div>
@@ -534,7 +530,7 @@ function Stats() {
 
                                                     <div className="form-group col-4">
                                                         <label onClick={handleClickDetail} className="col-form-label detail-label">
-                                                            Détail <img className={user.modeSombre === true ? "reset-img  questionDark" : "reset-img"} onClick={handleClick} src={require('../../images/icons/reset.webp')} />
+                                                            Détail <img className={user.modeSombre === true ? "reset-img  questionDark" : "reset-img"} onClick={handleClick} src={require('../images/icons/reset.webp')} />
                                                         </label>
                                                         <DetailInput dimensions={dimensions} modeSombre={user.modeSombre === true ? true : false} info="false" click={clickedDetail} detail={detail} id={"detail" + 0} index={0} num={0} dashboard={true} changeDetail={changeDetail} />
                                                     </div>
@@ -680,7 +676,7 @@ function Stats() {
                                                 onClick={handleClickPerf}>
                                                 Evolution de tes performances
                                                 <img className={perfHidden ? "expert-toggle not-rotated" : "expert-toggle rotated"}
-                                                    src={require('../../images/icons/icons8-expand-arrow-90.webp')} />
+                                                    src={require('../images/icons/icons8-expand-arrow-90.webp')} />
                                             </h1>
 
 
@@ -695,7 +691,7 @@ function Stats() {
 
                                                     <div className="form-group col-4">
                                                         <label onClick={handleClick} className="col-form-label categorie-label">
-                                                            Catégorie <img className={user.modeSombre === true ? "reset-img  questionDark" : "reset-img"} onClick={handleClick} src={require('../../images/icons/reset.webp')} />
+                                                            Catégorie <img className={user.modeSombre === true ? "reset-img  questionDark" : "reset-img"} onClick={handleClick} src={require('../images/icons/reset.webp')} />
                                                         </label>
                                                         <CategorieInput dimensions={dimensions} modeSombre={user.modeSombre === true ? true : false} info="false" categorie={categorie} click={clicked} id={"catégorie" + 0} index={0} dashboard={true} num={0} exercice={exercice.exercice} changeCategorie={changeCategorie} />
                                                     </div>
@@ -739,7 +735,7 @@ function Stats() {
 
                                                     <div className="form-group col-4">
                                                         <label onClick={handleClickDetail} className="col-form-label detail-label">
-                                                            Détail <img className={user.modeSombre === true ? "reset-img  questionDark" : "reset-img"} onClick={handleClick} src={require('../../images/icons/reset.webp')} />
+                                                            Détail <img className={user.modeSombre === true ? "reset-img  questionDark" : "reset-img"} onClick={handleClick} src={require('../images/icons/reset.webp')} />
                                                         </label>
                                                         <DetailInput dimensions={dimensions} modeSombre={user.modeSombre === true ? true : false} info="false" detail={detail} click={clickedDetail} id={"detail" + 0} index={0} num={0} dashboard={true} changeDetail={changeDetail} />
                                                     </div>
@@ -883,7 +879,7 @@ function Stats() {
                             onClick={handleClickPref}>
                             Tes exercices préférés
                             <img className={prefHidden ? "expert-toggle not-rotated" : "expert-toggle rotated"}
-                                src={require('../../images/icons/icons8-expand-arrow-90.webp')} />
+                                src={require('../images/icons/icons8-expand-arrow-90.webp')} />
                         </h1>
 
 
@@ -1013,7 +1009,7 @@ function Stats() {
                         <div className="regu-score">
                             <p style={{ marginBottom: dimensions.width < 350 ? "-50px" : dimensions.width < 950 ? "-100px" : "-300px" }}>
                                 <h1 style={{ marginBottom: "20px" }}>Ta régularité</h1>
-                                <img className={user.modeSombre === true ? "myDIV questionDark " : "myDIV"} onClick={handleClickRegu} src={require('../../images/icons/icons8-question-mark-96.webp')} alt="?" />
+                                <img className={user.modeSombre === true ? "myDIV questionDark " : "myDIV"} onClick={handleClickRegu} src={require('../images/icons/icons8-question-mark-96.webp')} alt="?" />
                                 <div className={ReguHiddenClick}>
                                     <ReguHiddenText />
                                 </div>
@@ -1058,7 +1054,7 @@ function Stats() {
                         <div className="regu-score">
                             <p>
                                 <h1 style={{ marginBottom: "20px" }}>Ta régularité</h1>
-                                <img className={user.modeSombre === true ? "myDIV questionDark " : "myDIV"} onClick={handleClickRegu} src={require('../../images/icons/icons8-question-mark-96.webp')} alt="?" />
+                                <img className={user.modeSombre === true ? "myDIV questionDark " : "myDIV"} onClick={handleClickRegu} src={require('../images/icons/icons8-question-mark-96.webp')} alt="?" />
                                 <div className={ReguHiddenClick}>
                                     <ReguHiddenText />
                                 </div>

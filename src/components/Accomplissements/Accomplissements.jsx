@@ -2,7 +2,7 @@ import { React, useState, useEffect } from 'react';
 import Footer from '../Footer';
 import NavigBar from '../NavigBar';
 import API from '../../utils/API';
-import Accomplissement from './Accomplissements/Accomplissement';
+import Accomplissement from './Accomplissement';
 import Select from 'react-select';
 import Niveaux from './Programme/Niveaux';
 import TypeDeProgrammes from './Programme/TypeDeProgrammes';
