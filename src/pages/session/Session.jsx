@@ -379,7 +379,7 @@ const Session = () => {
             <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => { setStep(4); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} />
           )}
           {step === 6 && (
-            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => { setStep(5); scrollToElement() }} index={editingExerciceIndex} onSearch={(categoryName) => handleSearchCategory(categoryName)} exercice={selectedExercice} />
+            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => { setStep(5); scrollToElement() }} index={editingExerciceIndex} onSearch={(categoryName) => handleSearchCategory(categoryName)} exercice={selectedExercice} onDeleteCategories={handleGoToCategories} />
           )}
           {step === 7 && (
             <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onBack={() => { setStep(6); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} />
@@ -387,7 +387,7 @@ const Session = () => {
           {step === 8 && (
             <SetsChoice
               onAddSet={handleAddSet}
-              onBack={() => { setStep(7); scrollToElement() }}
+              onBack={() => { setStep(6); scrollToElement() }}
               onNext={handleNextExercice}
               editingSets={selectedExercices ? selectedExercices[editingExerciceIndex] ? selectedExercices[editingExerciceIndex].sets : [] : []}
               index={editingExerciceIndex}
@@ -399,7 +399,7 @@ const Session = () => {
           )}
           {step === 9 && (
             <SessionPost
-              onBack={() => { setStep(1); scrollToElement() }}
+              onBack={() => { setStep(4); scrollToElement() }}
               selectedName={selectedName}
               selectedDate={selectedDate}
               selectedExercices={selectedExercices}

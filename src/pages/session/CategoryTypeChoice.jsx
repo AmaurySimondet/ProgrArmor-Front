@@ -6,7 +6,7 @@ import Fuse from 'fuse.js';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import RenderExercice from './RenderExercice';
 
-const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice }) => {
+const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice, onDeleteCategories }) => {
     const [categoryTypes, setCategoryTypes] = useState([]);
     const [allCategoryTypes, setAllCategoryTypes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -100,6 +100,8 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice 
             <h1>{index !== null ? "Modifier" : "Ajouter"} un type de catégorie</h1>
 
             <RenderExercice exercice={exercice} />
+
+            <button onClick={onDeleteCategories} className='btn btn-danger' style={{ margin: '20px 0' }}>Supprimer les catégories</button> <br />
 
             {/* Search Bar */}
             <input

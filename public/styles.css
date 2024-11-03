@@ -8,6 +8,11 @@ select:hover {
     border: solid;
 }
 
+input:hover {
+    cursor: pointer;
+    border: solid 2px #9b0000;
+}
+
 /* SETS */
 .set-item {
     padding: 5px;

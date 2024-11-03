@@ -12,6 +12,7 @@ import SessionPostChild from "../session/SessionPostChild.jsx";
 import { stringToDate } from "../../utils/dates.js";
 import Fuse from 'fuse.js';
 import { isPersonalRecord } from "../../utils/pr.js";
+import DisplaySeancesPost from "../../components/DisplaySeancesPost.jsx";
 
 function Compte() {
   const upload = Upload({ apiKey: "free" });
@@ -575,34 +576,7 @@ function Compte() {
         </div>
 
         {/* SEANCES */}
-        <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '40px', alignItems: 'center' }}>
-          <h1 style={{ marginTop: '40px', marginBottom: '0' }}>
-            Séances</h1>
-          {seances && seances.length > 0 ? (
-            seances.map((seance, index) => (
-              <div className="session-post" style={
-                width < 400 ? { padding: '5px', margin: "20px 0 0 0" } :
-                  width < 550 ? { padding: '10px', margin: "20px 10px 0 10px" } :
-                    { padding: '20px', margin: "20px 20px 0 20px" }}>
-                <SessionPostChild
-                  key={seance._id} // Always provide a key when rendering lists
-                  user={seance.user}
-                  postTitle={seance.title ? seance.title : "N/A"}
-                  postDescription={seance.description}
-                  selectedName={seance.name}
-                  selectedDate={stringToDate(seance.date)}
-                  selectedExercices={seance.exercices}
-                  stats={seance.stats ? seance.stats : { nSets: "N/A", nReps: "N/A", intervalReps: "N/A", totalWeight: "N/A", intervalWeight: "N/A" }}
-                  backgroundColors={backgroundColors}
-                  recordSummary={seance.recordSummary ? seance.recordSummary : []}
-                  editable={false}
-                />
-              </div>
-            ))
-          ) : (
-            <div>Pas encore de séance enregistrée !</div>
-          )}
-        </div>
+        <DisplaySeancesPost seances={seances} />
       </div >
     );
   }
