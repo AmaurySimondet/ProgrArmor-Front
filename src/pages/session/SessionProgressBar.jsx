@@ -3,7 +3,6 @@ import ProgressBar from 'react-bootstrap/ProgressBar'; // Assuming you are using
 
 const getProgressPercentage = (selectedName, selectedDate, selectedExercices, selectedExercice) => {
     //name 20%, date 20%, exercice 15%, category 15%, sets 10%
-    console.log('progressBar', selectedName, selectedDate, selectedExercices, selectedExercice);
     let progress = 0;
     if (selectedName) {
         progress += 10;

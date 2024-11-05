@@ -4,7 +4,6 @@ import { isPersonalRecord } from './pr';
 
 const renderSets = (sets, hasModifications, className = "set-item") => {
     // Count identical sets
-    console.log('Sets:', sets);
     const setCount = sets.reduce((acc, set) => {
         const setKey = JSON.stringify({
             value: set.value,
@@ -22,7 +21,6 @@ const renderSets = (sets, hasModifications, className = "set-item") => {
 
         return acc;
     }, {});
-    console.log('Set count:', setCount);
 
     // if it hasModifications, don't show PR (as it's not relevant)
     if (hasModifications) {

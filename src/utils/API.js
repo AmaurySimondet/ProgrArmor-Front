@@ -2,7 +2,7 @@ import axios from "axios";
 const headers = {
   "Content-Type": "application/json"
 };
-const burl = "http://192.168.1.80:8800";
+const burl = "http://10.0.34.213:8800";
 
 export default {
 
@@ -110,6 +110,9 @@ export default {
   },
   getPRs: function (send) {
     return axios.get(`${burl}/user/pr`, { headers: headers, params: send });
+  },
+  getTopFormat: function (send) {
+    return axios.get(`${burl}/user/topFormat`, { headers: headers, params: send });
   },
 
 

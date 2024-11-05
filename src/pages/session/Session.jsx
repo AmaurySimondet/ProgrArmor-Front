@@ -382,7 +382,7 @@ const Session = () => {
             <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => { setStep(5); scrollToElement() }} index={editingExerciceIndex} onSearch={(categoryName) => handleSearchCategory(categoryName)} exercice={selectedExercice} onDeleteCategories={handleGoToCategories} />
           )}
           {step === 7 && (
-            <CategoryChoice selectedType={selectedCategoryType} onNext={handleNextCategoryChoice} onBack={() => { setStep(6); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} />
+            <CategoryChoice selectedType={selectedCategoryType} onSkip={() => setStep(8)} onNext={handleNextCategoryChoice} onBack={() => { setStep(6); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} />
           )}
           {step === 8 && (
             <SetsChoice

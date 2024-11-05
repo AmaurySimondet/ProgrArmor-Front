@@ -53,6 +53,12 @@ const SessionNameChoice = ({ onNext, onBack }) => {
         setCustomName(e.target.value);
     };
 
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleCustomNameSubmit();
+        }
+    };
+
     const handleCustomNameSubmit = () => {
         if (customName.trim()) {
             onNext(customName);
@@ -86,6 +92,7 @@ const SessionNameChoice = ({ onNext, onBack }) => {
                         type="text"
                         value={customName}
                         onChange={handleCustomNameChange}
+                        onKeyDown={handleKeyDown}
                         placeholder="Entrer un nom"
                         style={{ width: '100%', marginBottom: '10px', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
                     />

@@ -17,6 +17,11 @@ const ExerciceChoice = ({ selectedType, onNext, onBack, index, exercice }) => {
     const { width } = useWindowDimensions();
 
     useEffect(() => {
+        // if selectedType is null, go back
+        if (!selectedType) {
+            onBack();
+        }
+
         // First get exericeType id from name
         API.getExerciceType({ name: selectedType }) // Replace with the actual method to fetch exercices
             .then(response => {

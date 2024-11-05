@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import { Tooltip } from 'react-tooltip';
 import RenderExercice from './RenderExercice';
 import Alert from '../../components/Alert';
+import API from '../../utils/API';
 
 const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, onGoToExerciceType, onGoToCategories }) => {
     const [sets, setSets] = useState(editingSets);
@@ -12,6 +13,24 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     const [elastic, setElastic] = useState({});
     const { width } = useWindowDimensions();
     const [alert, setAlert] = useState(null);
+    const [topFormats, setTopFormats] = useState([]);
+    const [topFormatWeight, setTopFormatWeight] = useState(0);
+
+    useEffect(() => {
+        API.getTopFormat({ userId: localStorage.getItem('id') }).then(response => {
+            let res = response.data.topFormat || [];
+            res = res.map(doc => {
+                return {
+                    ...doc,
+                    sets: doc.format.length,           // Count of items in format.format array
+                    reps: [...new Set(doc.format)][0],  // Get the unique value in format.format array
+                }
+            });
+            setTopFormats(res);
+        }).catch(error => {
+            console.error("Error fetching top formats:", error);
+        });
+    }, [exercice]);
 
     const showAlert = (message, type) => {
         setAlert({ message, type });
@@ -77,7 +96,6 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     };
 
     const handleNextExercice = () => {
-        console.log("sets", sets);
         if (sets.length === 0) {
             showAlert("Tu n'as pas ajouté de série", "danger");
             return;
@@ -120,6 +138,18 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
         setElastic({ ...elastic, use: e.target.value });
     }
 
+    const handleTopFormatSelect = (format) => {
+        // Create sets based on the format
+        const newSets = format.format.map((value) => {
+            return {
+                unit: format.unit,
+                value: value,
+                weightLoad: topFormatWeight,
+                elastic: null
+            }
+        });
+        setSets(newSets);
+    }
 
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
@@ -133,11 +163,12 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
 
             <RenderExercice exercice={exercice} sets={sets} />
 
-            {index !== null &&
+            {exercice !== null &&
                 <div style={{
                     "display": "flex",
                     "flexDirection": "row",
                     "justifyContent": "center",
+                    "marginBottom": "20px"
                 }}>
                     <button onClick={() => onGoToExerciceType()} className='btn btn-white m-2'>
                         Modifier l'exercice
@@ -150,6 +181,65 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                     </button>
                 </div>
             }
+
+            {/*Top Formats */}
+            {topFormats.length > 0 &&
+                <div>
+                    <h3 style={{ color: '#9b0000' }}> Formats les plus utilisés </h3>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '10px',
+                            justifyContent: 'flex-start',  // Align items to the start of the scrollable area
+                            alignItems: 'center',
+                            maxWidth: '95vw',
+                            maxHeight: '250px',
+                            overflowX: 'auto',  // Enable horizontal scrolling
+                            whiteSpace: 'nowrap',  // Prevent items from wrapping to the next line
+                            marginBottom: '40px'
+                        }}
+                    >
+                        {topFormats.map((format) => (
+                            <div
+                                key={format.id}  // Use a unique identifier instead of index for key
+                                onClick={() => { handleTopFormatSelect(format) }}
+                                className='sessionChoiceSmall'
+                                style={{
+                                    display: 'inline-block',  // Ensure each item stays inline
+                                    textAlign: 'center',  // Center text within each item
+                                    minWidth: '200px',  // Set a minimum width for each item for better alignment
+                                    whiteSpace: 'normal',  // Allow text to wrap within this div
+                                }}
+                            >
+                                <div style={{ fontSize: width < 500 ? '20px' : '40px' }}>💪</div>
+                                <div style={{ display: 'flex', gap: '5px', alignItems: 'center', justifyContent: 'center' }}>
+                                    <div>{`${format.sets} x ${format.reps}:`} </div>
+                                    <select
+                                        className="form-control"
+                                        value={topFormatWeight}
+                                        onChange={(e) => setTopFormatWeight(parseFloat(e.target.value))}
+                                        style={{ width: '80px' }}
+                                    >
+                                        <option value="" disabled>
+                                            Charge (kg)
+                                        </option>
+                                        {[...Array(2000).keys()].map((i) => (
+                                            <option key={i / 4} value={i / 4}>
+                                                {i / 4}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <div>{" kg"}</div>
+                                </div>
+                                <div style={{ fontSize: '0.66rem', wordWrap: 'break-word', whiteSpace: 'normal' }}>
+                                    {format.unit}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            }
+
 
             {sets.length === 0 && (
                 <div>
@@ -235,9 +325,6 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                             </div>
                         </label>
                     </div>
-                    <button onClick={handleAddSet} className='btn btn-dark mt-2' style={{ marginBottom: '20px' }}>
-                        Ajouter série
-                    </button>
                 </div>
             )}
 
@@ -328,9 +415,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                             </div>
                         </div>
                     ))
-                ) : (
-                    <p>Aucune série ajoutée</p>
-                )}
+                ) : null}
             </div>
 
 

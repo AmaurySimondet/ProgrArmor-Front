@@ -17,6 +17,11 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice 
     const { width } = useWindowDimensions();
 
     useEffect(() => {
+        // if selectedType is null, go back
+        if (!selectedType) {
+            onBack();
+        }
+
         // First get exericeType id from name
         API.getCategorieType({ name: selectedType }) // Replace with the actual method to fetch categories
             .then(response => {

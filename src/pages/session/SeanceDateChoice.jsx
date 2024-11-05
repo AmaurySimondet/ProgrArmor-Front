@@ -15,6 +15,12 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
         onNext(yesterday.toISOString().split('T')[0]);
     };
 
+    const handlePreYesterdayChoice = () => {
+        const preYesterday = new Date();
+        preYesterday.setDate(preYesterday.getDate() - 2);
+        onNext(preYesterday.toISOString().split('T')[0]);
+    };
+
     const handleCustomDateChange = (e) => {
         setCustomDate(e.target.value);
     };
@@ -40,6 +46,9 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
                 >
                     <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>📅</div>
                     <div>Aujourd'hui</div>
+                    <div style={{ fontSize: '0.66rem' }}>
+                        {new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </div>
                 </div>
                 <div
                     onClick={handleYesterdayChoice}
@@ -47,6 +56,19 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
                 >
                     <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🗓️</div>
                     <div>Hier</div>
+                    <div style={{ fontSize: '0.66rem' }}>
+                        {new Date(new Date().setDate(new Date().getDate() - 1)).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </div>
+                </div>
+                <div
+                    className='sessionChoice'
+                    onClick={handlePreYesterdayChoice}
+                >
+                    <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>📆</div>
+                    <div>Avant-hier</div>
+                    <div style={{ fontSize: '0.66rem' }}>
+                        {new Date(new Date().setDate(new Date().getDate() - 2)).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+                    </div>
                 </div>
                 <div className='sessionChoice' style={{ backgroundColor: '#CCCCCC', padding: '20px', width: '300px' }}>
                     <input
