@@ -1568,6 +1568,7 @@ table.hometable td.inscription-img-td {
 
 .tr-connexion {
     display: flex;
+    min-height: 95vh;
 }
 
 /* NavigBar */

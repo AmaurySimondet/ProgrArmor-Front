@@ -1,6 +1,6 @@
 import React from "react";
-import NavigBar from "./NavigBar.jsx";
-import HomeHeader from "./HomeHeader.jsx";
+import NavigBar from "../../components/NavigBar.jsx";
+import HomeHeader from "../../components/HomeHeader.jsx";
 
 function CGU(props) {
     return (

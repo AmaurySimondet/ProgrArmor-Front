@@ -1,9 +1,9 @@
 import { React } from "react";
 import { Route, Routes } from "react-router-dom";
 import DashBoard from "./pages/dashboard/DashBoard.jsx";
-import Inscription from "./components/Inscription.jsx";
-import Connexion from "./components/Connexion.jsx";
-import CGU from "./components/CGU.jsx";
+import Inscription from "./pages/inscription/Inscription.jsx";
+import Connexion from "./pages/connexion/Connexion.jsx";
+import CGU from "./pages/cgu/CGU.jsx";
 import Token from "./components/Token.jsx";
 
 import Stats from "./components/Stats.jsx";
