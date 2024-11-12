@@ -41,6 +41,7 @@ function Compte() {
   const [searchExerciceQueryPrSearch, setSearchExerciceQueryPrSearch] = useState('');
   const [searchCategoryQueryPrSearch, setSearchCategoryQueryPrSearch] = useState('');
   const [PrSearchTitle, setPrSearchTitle] = useState({});
+  const [activeTab, setActiveTab] = useState('seances');
 
   async function disconnect() {
     // await API.logout();
@@ -798,26 +799,56 @@ function Compte() {
     );
   }
 
+  // Tab change handler
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
   return (
     <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
       <div className="page-container">
         <NavigBar location="session" />
 
-
         <div className="content-wrap">
-          {UserInfo()}
+          {/* Tabs navigation */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+            <ul className="tabs" role="navigation" style={{ listStyle: 'none', padding: 0, display: 'flex', justifyContent: 'center' }}>
+              {searchParams.get('id') === localStorage.getItem("id") && (
+                <li className={activeTab === 'userInfo' ? 'selected' : ''}>
+                  <a className="tab" onClick={() => handleTabChange('userInfo')}>
+                    Compte
+                  </a>
+                </li>
+              )}
+              <li className={activeTab === 'seances' ? 'selected' : ''}>
+                <a className="tab" onClick={() => handleTabChange('seances')}>
+                  Séances
+                </a>
+              </li>
+              <li className={activeTab === 'prSearch' ? 'selected' : ''}>
+                <a className="tab" onClick={() => handleTabChange('prSearch')}>
+                  Recherche PR
+                </a>
+              </li>
+              <li className={activeTab === 'prTable' ? 'selected' : ''}>
+                <a className="tab" onClick={() => handleTabChange('prTable')}>
+                  Tableau PR
+                </a>
+              </li>
+            </ul>
+          </div>
 
-          {PrSearch()}
-
-          {PrTable()}
-
-          {Seances()}
+          {/* Render active tab component */}
+          {activeTab === 'userInfo' && searchParams.get('id') === localStorage.getItem("id") && <UserInfo />}
+          {activeTab === 'prSearch' && <PrSearch />}
+          {activeTab === 'prTable' && <PrTable />}
+          {activeTab === 'seances' && <Seances />}
         </div>
 
         <Footer />
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default Compte

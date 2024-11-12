@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const SeanceDateChoice = ({ onNext, onBack }) => {
     const [customDate, setCustomDate] = useState('');
@@ -71,11 +73,13 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
                     </div>
                 </div>
                 <div className='sessionChoice' style={{ backgroundColor: '#CCCCCC', padding: '20px', width: '300px' }}>
-                    <input
-                        type="date"
-                        value={customDate}
+                    <DatePicker
+                        selected={customDate}
                         onChange={handleCustomDateChange}
-                        style={{ width: '100%', marginBottom: '10px', padding: '10px', borderRadius: '5px', border: '1px solid #ccc' }}
+                        placeholderText="Select a date"
+                        dateFormat="dd/MM/yyyy"
+                        className="custom-date-picker" // Apply custom class for styling
+                        calendarClassName="custom-calendar" // Optional custom calendar class
                     />
                     <button
                         onClick={handleCustomDateSubmit}
