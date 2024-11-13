@@ -68,7 +68,7 @@ ul.tabs {
     white-space: nowrap;
     margin: 20px 0;
     position: relative;
-    z-index: 2
+    transition: 0.5s;
 }
 
 ul.tabs.with-tab-contents {
@@ -85,16 +85,15 @@ ul.tabs>li {
     float: left;
     border-top: 2px solid transparent;
     margin-bottom: -1px;
-    transition: border-color 0.1s ease
+    transition: 0.5s;
 }
 
 ul.tabs>li:hover {
-    border-top-color: #f7f7fa
+    border-top-color: grey;
 }
 
 ul.tabs>li:hover .tab {
     text-decoration: none;
-    background-color: #f7f7fa;
     cursor: pointer
 }
 

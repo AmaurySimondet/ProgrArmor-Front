@@ -167,7 +167,7 @@ function Connexion() {
                             </div>
                             : null}
 
-                        <div style={{ flexGrow: "1" }} className="huge-margin-bottom">
+                        <div style={{ flexGrow: "1", alignContent: "center" }} className="huge-margin-bottom">
 
                             {mdpClicked ?
                                 <div className="basic-div">
