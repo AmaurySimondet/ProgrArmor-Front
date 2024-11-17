@@ -2,7 +2,7 @@ import axios from "axios";
 const headers = {
   "Content-Type": "application/json"
 };
-const burl = "http://192.168.1.80:8800";
+const burl = "https://prograrmor-back.vercel.app";
 
 export default {
 
