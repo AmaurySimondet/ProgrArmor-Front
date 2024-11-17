@@ -1,5 +1,4 @@
 import API from './API';
-import { sortDateCroissant } from './utils';
 
 async function getUser(id) {
     const { data } = await API.getUser({ id: id });
@@ -18,11 +17,9 @@ async function getUser(id) {
 async function getUserById(id) {
     const { data } = await API.getUser({ id: id });
     if (data.success === false) {
-        console.log("getuserbyid", data.message);
-        return null, null;
+        alert(data.message);
     } else {
-        console.log("getuserbyid", data.profile);
-        return { profile: data.profile, lastSeance: data.seances.sort(sortDateCroissant).slice(-1)[0] };
+        return data.profile;
     };
 }
 

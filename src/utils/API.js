@@ -4,19 +4,6 @@ const headers = {
 };
 const burl = "https://prograrmor-back.vercel.app";
 
-function paramsToString(params) {
-  let string = "";
-  let keyArray = [];
-  Object.keys(params).forEach(key => { keyArray.push(key) });
-  Object.values(params).forEach((param, index) => {
-    string = string + keyArray[index] + "=" + param
-    if (index !== (Object.values(params).length - 1)) {
-      string = string + "&"
-    };
-  })
-  return string
-}
-
 export default {
 
   //LOGIN SIGNUP
@@ -24,37 +11,30 @@ export default {
     return axios.post(`${burl}/user/login`, { email, password }, { headers: headers });
 
   },
-
   signup: function (send) {
     return axios.post(`${burl}/user/signup`, send, { headers: headers });
 
   },
-
   verifyToken: function (send) {
     return axios.post(`${burl}/user/verifyToken`, send, { headers: headers });
 
   },
-
   facebook: function () {
     return axios.get(`${burl}/user/auth/facebook`, { headers: headers })
 
   },
-
   facebookAuthenticate: function () {
     return axios.get(`${burl}/user/auth/facebook/authenticate`, { headers: headers })
 
   },
-
   google: function () {
     return axios.get(`${burl}/user/auth/google`, { headers: headers })
 
   },
-
   googleAuthenticate: function () {
     return axios.get(`${burl}/user/auth/google/authenticate`, { headers: headers })
 
   },
-
   isAuth: async function () {
     if (localStorage.getItem("token") !== null) {
       const result = await axios.post(`${burl}/user/verifyToken`, { token: localStorage.getItem("token") }, { headers: headers });
@@ -66,51 +46,129 @@ export default {
     return false;
 
   },
-
   logout: function () {
     return axios.get(`${burl}/user/logout`, { headers: headers });
 
   },
 
+
+
+
   //NIVEAU
   getNiveau: function (send) {
     return axios.post(`${burl}/user/getNiveau`, send, { headers: headers });
-
   },
 
-  //SESSION
-  debutantform: function (send) {
-    return axios.post(`${burl}/user/debutantform`, send, { headers: headers });
 
-  },
 
-  supprSeance: function (send) {
-    return axios.post(`${burl}/user/supprSeance`, send, { headers: headers });
 
-  },
 
-  workouts: function (params) {
-    let string = paramsToString(params);
-
-    return axios.get(`${burl}/user/workouts?` + string, { headers: headers });
-
-  },
-
-  loadSeance: function (params) {
-    let string = paramsToString(params);
-
-    return axios.get(`${burl}/user/loadSeance?` + string + "&id=" + localStorage.getItem("id"), { headers: headers });
-
-  },
-
+  //USER
   getUser: function (id) {
     return axios.post(`${burl}/user/getUser`, id, { headers: headers });
-
+  },
+  getUsers: function () {
+    return axios.get(`${burl}/user/getUsers`, { headers: headers });
   },
 
-  priseDeNote: function (send) {
-    return axios.post(`${burl}/user/priseDeNote`, send, { headers: headers });
 
+
+
+
+
+
+  //SEANCES
+  getSeanceNames: function (send) {
+    return axios.get(`${burl}/user/seance/names`, { headers: headers, params: send });
+  },
+  getLastSeance: function (send) {
+    return axios.get(`${burl}/user/seance/last`, { headers: headers, params: send });
+  },
+  getSeance: function (send) {
+    return axios.get(`${burl}/user/seance`, { headers: headers, params: send });
+  },
+  getSeances: function (send) {
+    return axios.get(`${burl}/user/seances`, { headers: headers, params: send });
+  },
+  createSeance: function (send) {
+    return axios.post(`${burl}/user/createSeance`, send, { headers: headers, params: send });
+  },
+
+
+
+
+
+  // SEANCE SETS
+  getSeanceSets: function (send) {
+    return axios.get(`${burl}/user/sets`, { headers: headers, params: send });
+  },
+  getTopExercices: function (send) {
+    return axios.get(`${burl}/user/topExercices`, { headers: headers, params: send });
+  },
+  createSet: function (send) {
+    return axios.post(`${burl}/user/createSet`, send, { headers: headers, params: send });
+  },
+  getPRs: function (send) {
+    return axios.get(`${burl}/user/pr`, { headers: headers, params: send });
+  },
+  getTopFormat: function (send) {
+    return axios.get(`${burl}/user/topFormat`, { headers: headers, params: send });
+  },
+
+
+
+  // EXERCICE TYPES
+  getExerciceTypes: function (send) {
+    return axios.get(`${burl}/user/exerciceTypes`, {
+      headers: headers, params: send
+    });
+  },
+  getExerciceType: function (send) {
+    return axios.get(`${burl}/user/exerciceType`, {
+      headers: headers, params: send
+    });
+  },
+
+
+
+  // EXERCICES
+  getExercices: function (send) {
+    return axios.get(`${burl}/user/exercices`, {
+      headers: headers, params: send
+    });
+  },
+
+  getExercice: function (send) {
+    return axios.get(`${burl}/user/exercice`, {
+      headers: headers, params: send
+    });
+  },
+
+
+
+  // CATEGORIES TYPES
+  getCategoryTypes: function (send) {
+    return axios.get(`${burl}/user/categorietypes`, {
+      headers: headers, params: send
+    });
+  },
+  getCategorieType: function (send) {
+    return axios.get(`${burl}/user/categorietype`, {
+      headers: headers, params: send
+    });
+  },
+
+
+  // CATEGORIES
+  getCategories: function (send) {
+    return axios.get(`${burl}/user/categories`, {
+      headers: headers, params: send
+    });
+  },
+  getCategory: function (send) {
+    return axios.get(`${burl}/user/category`, {
+      headers: headers, params: send
+    });
   },
 
 
@@ -119,16 +177,20 @@ export default {
     return axios.post(`${burl}/user/modifyUser`, send, { headers: headers });
 
   },
-
   resetPassword: function (send) {
     return axios.post(`${burl}/user/resetPassword`, send, { headers: headers });
 
   },
-
   reguScore: function (send) {
     return axios.post(`${burl}/user/reguScore`, send, { headers: headers });
 
   },
+
+
+
+
+
+
 
   //PROGRAMMES
   createProgramme: function (send) {
