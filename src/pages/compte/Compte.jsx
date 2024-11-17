@@ -79,6 +79,19 @@ function Compte() {
                   </>
                 ) : 'Message'}
               </button>
+              {searchParams.get('id') === localStorage.getItem('id') && (
+                <button
+                  className="btn btn-danger"
+                  style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+                  onClick={() => {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('id');
+                    window.location.href = '/';
+                  }}
+                >
+                  Déconnexion
+                </button>
+              )}
             </div>
           </div>
 
