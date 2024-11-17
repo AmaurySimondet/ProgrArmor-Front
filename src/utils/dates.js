@@ -17,4 +17,14 @@ function stringToDate(datetime) {
     return new Date(datetime).toISOString().split('T')[0];
 }
 
-export { sortDateCroissant, stringToDate };
+/*
+* Date to string
+* @param {Date} date
+* @return {string}
+*/
+function dateToString(date) {
+    return date.toISOString().split('T')[0];
+}
+
+
+export { sortDateCroissant, stringToDate, dateToString };

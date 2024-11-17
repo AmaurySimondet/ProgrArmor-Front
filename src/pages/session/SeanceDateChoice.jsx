@@ -2,34 +2,31 @@ import React, { useState } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { dateToString } from '../../utils/dates';
 
 const SeanceDateChoice = ({ onNext, onBack }) => {
-    const [customDate, setCustomDate] = useState('');
+    const [customDate, setCustomDate] = useState(new Date());
     const { width } = useWindowDimensions();
 
     const handleTodayChoice = () => {
-        onNext(new Date().toISOString().split('T')[0]);
+        onNext(dateToString(new Date()));
     };
 
     const handleYesterdayChoice = () => {
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1);
-        onNext(yesterday.toISOString().split('T')[0]);
+        onNext(dateToString(yesterday));
     };
 
     const handlePreYesterdayChoice = () => {
         const preYesterday = new Date();
         preYesterday.setDate(preYesterday.getDate() - 2);
-        onNext(preYesterday.toISOString().split('T')[0]);
-    };
-
-    const handleCustomDateChange = (e) => {
-        setCustomDate(e.target.value);
+        onNext(dateToString(preYesterday));
     };
 
     const handleCustomDateSubmit = () => {
-        if (customDate.trim()) {
-            onNext(customDate);
+        if (customDate) {
+            onNext(dateToString(customDate));
         }
     };
 
@@ -75,9 +72,8 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
                 <div className='sessionChoice' style={{ backgroundColor: '#CCCCCC', padding: '20px', width: '300px' }}>
                     <DatePicker
                         selected={customDate}
-                        onChange={handleCustomDateChange}
+                        onChange={(date) => setCustomDate(date)}
                         placeholderText="Select a date"
-                        dateFormat="dd/MM/yyyy"
                         className="custom-date-picker" // Apply custom class for styling
                         calendarClassName="custom-calendar" // Optional custom calendar class
                     />
