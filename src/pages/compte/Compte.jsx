@@ -119,7 +119,7 @@ function Compte() {
           {/* Render active tab component */}
           {activeTab === 'prSearch' && <PrSearch />}
           {activeTab === 'prTable' && <PrTable />}
-          {activeTab === 'seances' && <DisplaySeancesPost userId={localStorage.getItem('userId')} />}
+          {activeTab === 'seances' && <DisplaySeancesPost userId={localStorage.getItem('id')} />}
         </div>
 
         <Footer />
