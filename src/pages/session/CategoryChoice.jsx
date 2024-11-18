@@ -83,16 +83,16 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice 
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                <h2
+                <h1
                     style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
                 >
                     <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
-                </h2>
-                <h2
+                </h1>
+                <h1
                     style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
                 >
                     <span onClick={onSkip} style={{ cursor: 'pointer' }} className="clickable"> Passer &gt; </span>
-                </h2>
+                </h1>
             </div>
 
             <h1>{index !== null ? "Modifier" : "Choisir"} une catégorie ({selectedType})</h1>
@@ -115,14 +115,14 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice 
                 }}
             />
 
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="sessionChoiceContainer">
                 {categories.map((category, index) => (
                     <div
                         key={index}
                         onClick={() => onNext(category)}
                         className='sessionChoice'
                     >
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
+                        <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>{emojis[index]}</div>
                         <div>{category.name.fr}</div>
                     </div>
                 ))}
@@ -131,7 +131,7 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice 
                         onClick={handleMoreCategories}
                         className='sessionChoicePlus'
                     >
-                        <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
+                        <div style={width < 500 ? { fontSize: '18px' } : { fontSize: '36px' }}>➕</div>
                     </div>
                 )}
             </div>

@@ -5,10 +5,8 @@ import API from '../../utils/API';
 import { stringToDate } from '../../utils/dates';
 
 const SessionChoice = ({ onNext }) => {
-    const [sessions, setSessions] = useState([]);
     const [allSessions, setAllSessions] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [showMore, setShowMore] = useState(true); // Track whether to show the "More Choices" button
     const { width } = useWindowDimensions();
 
     useEffect(() => {
@@ -67,7 +65,6 @@ const SessionChoice = ({ onNext }) => {
                     ))
                 );
                 setAllSessions(combinedSessions);
-                setSessions(combinedSessions.slice(0, 3)); // Show only first 3 sessions initially
                 setLoading(false);
             })
             .catch(error => {
@@ -75,11 +72,6 @@ const SessionChoice = ({ onNext }) => {
                 setLoading(false);
             });
     }, []);
-
-    const handleMoreChoices = () => {
-        setSessions(allSessions); // Show all sessions
-        setShowMore(false); // Hide the "More Choices" button
-    };
 
     if (loading) {
         return <Loader />;
@@ -92,26 +84,18 @@ const SessionChoice = ({ onNext }) => {
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <h1>Choisir un modèle</h1>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
-                {sessions.map((session) => (
+            <div className="sessionChoiceContainer">
+                {allSessions.map((session) => (
                     <div
                         key={session.id}
                         onClick={() => handleChoice(session)}
                         className='sessionChoice'
                     >
-                        <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>{session.icon}</div>
+                        <div style={width < 500 ? { fontSize: '18px' } : { fontSize: '36px' }}>{session.icon}</div>
                         <div>{session.title}</div>
                         <div style={{ fontSize: '0.66rem' }}>{session.subtitle}</div>
                     </div>
                 ))}
-                {showMore && allSessions.length > 1 && (
-                    <div
-                        onClick={handleMoreChoices}
-                        className='sessionChoicePlus'
-                    >
-                        <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
-                    </div>
-                )}
             </div>
         </div>
     );

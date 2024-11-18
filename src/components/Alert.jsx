@@ -6,7 +6,7 @@ const Alert = ({ message, type, onClose }) => {
     useEffect(() => {
         const removeTimer = setTimeout(() => {
             onClose(); // Remove the alert completely after the fade-out ends
-        }, 3000);
+        }, 2000);
 
         return () => {
             clearTimeout(removeTimer);

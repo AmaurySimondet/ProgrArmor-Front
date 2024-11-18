@@ -32,18 +32,18 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
 
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
-            <h2
+            <h1
                 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
             >
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
-            </h2>
+            </h1>
             <h1>Choisir la date de la séance</h1>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <div
                     onClick={handleTodayChoice}
                     className='sessionChoice'
                 >
-                    <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>📅</div>
+                    <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>📅</div>
                     <div>Aujourd'hui</div>
                     <div style={{ fontSize: '0.66rem' }}>
                         {new Date().toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
@@ -53,7 +53,7 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
                     onClick={handleYesterdayChoice}
                     className='sessionChoice'
                 >
-                    <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>🗓️</div>
+                    <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>🗓️</div>
                     <div>Hier</div>
                     <div style={{ fontSize: '0.66rem' }}>
                         {new Date(new Date().setDate(new Date().getDate() - 1)).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
@@ -63,7 +63,7 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
                     className='sessionChoice'
                     onClick={handlePreYesterdayChoice}
                 >
-                    <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>📆</div>
+                    <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>📆</div>
                     <div>Avant-hier</div>
                     <div style={{ fontSize: '0.66rem' }}>
                         {new Date(new Date().setDate(new Date().getDate() - 2)).toLocaleDateString('fr-FR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}

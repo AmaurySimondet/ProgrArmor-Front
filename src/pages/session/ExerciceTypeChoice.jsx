@@ -47,13 +47,13 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 // Use Promise.all to fetch all the needed information in parallel
                 const fetchDetailsPromises = favoriteExercices.map(async exercice => {
                     // Fetch exercise details
-                    const exerciceDetails = await API.getExercice({ id: exercice.exercice, fields: ["name", "_id"] });
+                    const exerciceDetails = await API.getExercice({ id: exercice.exercice, fields: ["name", "_id", "type"] });
 
                     // Fetch category details for each category in the categories array
                     let categories = [];
                     if (exercice.categories && exercice.categories.length > 0) {
                         const categoryDetailsPromises = exercice.categories.map(async (categoryObj) => {
-                            const categoryDetails = await API.getCategory({ id: categoryObj.category, fields: ["name", "_id"] });
+                            const categoryDetails = await API.getCategory({ id: categoryObj.category, fields: ["name", "_id", "type"] });
                             return {
                                 ...categoryObj,
                                 category: categoryDetails.data.categoryReturned
@@ -125,11 +125,11 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
 
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
-            <h2
+            <h1
                 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
             >
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
-            </h2>
+            </h1>
 
             <h1>{index !== null ? "Modifier" : "Choisir"} un exercice</h1>
 
@@ -164,7 +164,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                                     whiteSpace: 'normal',  // Allow text to wrap within this div
                                 }}
                             >
-                                <div style={{ fontSize: width < 500 ? '20px' : '40px' }}>🌟</div>
+                                <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>🌟</div>
                                 <div>{favorite.exercice.name.fr}</div>
                                 <div style={{ fontSize: '0.66rem', wordWrap: 'break-word', whiteSpace: 'normal' }}>
                                     {favorite.categories.map(category => category.category.name.fr).join(', ')}
@@ -212,14 +212,14 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 </div>
             )}
 
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="sessionChoiceContainer">
                 {exerciceTypes.map((type, index) => (
                     <div
                         key={index}
                         onClick={() => onNext(type.name.fr)}
                         className='sessionChoice'
                     >
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
+                        <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>{emojis[index]}</div>
                         <div>{type.name.fr}</div>
                         <div style={{ fontSize: '0.66rem' }}>{type.examples.fr.join(', ')}</div>
                     </div>
@@ -229,7 +229,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                         onClick={handleMoreTypes}
                         className='sessionChoicePlus'
                     >
-                        <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
+                        <div style={width < 500 ? { fontSize: '18px' } : { fontSize: '36px' }}>➕</div>
                     </div>
                 )}
             </div>

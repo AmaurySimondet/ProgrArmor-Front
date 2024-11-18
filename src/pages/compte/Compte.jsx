@@ -7,6 +7,8 @@ import DisplaySeancesPost from "../../components/DisplaySeancesPost.jsx";
 import PrSearch from "./PrSearch.jsx";
 import PrTable from "./PrTable.jsx";
 import API from "../../utils/API.js";
+import Loader from "../../components/Loader.jsx";
+
 function Compte() {
   const [searchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState('seances');
@@ -19,7 +21,7 @@ function Compte() {
   };
 
   async function getUser() {
-    const { data } = await API.getUser({ id: localStorage.getItem("id") });
+    const { data } = await API.getUser({ id: searchParams.get('id') });
     if (data.success === false) {
       alert(data.message);
     } else {
@@ -37,6 +39,10 @@ function Compte() {
       setLoading(false);
     });
   }, []);
+
+  if (loading) {
+    return <Loader />
+  }
 
   return (
     <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
@@ -119,7 +125,7 @@ function Compte() {
           {/* Render active tab component */}
           {activeTab === 'prSearch' && <PrSearch />}
           {activeTab === 'prTable' && <PrTable />}
-          {activeTab === 'seances' && <DisplaySeancesPost userId={localStorage.getItem('id')} />}
+          {activeTab === 'seances' && <DisplaySeancesPost userId={searchParams.get('id')} />}
         </div>
 
         <Footer />

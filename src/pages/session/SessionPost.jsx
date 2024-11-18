@@ -10,17 +10,18 @@ import API from '../../utils/API';
 const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) => {
     const [postTitle, setPostTitle] = useState('');
     const [postDescription, setPostDescription] = useState('');
-    // const [location, setLocation] = useState('Le lieu');
     const [recordSummary, setRecordSummary] = useState(null);
     const { width } = useWindowDimensions();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
     const [stats, setStats] = useState({});
     const [alert, setAlert] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const showAlert = (message, type) => {
         setAlert({ message, type });
     };
+
     const handleClose = () => {
         setAlert(null);
     };
@@ -88,6 +89,8 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
             return;
         }
 
+        setIsSubmitting(true); // Disable button when submission starts
+
         const seance = {
             title: postTitle,
             description: postDescription,
@@ -100,12 +103,16 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
 
         API.createSeance({ seance: seance }).then((response) => {
             const createdSeance = response.data.newSeance;
+            console.log('Created Seance:', createdSeance);
+            console.log('Created Seance id:', createdSeance._id, selectedExercices, localStorage.getItem("id"));
 
             // for each set in selectedExercices, create a seanceSet
             const seanceSets = seanceToSets(createdSeance._id, selectedExercices, localStorage.getItem("id"));
+            console.log('Seance Sets:', seanceSets);
             seanceSets.forEach((seanceSet) => {
                 API.createSet({ set: seanceSet }).then((response)).catch((error) => {
-                    setAlert({ message: "Erreur lors de la création du set: " + error.response.data.message, type: "danger" });
+                    setIsSubmitting(false); // Re-enable button if there's an error
+                    setAlert({ message: "Erreur lors de la création du set: " + error, type: "danger" });
                 });
             });
 
@@ -115,7 +122,8 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
                 window.location.href = `/dashboard`
             }, 2000);
         }).catch((error) => {
-            setAlert({ message: "Erreur lors de la création de la séance: " + error.response.data.message, type: "danger" });
+            setIsSubmitting(false); // Re-enable button if there's an error
+            setAlert({ message: "Erreur lors de la création de la séance: " + error, type: "danger" });
         });
     };
 
@@ -127,9 +135,9 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
 
     return (
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '40px', alignItems: 'center' }}>
-            <h2 style={{ color: '#9b0000', position: "absolute", left: "40px", margin: "20px 0" }}>
+            <h1 style={{ color: '#9b0000', position: "absolute", left: "40px", margin: "20px 0" }}>
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
-            </h2>
+            </h1>
             <div className="session-post" style={width < 400 ? { padding: '5px', margin: "80px 0 0 0" } : width < 550 ? { padding: '10px', margin: "80px 10px 0 10px" } : { padding: '20px' }}>
 
                 <SessionPostChild
@@ -147,9 +155,14 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
                     editable={true}
                 />
 
-                {/* Submit Button */}
-                <button onClick={handlePostSubmit} className="btn btn-black mt-2" style={{ width: '100%' }}>
-                    Publier la séance
+                {/* Updated Submit Button */}
+                <button
+                    onClick={handlePostSubmit}
+                    className="btn btn-black mt-2"
+                    style={{ width: '100%' }}
+                    disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Publication en cours...' : 'Publier la séance'}
                 </button>
             </div>
 

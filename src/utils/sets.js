@@ -159,7 +159,7 @@ const seanceToSets = (seanceId, selectedExercices, userId) => {
     selectedExercices.forEach((exercise, exerciseIndex) => {
         const { exercice, exerciceType, categories, sets } = exercise;
         const exerciceId = exercice._id;
-        const exerciceTypeId = exerciceType._id;
+        const exerciceTypeId = exerciceType?._id || exercice.type;
         const categoryIds = categories.map(category => ({ category: category._id, categoryType: category.type }));
 
         sets.forEach((set, setIndex) => {

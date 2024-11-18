@@ -16,6 +16,7 @@ import { setsToSeance, addPrToSets } from "../../utils/sets";
 import Loader from "../../components/Loader";
 import SessionPost from "./SessionPost";
 import { COLORS } from "../../utils/colors";
+import Alert from "../../components/Alert";
 
 const Session = () => {
   const [step, setStep] = useState(1);
@@ -30,11 +31,18 @@ const Session = () => {
     sets: []
   });
   const [selectedCategoryType, setSelectedCategoryType] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [selectedSets, setSelectedSets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [editingExerciceIndex, setEditingExerciceIndex] = useState(null);
   const myElementRef = useRef(null);
+  const [alert, setAlert] = useState(null);
+
+  const showAlert = (message, type) => {
+    setAlert({ message, type });
+  };
+
+  const handleClose = () => {
+    setAlert(null);
+  };
 
   const scrollToElement = () => {
     myElementRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -167,8 +175,6 @@ const Session = () => {
       sets: []
     });
     setSelectedCategoryType('');
-    setSelectedCategory('');
-    setSelectedSets([]);
     setEditingExerciceIndex(null);
     setStep(4);
     scrollToElement();
@@ -184,7 +190,6 @@ const Session = () => {
       categories: [],
       sets: []
     });
-    setSelectedSets([]);
     setEditingExerciceIndex(null);
     setStep(4);
   };
@@ -209,7 +214,6 @@ const Session = () => {
         categories: [],
         sets: []
       });
-      setSelectedSets([]);
       setEditingExerciceIndex(null);
     }
     else {
@@ -220,11 +224,9 @@ const Session = () => {
         exerciceType: exercice.exerciceType,
         sets: exercice.sets
       });
-      setSelectedSets(exercice.sets);
       setEditingExerciceIndex(index);
     }
     setSelectedCategoryType('');
-    setSelectedCategory('');
     setStep(8);
     scrollToElement();
   };
@@ -255,6 +257,17 @@ const Session = () => {
     API.getCategory({ name: categoryName })
       .then((response) => {
         selectedCategory = response.data.categoryReturned; // Store the category
+
+        // Check if category already exists in selectedExercice.categories
+        const categoryExists = selectedExercice.categories.some(
+          cat => cat._id === selectedCategory._id
+        );
+
+        if (categoryExists) {
+          showAlert("Cette catégorie est déjà sélectionnée", "danger");
+          return Promise.reject("Category already exists");
+        }
+
         return API.getCategorieType({ id: selectedCategory.type }); // Use the stored category
       })
       .then((response) => {
@@ -270,7 +283,9 @@ const Session = () => {
         scrollToElement();
       })
       .catch((error) => {
-        console.error('Error during category search:', error);
+        if (error !== "Category already exists") {
+          console.error('Error during category search:', error);
+        }
       });
   }
 
@@ -302,8 +317,6 @@ const Session = () => {
       sets: []
     });
     setSelectedCategoryType('');
-    setSelectedCategory('');
-    setSelectedSets([]);
     setEditingExerciceIndex(null);
     setStep(4);
     scrollToElement();
@@ -318,10 +331,19 @@ const Session = () => {
     scrollToElement();
   }
 
+  const handleDeleteLastCategorie = () => {
+    setSelectedExercice({
+      ...selectedExercice,
+      categories: selectedExercice.categories.slice(0, -1)
+    })
+    setStep(6);
+    scrollToElement();
+  }
+
   const handleFavorite = (exercice, categories) => {
     setSelectedExercice({
       exercice: exercice,
-      categories: categories.map(category => ({ _id: category.category._id, name: category.category.name })),
+      categories: categories.map(category => ({ _id: category.category._id, name: category.category.name, type: category.category.type })),
       sets: []
     });
     if (categories.length === 0) {
@@ -362,6 +384,11 @@ const Session = () => {
           )}
 
           <div ref={myElementRef}></div>
+          <div>
+            {alert && (
+              <Alert message={alert.message} type={alert.type} onClose={handleClose} />
+            )}
+          </div>
 
           {step === 1 && (
             <SeanceChoice onNext={handleNextSeanceChoice} />
@@ -379,7 +406,7 @@ const Session = () => {
             <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => { setStep(4); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} />
           )}
           {step === 6 && (
-            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => { setStep(5); scrollToElement() }} index={editingExerciceIndex} onSearch={(categoryName) => handleSearchCategory(categoryName)} exercice={selectedExercice} onDeleteCategories={handleGoToCategories} />
+            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => { setStep(5); scrollToElement() }} index={editingExerciceIndex} onSearch={(categoryName) => handleSearchCategory(categoryName)} exercice={selectedExercice} onDeleteCategories={handleGoToCategories} onDeleteLastCategorie={handleDeleteLastCategorie} />
           )}
           {step === 7 && (
             <CategoryChoice selectedType={selectedCategoryType} onSkip={() => setStep(8)} onNext={handleNextCategoryChoice} onBack={() => { setStep(6); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} />
@@ -389,7 +416,7 @@ const Session = () => {
               onAddSet={handleAddSet}
               onBack={() => { setStep(6); scrollToElement() }}
               onNext={handleNextExercice}
-              editingSets={selectedExercices ? selectedExercices[editingExerciceIndex] ? selectedExercices[editingExerciceIndex].sets : [] : []}
+              editingSets={selectedExercices ? selectedExercices[editingExerciceIndex] ? selectedExercices[editingExerciceIndex].sets : null : null}
               index={editingExerciceIndex}
               exercice={selectedExercice}
               onDelete={(index) => handleOnDeleteExercice(index)}

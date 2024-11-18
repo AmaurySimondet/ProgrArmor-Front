@@ -80,11 +80,11 @@ const ExerciceChoice = ({ selectedType, onNext, onBack, index, exercice }) => {
 
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
-            <h2
+            <h1
                 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
             >
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
-            </h2>
+            </h1>
             <h1>{index !== null ? "Modifier" : "Choisir"} un exercice ({selectedType})</h1>
 
             <RenderExercice exercice={exercice} />
@@ -105,14 +105,14 @@ const ExerciceChoice = ({ selectedType, onNext, onBack, index, exercice }) => {
                 }}
             />
 
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="sessionChoiceContainer">
                 {exercices.map((exercice, index) => (
                     <div
                         key={index}
                         onClick={() => onNext(exercice)}
                         className='sessionChoice'
                     >
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
+                        <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>{emojis[index]}</div>
                         <div>{exercice.name.fr}</div>
                     </div>
                 ))}
@@ -122,7 +122,7 @@ const ExerciceChoice = ({ selectedType, onNext, onBack, index, exercice }) => {
                         className='sessionChoicePlus'
                         style={{ cursor: 'pointer', color: '#007bff' }}
                     >
-                        <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
+                        <div style={width < 500 ? { fontSize: '18px' } : { fontSize: '36px' }}>➕</div>
                     </div>
                 )}
             </div>

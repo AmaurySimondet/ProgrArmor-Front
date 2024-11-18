@@ -6,7 +6,7 @@ import Fuse from 'fuse.js';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import RenderExercice from './RenderExercice';
 
-const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice, onDeleteCategories }) => {
+const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice, onDeleteCategories, onDeleteLastCategorie }) => {
     const [categoryTypes, setCategoryTypes] = useState([]);
     const [allCategoryTypes, setAllCategoryTypes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -86,22 +86,25 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
-                <h2
+                <h1
                     style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
                 >
                     <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
-                </h2>
-                <h2
+                </h1>
+                <h1
                     style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
                 >
                     <span onClick={onSkip} style={{ cursor: 'pointer' }} className="clickable"> Passer &gt; </span>
-                </h2>
+                </h1>
             </div>
-            <h1>{index !== null ? "Modifier" : "Ajouter"} un type de catégorie</h1>
+            <h1>{index !== null ? "Modifier les catégories" : "On ajoute du détail ?"}</h1>
 
             <RenderExercice exercice={exercice} />
 
-            <button onClick={onDeleteCategories} className='btn btn-danger' style={{ margin: '20px 0' }}>Supprimer les catégories</button> <br />
+            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                <button onClick={onDeleteCategories} className='btn btn-white'>Supprimer les catégories</button>
+                <button onClick={onDeleteLastCategorie} className='btn btn-white'>Supprimer dernière catégorie</button>
+            </div>
 
             {/* Search Bar */}
             <input
@@ -120,33 +123,35 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
             />
 
             {/* Search Results */}
-            {searchQuery && (
-                <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
-                    {filteredCategories.length > 0 ? (
-                        filteredCategories.map((categorie, index) => (
-                            <div
-                                key={index}
-                                onClick={() => handleCategoryClick(categorie)} // Use handleCategoryClick for animation
-                                className={`inputClickable ${clickedCategory === categorie ? 'clicked' : ''}`} // Add 'clicked' class when clicked
-                            >
-                                {categorie}
-                            </div>
-                        ))
-                    ) : (
-                        <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
-                    )}
-                </div>
-            )}
+            {
+                searchQuery && (
+                    <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
+                        {filteredCategories.length > 0 ? (
+                            filteredCategories.map((categorie, index) => (
+                                <div
+                                    key={index}
+                                    onClick={() => handleCategoryClick(categorie)} // Use handleCategoryClick for animation
+                                    className={`inputClickable ${clickedCategory === categorie ? 'clicked' : ''}`} // Add 'clicked' class when clicked
+                                >
+                                    {categorie}
+                                </div>
+                            ))
+                        ) : (
+                            <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
+                        )}
+                    </div>
+                )
+            }
 
             {/* Category Type List */}
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="sessionChoiceContainer">
                 {categoryTypes.map((type, index) => (
                     <div
                         key={index}
                         onClick={() => onNext(type.name)}
                         className='sessionChoice'
                     >
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
+                        <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>{emojis[index]}</div>
                         <div>{type.name}</div>
                         <div style={{ fontSize: '0.66rem' }}>{type.examples.join(', ')}</div>
                     </div>
@@ -157,11 +162,11 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
                         className='sessionChoicePlus'
                         style={{ cursor: 'pointer', color: '#007bff' }}
                     >
-                        <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
+                        <div style={width < 500 ? { fontSize: '18px' } : { fontSize: '36px' }}>➕</div>
                     </div>
                 )}
             </div>
-        </div>
+        </div >
     );
 };
 

@@ -67,20 +67,20 @@ const SessionNameChoice = ({ onNext, onBack }) => {
 
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px' }} className='popInElement'>
-            <h2
+            <h1
                 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
             >
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
-            </h2>
+            </h1>
             <h1 style={{ textAlign: 'center' }}>Choisir le nom de la séance</h1>
-            <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center' }}>
+            <div className="sessionChoiceContainer">
                 {names.map((name, index) => (
                     <div
                         key={index}
                         onClick={() => handleChoice(name)}
                         className='sessionChoice'
                     >
-                        <div style={{ fontSize: width < 500 ? '24px' : '48px' }}>{emojis[index]}</div>
+                        <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>{emojis[index]}</div>
                         <div>{name}</div>
                     </div>
                 ))}
@@ -103,16 +103,18 @@ const SessionNameChoice = ({ onNext, onBack }) => {
                         Valider
                     </button>
                 </div>
-                {showMore && allNames.length > 0 && (
-                    <div
-                        onClick={handleMoreChoices}
-                        className='sessionChoicePlus'
-                    >
-                        <div style={width < 500 ? { fontSize: '24px' } : { fontSize: '48px' }}>➕</div>
-                    </div>
-                )}
-            </div>
-        </div>
+                {
+                    showMore && allNames.length > 0 && (
+                        <div
+                            onClick={handleMoreChoices}
+                            className='sessionChoicePlus'
+                        >
+                            <div style={width < 500 ? { fontSize: '18px' } : { fontSize: '36px' }}>➕</div>
+                        </div>
+                    )
+                }
+            </div >
+        </div >
     );
 };
 

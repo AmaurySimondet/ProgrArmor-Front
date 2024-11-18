@@ -402,6 +402,10 @@ h1 {
     margin: 5% 0;
 }
 
+h2 {
+    font-weight: 600;
+}
+
 a {
     color: #9b0000;
 }
@@ -859,7 +863,7 @@ table.profile-table {
 
 .sessionChoice {
     cursor: pointer;
-    padding: 20px;
+    padding: 10px;
     border-radius: 10px;
     border: 1px solid #ccc;
     text-align: center;
@@ -875,9 +879,17 @@ table.profile-table {
     animation: popIn 1s forwards;
 }
 
+.sessionChoiceContainer {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
 .sessionChoiceSmall {
     cursor: pointer;
-    padding: 20px;
+    padding: 10px;
     border-radius: 10px;
     border: 1px solid #ccc;
     text-align: center;
@@ -905,13 +917,15 @@ table.profile-table {
 
 @media (max-width: 500px) {
     .sessionChoice {
-        width: 175px;
-        height: 175px;
+        width: 120px;
+        height: 125px;
+        font-size: 0.8rem;
     }
 
     .sessionChoiceSmall {
-        width: 125px;
-        height: 125px;
+        width: 100px;
+        height: 100px;
+        font-size: 0.8rem;
     }
 }
 
@@ -2315,7 +2329,7 @@ table.hometable td.inscription-img-td {
     }
 
     h2 {
-        font-size: 18px !important;
+        font-size: 20px !important;
         /* 20px */
     }
 

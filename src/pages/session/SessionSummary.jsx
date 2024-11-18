@@ -101,10 +101,10 @@ const SessionSummary = ({
                     </DragDropContext>
 
                     <div style={{ flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'center', gap: '10px' }}>
-                        <button onClick={() => onNewExercice()} className='btn btn-white mt-2 popInElement'>
+                        <button onClick={() => onNewExercice()} className='btn btn-black mt-2 popInElement'>
                             Ajouter un exercice
                         </button>
-                        <button onClick={() => onFinish()} className='btn btn-black mt-2 popInElement'>
+                        <button onClick={() => onFinish()} className='btn btn-white mt-2 popInElement'>
                             Séance terminée
                         </button>
                     </div>

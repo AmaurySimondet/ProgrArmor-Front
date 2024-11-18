@@ -2,7 +2,7 @@ import axios from "axios";
 const headers = {
   "Content-Type": "application/json"
 };
-const burl = "https://prograrmor-back.vercel.app";
+const burl = process.env.REACT_APP_BACKEND_URL;
 
 export default {
 
