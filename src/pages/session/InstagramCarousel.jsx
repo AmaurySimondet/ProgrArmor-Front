@@ -11,6 +11,7 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
 
     return (
         <div
+            key={selectedName}
             ref={carouselRef}
             style={{
                 display: 'flex',

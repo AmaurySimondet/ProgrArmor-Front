@@ -24,7 +24,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
             .then(response => {
                 const fetchedTypes = response.data.exerciceTypes || [];
                 setAllExerciceTypes(fetchedTypes);
-                setExerciceTypes(fetchedTypes.slice(0, 3)); // Show only the first 3 types initially
+                setExerciceTypes(fetchedTypes.slice(0, 10)); // Show only the first 3 types initially
             })
             .catch(error => {
                 console.error("Error fetching exercise types:", error);
@@ -108,8 +108,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
     const handleSearch = (event) => {
         setSearchQuery(event.target.value);
         if (event.target.value === '') {
-            setExercices(allExercices.slice(0, 3));
-            setMoreExercicesUnclicked(true);
+            setExercices(allExercices.slice(0, 10));
             return;
         }
         const fuse = new Fuse(allExercices, { keys: ['name.fr'] });

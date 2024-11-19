@@ -42,7 +42,7 @@ const ExerciceChoice = ({ selectedType, onNext, onBack, index, exercice }) => {
                 .then(response => {
                     let fetchedExercices = response.data.exercices || [];
                     setAllExercices(fetchedExercices);
-                    setExercices(fetchedExercices.slice(0, 3)); // Show only the first 3 exercices initially
+                    setExercices(fetchedExercices.slice(0, 10)); // Show only the first 3 exercices initially
                     setLoading(false);
                 })
                 .catch(error => {
@@ -68,7 +68,7 @@ const ExerciceChoice = ({ selectedType, onNext, onBack, index, exercice }) => {
     const handleSearch = (event) => {
         setSearchQuery(event.target.value);
         if (event.target.value === '') {
-            setExercices(allExercices.slice(0, 3));
+            setExercices(allExercices.slice(0, 10));
             setMoreExercicesUnclicked(true);
             return;
         }

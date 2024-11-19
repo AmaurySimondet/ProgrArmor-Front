@@ -28,7 +28,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
                     examples: type.examples.fr,
                 }));
                 setAllCategoryTypes(fetchedTypes);
-                setCategoryTypes(fetchedTypes.slice(0, 3)); // Show only the first 3 types initially
+                setCategoryTypes(fetchedTypes.slice(0, 10)); // Show only the first 3 types initially
                 setLoading(false);
             })
             .catch(error => {

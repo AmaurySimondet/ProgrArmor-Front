@@ -44,7 +44,7 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice 
                 .then(response => {
                     let fetchedCategories = response.data.categories || [];
                     setAllCategories(fetchedCategories);
-                    setCategories(fetchedCategories.slice(0, 3)); // Show only the first 3 categories initially
+                    setCategories(fetchedCategories.slice(0, 10)); // Show only the first 3 categories initially
                     setLoading(false); // Set loading to false after fetching
                 })
                 .catch(error => {
@@ -70,7 +70,7 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice 
     const handleSearch = (event) => {
         setSearchQuery(event.target.value);
         if (event.target.value === '') {
-            setCategories(allCategories.slice(0, 3));
+            setCategories(allCategories.slice(0, 10));
             setMoreCategoriesUnclicked(true);
             return;
         }
@@ -126,7 +126,7 @@ const CategoryChoice = ({ selectedType, onNext, onSkip, onBack, index, exercice 
                         <div>{category.name.fr}</div>
                     </div>
                 ))}
-                {moreCategoriesUnclicked && allCategories.length > 3 && (
+                {moreCategoriesUnclicked && allCategories.length > 10 && allCategories.length > categories.length && (
                     <div
                         onClick={handleMoreCategories}
                         className='sessionChoicePlus'

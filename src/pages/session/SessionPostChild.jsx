@@ -7,8 +7,6 @@ import InstagramCarousel from './InstagramCarousel';
 function SessionPostChild({ user, postTitle, setPostTitle, postDescription, setPostDescription, selectedName, selectedExercices, recordSummary, selectedDate, stats, backgroundColors, editable }) {
     const { width } = useWindowDimensions();
 
-    console.log("SessionPostChild", postTitle);
-
     return (
         <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>

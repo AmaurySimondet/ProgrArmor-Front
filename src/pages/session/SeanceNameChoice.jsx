@@ -23,7 +23,7 @@ const SessionNameChoice = ({ onNext, onBack }) => {
 
                 // Set all names and initially display only the first 2
                 setAllNames(uniqueNames);
-                setNames(uniqueNames.slice(0, 2)); // Show only first 2 names initially
+                setNames(uniqueNames.slice(0, 6)); // Show only first 2 names initially
                 setLoading(false);
             })
             .catch(error => {
@@ -104,7 +104,7 @@ const SessionNameChoice = ({ onNext, onBack }) => {
                     </button>
                 </div>
                 {
-                    showMore && allNames.length > 0 && (
+                    showMore && allNames.length > 0 && allNames.length > names.length && (
                         <div
                             onClick={handleMoreChoices}
                             className='sessionChoicePlus'
