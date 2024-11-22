@@ -38,7 +38,7 @@ const DisplaySeancesPost = (props) => {
                                 { padding: '20px', margin: "20px 20px 0 20px" }}
                         key={seance._id}>
                         <SessionPostChild
-                            key={seance._id}
+                            id={seance._id}
                             user={seance.user}
                             postTitle={seance.title ? seance.title : "N/A"}
                             postDescription={seance.description}

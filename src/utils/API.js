@@ -70,6 +70,9 @@ export default {
   getUsers: function () {
     return axios.get(`${burl}/user/getUsers`, { headers: headers });
   },
+  getStats: function (userId) {
+    return axios.get(`${burl}/user/userStats`, { headers: headers, params: { userId } });
+  },
 
 
 
@@ -92,6 +95,13 @@ export default {
   },
   createSeance: function (send) {
     return axios.post(`${burl}/user/createSeance`, send, { headers: headers, params: send });
+  },
+  deleteSeance: function (send) {
+    return axios.delete(`${burl}/user/deleteSeance`, {
+      headers: headers,
+      params: send,
+      data: send
+    });
   },
 
 

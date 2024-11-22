@@ -235,7 +235,7 @@ const Session = () => {
   const handleSearchCombination = (combination) => {
     setSelectedExercice({
       exercice: combination.exercice,
-      categories: [combination.category],
+      categories: combination.category ? [combination.category] : [],
       sets: []
     });
     setStep(6);

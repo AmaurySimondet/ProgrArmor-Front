@@ -102,8 +102,8 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
             <RenderExercice exercice={exercice} />
 
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                <button onClick={onDeleteCategories} className='btn btn-white'>Supprimer les catégories</button>
-                <button onClick={onDeleteLastCategorie} className='btn btn-white'>Supprimer dernière catégorie</button>
+                <button onClick={onDeleteCategories} className='btn btn-white'>Supprimer les détails</button>
+                <button onClick={onDeleteLastCategorie} className='btn btn-white'>Supprimer dernier détail</button>
             </div>
 
             {/* Search Bar */}
@@ -111,7 +111,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
                 type="text"
                 value={searchQuery}
                 onChange={handleSearch}
-                placeholder="Ou rechercher une catégorie..."
+                placeholder="Rechercher un détail..."
                 style={{
                     padding: '10px',
                     fontSize: '1rem',

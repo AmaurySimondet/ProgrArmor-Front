@@ -8,6 +8,7 @@ import PrSearch from "./PrSearch.jsx";
 import PrTable from "./PrTable.jsx";
 import API from "../../utils/API.js";
 import Loader from "../../components/Loader.jsx";
+import CompteStats from "./CompteStats.jsx";
 
 function Compte() {
   const [searchParams] = useSearchParams();
@@ -100,6 +101,9 @@ function Compte() {
               )}
             </div>
           </div>
+
+          <CompteStats user={searchParams.get('id')} />
+
 
           {/* Tabs navigation */}
           <div style={{ display: 'flex', justifyContent: 'center' }}>

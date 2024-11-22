@@ -141,7 +141,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 type="text"
                 value={searchQuery}
                 onChange={handleSearch}
-                placeholder="Ou rechercher un exercice..."
+                placeholder="Rechercher un exercice..."
                 style={{
                     padding: '10px',
                     fontSize: '1rem',

@@ -21,6 +21,9 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     const [alert, setAlert] = useState(null);
     const [topFormats, setTopFormats] = useState([]);
     const [topFormatWeight, setTopFormatWeight] = useState(0);
+    const [granularity, setGranularity] = useState(1);
+    const [tensionOptions, setTensionOptions] = useState([]);
+    const [weightLoadOptions, setWeightLoadOptions] = useState([]);
 
     useEffect(() => {
         API.getTopFormat({ userId: localStorage.getItem('id') }).then(response => {
@@ -49,11 +52,6 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     const tooltipText = (
         "Valeurs classiques: </br> (Mesuré a 200% de sa taille) </br> Extra fin (<5kg)</br> Très petit (5-16kg)</br> Petit (12-24kg)</br> Moyen (12-36kg)</br> Gros (22-60kg)</br> Très gros (28-80kg)</br> Énorme (>80kg) (rare)</br> </br> Pour une mesure précise, </br> utilisez un pèse bagage </br> ou une balance de pêche."
     );
-
-    const handleAddSet = () => {
-        const newSet = { unit, value, weightLoad, elastic };
-        setSets([...sets, newSet]);
-    };
 
     const handleRemoveSet = (index) => {
         setSets(sets.filter((_, i) => i !== index));
@@ -128,22 +126,6 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
         setSets([...sets, copiedSet]);
     };
 
-    const handleChangeElasticTensionBegin = (e) => {
-        const newElastic = { ...elastic, tension: parseFloat(e.target.value) }
-        if (!newElastic.use) {
-            newElastic.use = 'resistance';
-        }
-        setElastic(newElastic);
-    }
-
-    const handleChaneElasticUseBegin = (e) => {
-        if (e.target.value === "") {
-            setElastic({});
-            return
-        }
-        setElastic({ ...elastic, use: e.target.value });
-    }
-
     const handleTopFormatSelect = (format) => {
         // Create sets based on the format
         const newSets = format.format.map((value) => {
@@ -157,9 +139,17 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
         setSets(newSets);
     }
 
+    const handleGranularityChange = (e) => {
+        setGranularity(parseFloat(e.target.value));
+    }
+
+    useEffect(() => {
+        setWeightLoadOptions([...Array(2000).keys()].map((i) => Number((i * granularity).toFixed(2))));
+        setTensionOptions([...Array(100).keys()].map((i) => Number((i * granularity).toFixed(2))));
+    }, [granularity]);
+
     useEffect(() => {
         console.log("sets changed");
-        console
         console.log(sets);
     }, [sets]);
 
@@ -276,36 +266,68 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                             </option>
                                             {[...Array(3600).keys()].map((i) => (
                                                 <option key={i} value={i}>
-                                                    {i}
+                                                    {i} {set.unit === 'repetitions' ? 'Reps' : 'Secs'}
                                                 </option>
                                             ))}
                                         </select>
                                     </label>
                                     <label >
-                                        <div>⚖️ </div>
-                                        <div>Charge kg</div>
-                                        <select className="form-control" value={set.weightLoad} onChange={(e) => handleWeightLoadChange(index, e)}>
-                                            <option value="" disabled>
-                                                Charge (kg)
-                                            </option>
-                                            {[...Array(2000).keys()].map((i) => (
-                                                <option key={i / 4} value={i / 4}>
-                                                    {i / 4}
+                                        <div>⚖️</div>
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+                                            Charge
+                                            <div className="dropdown">
+                                                <button
+                                                    className="btn btn-link p-0"
+                                                    type="button"
+                                                    data-bs-toggle="dropdown"
+                                                    aria-expanded="false"
+                                                    style={{ fontSize: '0.8rem', color: '#666' }}
+                                                >
+                                                    ⚙️
+                                                </button>
+                                                <ul className="dropdown-menu dropdown-menu-end">
+                                                    <li className="px-3 py-2">
+                                                        <small>Précision</small>
+                                                        <select
+                                                            className="form-control form-control-sm"
+                                                            value={granularity}
+                                                            onChange={(e) => handleGranularityChange(e)}
+                                                        >
+                                                            <option value={0.1}>0.1 kg</option>
+                                                            <option value={0.25}>0.25 kg</option>
+                                                            <option value={0.5}>0.5 kg</option>
+                                                            <option value={1}>1 kg</option>
+                                                        </select>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                                            <select className="form-control" value={set.weightLoad} onChange={(e) => handleWeightLoadChange(index, e)}>
+                                                <option value="" disabled>
+                                                    Charge (kg)
                                                 </option>
-                                            ))}
-                                        </select>
+                                                {weightLoadOptions.map((option) => (
+                                                    <option key={option} value={option}>
+                                                        {option} kg
+                                                    </option>
+                                                ))}
+                                            </select>
+
+                                        </div>
                                     </label>
                                     <label >
                                         <div>🪢</div>
-                                        <div>
-                                            <a
+                                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+                                            Élastique
+                                            <span
                                                 data-tooltip-id="my-tooltip"
                                                 data-tooltip-html={tooltipText}
                                                 data-tooltip-place="top"
+                                                style={{ cursor: 'help', fontSize: '0.8rem', opacity: 0.7 }}
                                             >
-
-                                                Élastique
-                                            </a>
+                                                ℹ️
+                                            </span>
                                         </div>
                                         <select className="custom-select" value={set.elastic?.use || ''} onChange={(e) => handleChangeElasticUse(index, e)}>
                                             <option value="resistance">Résistance</option>
@@ -313,16 +335,19 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                             <option value="">Sans</option>
                                         </select>
                                         {set.elastic?.use && (
-                                            <select className="form-control" value={set.elastic?.tension || ''} onChange={(e) => handleChangeElasticTension(index, e)}>
-                                                <option value="" disabled>
-                                                    Tension (kg)
-                                                </option>
-                                                {[...Array(100).keys()].map((i) => (
-                                                    <option key={i} value={i}>
-                                                        {i}
+                                            <div>
+                                                <div>Tension</div>
+                                                <select className="form-control" value={set.elastic?.tension || ''} onChange={(e) => handleChangeElasticTension(index, e)}>
+                                                    <option value="" disabled>
+                                                        Tension (kg)
                                                     </option>
-                                                ))}
-                                            </select>
+                                                    {tensionOptions.map((option) => (
+                                                        <option key={option} value={option}>
+                                                            {option} kg
+                                                        </option>
+                                                    ))}
+                                                </select>
+                                            </div>
                                         )}
                                     </label>
                                 </div>
@@ -346,13 +371,10 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                         </div>
                     ))
                 ) : null}
-            </div>
+            </div >
 
 
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                <button onClick={handleAddSet} className='btn btn-dark'>
-                    Ajouter série
-                </button>
                 <button onClick={handleNextExercice} className='btn btn-white'>
                     Valider
                 </button>

@@ -3,6 +3,7 @@ import Loader from '../../components/Loader';
 import { useWindowDimensions } from '../../utils/useEffect';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import API from '../../utils/API';
+import Alert from '../../components/Alert';
 
 
 const SessionNameChoice = ({ onNext, onBack }) => {
@@ -13,6 +14,15 @@ const SessionNameChoice = ({ onNext, onBack }) => {
     const [showMore, setShowMore] = useState(true); // Track whether to show the "More Choices" button
     const [emojis, setEmojis] = useState([]);
     const { width } = useWindowDimensions();
+    const [alert, setAlert] = useState(null);
+
+    const showAlert = (message, type) => {
+        setAlert({ message, type });
+    };
+
+    const handleClose = () => {
+        setAlert(null);
+    };
 
     useEffect(() => {
         // Fetch session names from the API
@@ -60,6 +70,12 @@ const SessionNameChoice = ({ onNext, onBack }) => {
     };
 
     const handleCustomNameSubmit = () => {
+        //no special characters
+        console.log(customName);
+        if (!/^[a-zA-Z0-9\s\u00C0-\u017F?!.]+$/.test(customName)) {
+            showAlert('Nom invalide: caractères spéciaux non autorisés', 'error');
+            return;
+        }
         if (customName.trim()) {
             onNext(customName);
         }
@@ -114,6 +130,11 @@ const SessionNameChoice = ({ onNext, onBack }) => {
                     )
                 }
             </div >
+            <div>
+                {alert && (
+                    <Alert message={alert.message} type={alert.type} onClose={handleClose} />
+                )}
+            </div>
         </div >
     );
 };

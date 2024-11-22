@@ -30,6 +30,12 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
         }
     };
 
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleCustomDateSubmit();
+        }
+    };
+
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <h1
@@ -77,6 +83,7 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
                         placeholderText="Select a date"
                         className="custom-date-picker" // Apply custom class for styling
                         calendarClassName="custom-calendar" // Optional custom calendar class
+                        onKeyDown={handleKeyDown}
                     />
                     <button
                         onClick={handleCustomDateSubmit}

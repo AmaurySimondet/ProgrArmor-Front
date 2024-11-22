@@ -107,7 +107,7 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
             console.log('Created Seance id:', createdSeance._id, selectedExercices, localStorage.getItem("id"));
 
             // for each set in selectedExercices, create a seanceSet
-            const seanceSets = seanceToSets(createdSeance._id, selectedExercices, localStorage.getItem("id"));
+            const seanceSets = seanceToSets(createdSeance._id, selectedExercices, localStorage.getItem("id"), selectedDate);
             console.log('Seance Sets:', seanceSets);
             seanceSets.forEach((seanceSet) => {
                 API.createSet({ set: seanceSet }).then((response)).catch((error) => {
@@ -118,9 +118,9 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
 
             // when all seanceSets are created, redirect to the dashboard
             setAlert({ message: "Séance créée avec succès!", type: "success" });
-            setTimeout(() => {
-                window.location.href = `/dashboard`
-            }, 2000);
+            // setTimeout(() => {
+            //     window.location.href = `/dashboard`
+            // }, 2000);
         }).catch((error) => {
             setIsSubmitting(false); // Re-enable button if there's an error
             setAlert({ message: "Erreur lors de la création de la séance: " + error, type: "danger" });
@@ -141,6 +141,7 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
             <div className="session-post" style={width < 400 ? { padding: '5px', margin: "80px 0 0 0" } : width < 550 ? { padding: '10px', margin: "80px 10px 0 10px" } : { padding: '20px' }}>
 
                 <SessionPostChild
+                    id={null}
                     user={user}
                     postTitle={postTitle}
                     setPostTitle={setPostTitle}

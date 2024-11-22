@@ -152,7 +152,7 @@ const setsToSeance = async (sessionSets, name, date) => {
     return seance;
 };
 
-const seanceToSets = (seanceId, selectedExercices, userId) => {
+const seanceToSets = (seanceId, selectedExercices, userId, date) => {
     const seanceSets = [];
     console.log('Selected exercices:', selectedExercices);
 
@@ -178,6 +178,7 @@ const seanceToSets = (seanceId, selectedExercices, userId) => {
                 value: set.value,
                 elastic: set.elastic || null,
                 PR: set.PR || null,
+                date: new Date(date),
             };
 
             seanceSets.push(seanceSet);

@@ -929,6 +929,19 @@ table.profile-table {
     }
 }
 
+.dropdown-item {
+    transition: all 0.5s ease;
+}
+
+.dropdown-item:hover {
+    transform: scale(1.05);
+    background-color: #f0f0f0;
+}
+
+.dropdown-item.delete:hover {
+    background-color: #ffe6e6;
+}
+
 .sessionChoicePlus {
     cursor: pointer;
     border-radius: 100%;

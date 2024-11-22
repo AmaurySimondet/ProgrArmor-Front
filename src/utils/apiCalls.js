@@ -1,5 +1,44 @@
 import API from "./API";
 
+async function buildFavoriteExercices(favoriteExercices) {
+    // Fetch details for each exercise in parallel
+    const fetchDetailsPromises = favoriteExercices.map(async (exercice) => {
+        try {
+            // Fetch exercise details
+            const exerciceDetails = await API.getExercice({ id: exercice.exercice, fields: ["name", "_id", "type"] });
+
+            // Fetch category details
+            let categories = [];
+            if (exercice.categories && exercice.categories.length > 0) {
+                const categoryDetailsPromises = exercice.categories.map(async (categoryObj) => {
+                    const categoryDetails = await API.getCategory({ id: categoryObj.category, fields: ["name", "_id", "type"] });
+                    return {
+                        ...categoryObj,
+                        category: categoryDetails.data.categoryReturned
+                    };
+                });
+
+                categories = await Promise.all(categoryDetailsPromises);
+            }
+
+            // Return the exercise with fetched details
+            return {
+                ...exercice,
+                exercice: exerciceDetails.data.exerciceReturned,
+                categories: categories
+            };
+        } catch (error) {
+            console.error("Error fetching exercise details:", error);
+            throw error;
+        }
+    });
+
+    // Wait for all exercises to be processed
+    favoriteExercices = await Promise.all(fetchDetailsPromises);
+
+    return favoriteExercices;
+}
+
 /**
  * Fetch top exercises for a given user with full details
  * [
@@ -30,40 +69,7 @@ async function fetchFavoriteExercices(userId) {
         const response = await API.getTopExercices({ userId });
         let favoriteExercices = response.data.topExercices;
 
-        // Fetch details for each exercise in parallel
-        const fetchDetailsPromises = favoriteExercices.map(async (exercice) => {
-            try {
-                // Fetch exercise details
-                const exerciceDetails = await API.getExercice({ id: exercice.exercice, fields: ["name", "_id", "type"] });
-
-                // Fetch category details
-                let categories = [];
-                if (exercice.categories && exercice.categories.length > 0) {
-                    const categoryDetailsPromises = exercice.categories.map(async (categoryObj) => {
-                        const categoryDetails = await API.getCategory({ id: categoryObj.category, fields: ["name", "_id", "type"] });
-                        return {
-                            ...categoryObj,
-                            category: categoryDetails.data.categoryReturned
-                        };
-                    });
-
-                    categories = await Promise.all(categoryDetailsPromises);
-                }
-
-                // Return the exercise with fetched details
-                return {
-                    ...exercice,
-                    exercice: exerciceDetails.data.exerciceReturned,
-                    categories: categories
-                };
-            } catch (error) {
-                console.error("Error fetching exercise details:", error);
-                throw error;
-            }
-        });
-
-        // Wait for all exercises to be processed
-        favoriteExercices = await Promise.all(fetchDetailsPromises);
+        favoriteExercices = await buildFavoriteExercices(favoriteExercices);
 
         // Return the final processed exercises
         return favoriteExercices;
@@ -74,4 +80,4 @@ async function fetchFavoriteExercices(userId) {
 }
 
 
-export default { fetchFavoriteExercices };
+export default { fetchFavoriteExercices, buildFavoriteExercices };

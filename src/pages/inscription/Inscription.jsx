@@ -34,76 +34,75 @@ function Inscription() {
     }, []);
 
     useEffect(() => {
-        const y1 = div1.current.offsetTop;
-        const y2 = div2.current.offsetTop;
-        const y3 = div3.current.offsetTop;
-        const y4 = div4.current.offsetTop;
-        const y5 = div5.current.offsetTop;
-        const yMargin = 300;
+        setTimeout(() => {
+            const y1 = div1.current.offsetTop;
+            const y2 = div2.current.offsetTop;
+            const y3 = div3.current.offsetTop;
+            const y4 = div4.current.offsetTop;
+            const y5 = div5.current.offsetTop;
+            const yMargin = 300;
 
-        window.addEventListener("scroll", () => {
-            if (window.pageYOffset > y1 - yMargin) {
-                setClassdiv1("visible");
-            }
-            if (window.pageYOffset < y1 - yMargin) {
-                setClassdiv1("not-visible");
-            }
-
-            if (window.pageYOffset > y2 - yMargin) {
-                setClassdiv2("visible");
-            }
-            if (window.pageYOffset < y2 - yMargin) {
-                setClassdiv2("not-visible");
-            }
-
-            if (dimensions.width > 900) {
-                if (window.pageYOffset > y3 - yMargin) {
-                    setClassdiv3("visible");
+            window.addEventListener("scroll", () => {
+                if (window.pageYOffset > y1 - yMargin) {
+                    setClassdiv1("visible");
                 }
-                if (window.pageYOffset < y3 - yMargin) {
-                    setClassdiv3("not-visible");
+                if (window.pageYOffset < y1 - yMargin) {
+                    setClassdiv1("not-visible");
                 }
 
-                if (window.pageYOffset > y4 - yMargin) {
-                    setClassdiv4("visible");
+                if (window.pageYOffset > y2 - yMargin) {
+                    setClassdiv2("visible");
                 }
-                if (window.pageYOffset < y4 - yMargin) {
-                    setClassdiv4("not-visible");
-                }
-
-                if (window.pageYOffset > y5 - yMargin) {
-                    setClassdiv5("visible");
-                }
-                if (window.pageYOffset < y5 - yMargin) {
-                    setClassdiv5("not-visible");
-                }
-            }
-            if (dimensions.width <= 900) {
-                if (window.pageYOffset > y3 - yMargin) {
-                    setClassdiv3("visible");
-                }
-                if (window.pageYOffset < y3 - yMargin) {
-                    setClassdiv3("not-visible");
+                if (window.pageYOffset < y2 - yMargin) {
+                    setClassdiv2("not-visible");
                 }
 
-                if (window.pageYOffset > y4 - yMargin) {
-                    setClassdiv4("visible");
-                }
-                if (window.pageYOffset < y4 - yMargin) {
-                    setClassdiv4("not-visible");
-                }
+                if (dimensions.width > 900) {
+                    if (window.pageYOffset > y3 - yMargin) {
+                        setClassdiv3("visible");
+                    }
+                    if (window.pageYOffset < y3 - yMargin) {
+                        setClassdiv3("not-visible");
+                    }
 
-                if (window.pageYOffset > y5 - yMargin) {
-                    setClassdiv5("visible");
+                    if (window.pageYOffset > y4 - yMargin) {
+                        setClassdiv4("visible");
+                    }
+                    if (window.pageYOffset < y4 - yMargin) {
+                        setClassdiv4("not-visible");
+                    }
+
+                    if (window.pageYOffset > y5 - yMargin) {
+                        setClassdiv5("visible");
+                    }
+                    if (window.pageYOffset < y5 - yMargin) {
+                        setClassdiv5("not-visible");
+                    }
                 }
-                if (window.pageYOffset < y5 - yMargin) {
-                    setClassdiv5("not-visible");
+                if (dimensions.width <= 900) {
+                    if (window.pageYOffset > y3 - yMargin) {
+                        setClassdiv3("visible");
+                    }
+                    if (window.pageYOffset < y3 - yMargin) {
+                        setClassdiv3("not-visible");
+                    }
+
+                    if (window.pageYOffset > y4 - yMargin) {
+                        setClassdiv4("visible");
+                    }
+                    if (window.pageYOffset < y4 - yMargin) {
+                        setClassdiv4("not-visible");
+                    }
+
+                    if (window.pageYOffset > y5 - yMargin) {
+                        setClassdiv5("visible");
+                    }
+                    if (window.pageYOffset < y5 - yMargin) {
+                        setClassdiv5("not-visible");
+                    }
                 }
-            }
-
-
-
-        });
+            });
+        }, 100);
     }, []);
 
     // This function will scroll the window to the top 
