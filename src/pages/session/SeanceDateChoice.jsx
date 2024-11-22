@@ -73,6 +73,7 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
                     <DatePicker
                         selected={customDate}
                         onChange={(date) => setCustomDate(date)}
+                        dateFormat={"yyyy-MM-dd"}
                         placeholderText="Select a date"
                         className="custom-date-picker" // Apply custom class for styling
                         calendarClassName="custom-calendar" // Optional custom calendar class

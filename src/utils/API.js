@@ -144,6 +144,12 @@ export default {
     });
   },
 
+  getCombinations: function (send) {
+    return axios.get(`${burl}/user/combinations`, {
+      headers: headers, params: send
+    });
+  },
+
 
 
   // CATEGORIES TYPES

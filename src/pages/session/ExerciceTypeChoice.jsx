@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import Loader from '../../components/Loader';
 import API from '../../utils/API';
+import apiCalls from '../../utils/apiCalls';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import { useWindowDimensions } from '../../utils/useEffect';
 import Fuse from 'fuse.js';
 import RenderExercice from './RenderExercice';
 
 const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavorite }) => {
-    const [exercices, setExercices] = useState(null);
+    const [combinations, setCombinations] = useState(null);
     const [exerciceTypes, setExerciceTypes] = useState(null);
     const [allExerciceTypes, setAllExerciceTypes] = useState(null);
-    const [allExercices, setAllExercices] = useState(null);
+    const [allCombinations, setAllCombinations] = useState(null);
     const [loading, setLoading] = useState(true);
     const [moreTypesUnclicked, setMoreTypesUnclicked] = useState(true); // Track whether to show more types
     const [emojis, setEmojis] = useState(null);
@@ -30,69 +31,28 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 console.error("Error fetching exercise types:", error);
             });
 
-        // Fetch all exercise names from the API for the search feature
-        API.getExercices() // Replace with the actual method to fetch exercise names
-            .then(response => {
-                const fetchedNames = response.data.exercices || [];
-                setAllExercices(fetchedNames);
-            })
-            .catch(error => {
-                console.error("Error fetching exercise names:", error);
-            });
+        // Fetch all combinations from the API
+        API.getCombinations().then(response => {
+            setAllCombinations(response.data.combinations);
+        });
 
-        API.getTopExercices({ userId: localStorage.getItem('id') })
-            .then(response => {
-                let favoriteExercices = response.data.topExercices;
-
-                // Use Promise.all to fetch all the needed information in parallel
-                const fetchDetailsPromises = favoriteExercices.map(async exercice => {
-                    // Fetch exercise details
-                    const exerciceDetails = await API.getExercice({ id: exercice.exercice, fields: ["name", "_id", "type"] });
-
-                    // Fetch category details for each category in the categories array
-                    let categories = [];
-                    if (exercice.categories && exercice.categories.length > 0) {
-                        const categoryDetailsPromises = exercice.categories.map(async (categoryObj) => {
-                            const categoryDetails = await API.getCategory({ id: categoryObj.category, fields: ["name", "_id", "type"] });
-                            return {
-                                ...categoryObj,
-                                category: categoryDetails.data.categoryReturned
-                            };
-                        });
-
-                        // Wait for all category details to be fetched
-                        categories = await Promise.all(categoryDetailsPromises);
-                    }
-
-                    // Return the exercise object with the added details
-                    return {
-                        ...exercice,
-                        exercice: exerciceDetails.data.exerciceReturned,
-                        categories: categories // Replace categories with full details
-                    };
-                });
-
-                // Wait for all exercises to be processed
-                Promise.all(fetchDetailsPromises)
-                    .then(completedExercices => {
-                        favoriteExercices = completedExercices;
-                        setFavoriteExercices(favoriteExercices);
-                    })
-                    .catch(error => {
-                        console.error("Error completing favorite exercices:", error);
-                    });
-            })
-            .catch(error => {
+        // TOP Exercices
+        (async () => {
+            try {
+                const favoriteExercices = await apiCalls.fetchFavoriteExercices(localStorage.getItem('id'));
+                setFavoriteExercices(favoriteExercices);
+            } catch (error) {
                 console.error("Error fetching favorite exercices:", error);
-            });
+            }
+        })();
     }, []);
 
     //when everything is loaded, set loading to false
     useEffect(() => {
-        if (allExerciceTypes && allExercices && favoriteExercices) {
+        if (allExerciceTypes && allCombinations && favoriteExercices) {
             setLoading(false);
         }
-    }, [allExerciceTypes, allExercices, favoriteExercices]);
+    }, [allExerciceTypes, allCombinations, favoriteExercices]);
 
     useEffect(() => {
         if (allExerciceTypes) {
@@ -108,12 +68,12 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
     const handleSearch = (event) => {
         setSearchQuery(event.target.value);
         if (event.target.value === '') {
-            setExercices(allExercices.slice(0, 10));
+            setCombinations(allCombinations.slice(0, 10));
             return;
         }
-        const fuse = new Fuse(allExercices, { keys: ['name.fr'] });
+        const fuse = new Fuse(allCombinations, { keys: ['combinationName.fr'] });
         const results = fuse.search(event.target.value);
-        setExercices(results.map(result => result.item));
+        setCombinations(results.map(result => result.item));
     };
 
 
@@ -195,14 +155,14 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
             {/* Search Results */}
             {searchQuery && (
                 <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
-                    {exercices.length ? (
-                        exercices.map((exercice, index) => (
+                    {combinations.length ? (
+                        combinations.map((combination, index) => (
                             <div
                                 key={index}
-                                onClick={() => onSearch(exercice)}
+                                onClick={() => onSearch(combination)}
                                 className="inputClickable"
                             >
-                                {exercice.name.fr}
+                                {combination.combinationName.fr}
                             </div>
                         ))
                     ) : (

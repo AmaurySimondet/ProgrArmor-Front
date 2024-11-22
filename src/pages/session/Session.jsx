@@ -232,24 +232,15 @@ const Session = () => {
   };
 
 
-  const handleSearchExercice = (exercice) => {
-    API.getExerciceType({ id: exercice.type })
-      .then((response) => {
-        const exerciceTypeName = response.data.exerciceTypeReturned.name.fr;
-        setSelectedType(exerciceTypeName);
-
-        const newExercice = {
-          ...selectedExercice,
-          exercice: exercice
-        };
-        setSelectedExercice(newExercice);
-        setStep(6);
-        scrollToElement();
-      })
-      .catch((error) => {
-        console.error('Error during exercise search:', error);
-      });
-  };
+  const handleSearchCombination = (combination) => {
+    setSelectedExercice({
+      exercice: combination.exercice,
+      categories: [combination.category],
+      sets: []
+    });
+    setStep(6);
+    scrollToElement();
+  }
 
   const handleSearchCategory = (categoryName) => {
     let selectedCategory;  // Declare a variable to hold the category
@@ -400,7 +391,7 @@ const Session = () => {
             <SeanceDateChoice onNext={handleNextDateChoice} onBack={() => { setStep(2); scrollToElement() }} />
           )}
           {step === 4 && (
-            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => { setStep(3); scrollToElement() }} onSearch={(exerciceName) => handleSearchExercice(exerciceName)} index={editingExerciceIndex} exercice={selectedExercice} onFavorite={handleFavorite} />
+            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => { setStep(3); scrollToElement() }} onSearch={(combination) => handleSearchCombination(combination)} index={editingExerciceIndex} exercice={selectedExercice} onFavorite={handleFavorite} />
           )}
           {step === 5 && (
             <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => { setStep(4); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} />
