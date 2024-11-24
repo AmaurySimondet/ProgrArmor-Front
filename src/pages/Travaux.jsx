@@ -36,7 +36,7 @@ function Travaux() {
         {/* PAGE CONTENT */}
         <div className="content-wrap">
 
-          <div className="Travaux-div">
+          <div className="Travaux-div popInElement">
             <h1>Oups !</h1>
             <p>
               <img className="travaux-icon" src={require('../images/icons/icons8-man-construction-worker-48.webp')} alt="miguel" />

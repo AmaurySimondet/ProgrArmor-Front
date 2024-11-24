@@ -4,6 +4,7 @@ import { React, useState, useEffect } from "react"
 import InstallApp from "./InstallApp";
 import API from "../../utils/API";
 import ConversionBerger from "./ConversionBerger";
+import { COLORS } from "../../utils/colors";
 
 function Aide() {
     const [clickInstallApp, setClickInstallApp] = useState(false);
@@ -37,45 +38,55 @@ function Aide() {
     }, [])
 
     return (
-        <div>
-            <NavigBar location="aide" />
+        <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
+            <div className="page-container">
+                <NavigBar location="aide" />
 
-            <div className="basic-div" style={{ minHeight: "85vh" }}>
-                <h1 className="large-margin-updown"> Aide </h1>
 
-                <h2
-                    className="large-margin-bottom"
-                    onClick={handleClickInstallApp}
-                    id="InstallApp">
 
-                    Installer l'application ProgArmor
 
-                    <img className={clickInstallApp ? "expert-toggle rotated" : "expert-toggle not-rotated"}
-                        src={require('../../images/icons/icons8-expand-arrow-90.webp')} />
-                </h2>
+                {/* PAGE CONTENT */}
+                <div className="content-wrap">
+                    <div className="basic-div popInElement" style={{ minHeight: "85vh" }}>
+                        <h1 className="large-margin-updown"> Aide </h1>
 
-                <div className={clickInstallApp ? "extended-huge" : "not-extended"}>
-                    <InstallApp modeSombre={user ? user.modeSombre === true ? true : false : false} />
+                        <h2
+                            className="large-margin-bottom"
+                            onClick={handleClickInstallApp}
+                            id="InstallApp">
+
+                            Installer l'application ProgArmor
+
+                            <img className={clickInstallApp ? "expert-toggle rotated" : "expert-toggle not-rotated"}
+                                src={require('../../images/icons/icons8-expand-arrow-90.webp')} />
+                        </h2>
+
+                        <div className={clickInstallApp ? "extended-huge" : "not-extended"}>
+                            <InstallApp modeSombre={user ? user.modeSombre === true ? true : false : false} />
+                        </div>
+
+                        <h2
+                            className="large-margin-bottom"
+                            onClick={handleClickBerger}
+                            id="Berger">
+
+                            Converion des tables de Berger (%1RM)
+                            <img className={clickBerger ? "expert-toggle rotated" : "expert-toggle not-rotated"}
+                                src={require('../../images/icons/icons8-expand-arrow-90.webp')} />
+                        </h2>
+
+                        <div className={clickBerger ? "extended" : " not-extended"}>
+                            <ConversionBerger modeSombre={user ? user.modeSombre === true ? true : false : false} />
+                        </div>
+                    </div>
+
                 </div>
 
-                <h2
-                    className="large-margin-bottom"
-                    onClick={handleClickBerger}
-                    id="Berger">
 
-                    Converion des tables de Berger (%1RM)
-                    <img className={clickBerger ? "expert-toggle rotated" : "expert-toggle not-rotated"}
-                        src={require('../../images/icons/icons8-expand-arrow-90.webp')} />
-                </h2>
 
-                <div className={clickBerger ? "extended" : " not-extended"}>
-                    <ConversionBerger modeSombre={user ? user.modeSombre === true ? true : false : false} />
-                </div>
+                <Footer />
             </div>
-
-            <Footer />
         </div>
-
     )
 }
 

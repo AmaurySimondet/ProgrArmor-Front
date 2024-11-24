@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import Loader from '../../components/Loader';
 import NavigBar from '../../components/NavigBar';
 import Footer from '../../components/Footer';
 import { COLORS } from '../../utils/colors';
-import API from '../../utils/API';
 import DisplaySeancesPost from '../../components/DisplaySeancesPost';
 import FollowSuggestions from '../../components/FollowSuggestions';
 
