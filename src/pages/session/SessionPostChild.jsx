@@ -4,7 +4,7 @@ import { useWindowDimensions } from '../../utils/useEffect';
 import PostStats from './PostStats';
 import InstagramCarousel from './InstagramCarousel';
 import API from '../../utils/API';
-
+import { getDetailedDate } from '../../utils/dates';
 function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, setPostDescription, selectedName, selectedExercices, recordSummary, selectedDate, stats, backgroundColors, editable }) {
     const { width } = useWindowDimensions();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -35,7 +35,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                     <div>
                         {user ? <strong><a href={`/compte?id=${user.id}`}>{user.fName} {user.lName}</a></strong> : <strong>Prénom Nom</strong>}
                         <br />
-                        <i>{selectedDate}</i>
+                        <i>{getDetailedDate(selectedDate)}</i>
                     </div>
                 </div>
                 {user?.id === localStorage.getItem('id') && !editable ? (

@@ -5,9 +5,7 @@ import SeanceChoice from "./SeanceChoice";
 import SeanceNameChoice from "./SeanceNameChoice";
 import SeanceDateChoice from "./SeanceDateChoice";
 import ExerciceTypeChoice from "./ExerciceTypeChoice";
-import ExerciceChoice from "./ExerciceChoice";
 import CategoryTypeChoice from "./CategoryTypeChoice";
-import CategoryChoice from "./CategoryChoice";
 import SetsChoice from "./SetsChoice";
 import SessionSummary from "./SessionSummary";
 import SessionProgressBar from "./SessionProgressBar";
@@ -24,13 +22,11 @@ const Session = () => {
   const [selectedName, setSelectedName] = useState('');
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedExercices, setSelectedExercices] = useState([]);
-  const [selectedType, setSelectedType] = useState('');
   const [selectedExercice, setSelectedExercice] = useState({
     exercice: { name: { fr: '' }, _id: '' },
     categories: [],
     sets: []
   });
-  const [selectedCategoryType, setSelectedCategoryType] = useState('');
   const [loading, setLoading] = useState(false);
   const [editingExerciceIndex, setEditingExerciceIndex] = useState(null);
   const myElementRef = useRef(null);
@@ -103,7 +99,7 @@ const Session = () => {
   const handleNextDateChoice = (date) => {
     setSelectedDate(date);
     if (editingExerciceIndex !== null) {
-      setStep(8);
+      setStep(7);
     }
     else {
       setStep(4);
@@ -111,52 +107,42 @@ const Session = () => {
     scrollToElement();
   };
 
-  const handleNextExerciceTypeChoice = (type) => {
-    setSelectedType(type);
+  const handleNextExerciceTypeChoice = (exercice) => {
+    setSelectedExercice({
+      exercice: exercice,
+      categories: [],
+      sets: []
+    });
     setStep(5);
     scrollToElement();
   };
 
-  const handleNextExerciceChoice = (exercice) => {
-    let newExercice = {
-      exercice: exercice,
-      categories: [],
-      sets: []
-    };
-    setSelectedExercice(newExercice);
-    setStep(6);
-    scrollToElement();
-  };
-
-  const handleNextCategoryTypeChoice = (categoryType) => {
-    setSelectedCategoryType(categoryType);
-    setStep(7);
-    scrollToElement();
-  };
-
-  const handleNextCategoryChoice = (category) => {
+  const handleNextCategoryTypeChoice = (category) => {
     let newExercice = {
       ...selectedExercice,
-      categories: [...selectedExercice.categories, category]
+      categories: [...selectedExercice.categories, category],
+      sets: selectedExercice.sets || []
     };
     setSelectedExercice(newExercice);
-    setStep(6); // Loop back to choosing the next category type
+    setStep(5); // Loop back to choosing the next category type
     scrollToElement();
   };
 
   const handleAddSet = (set) => {
     let newExercice = {
       ...selectedExercice,
+      categories: selectedExercice.categories || [],
       sets: set
     };
     setSelectedExercice(newExercice);
-    setStep(8);
+    setStep(6);
     scrollToElement();
   };
 
   const handleNextExercice = (sets) => {
     const newExercice = {
       ...selectedExercice,
+      categories: selectedExercice.categories || [],
       sets: sets
     };
 
@@ -168,13 +154,11 @@ const Session = () => {
     updateExercices();
 
     // Reset the exercise state
-    setSelectedType('');
     setSelectedExercice({
       exercice: { name: { fr: '' }, _id: '' },
       categories: [],
       sets: []
     });
-    setSelectedCategoryType('');
     setEditingExerciceIndex(null);
     setStep(4);
     scrollToElement();
@@ -184,7 +168,6 @@ const Session = () => {
     const updatedExercices = [...selectedExercices];
     updatedExercices.splice(index, 1);
     setSelectedExercices(updatedExercices);
-    setSelectedType('');
     setSelectedExercice({
       exercice: { name: { fr: '' }, _id: '' },
       categories: [],
@@ -201,23 +184,20 @@ const Session = () => {
       selectedDate,
       selectedExercices
     })}`);
-    setStep(9);
+    setStep(7);
   };
 
   const handleExerciceClick = (index) => {
     const exercice = selectedExercices[index];
     if (!exercice) {
-      setSelectedType('');
       setSelectedExercice({
         exercice: { name: { fr: '' }, _id: '' },
-        exerciceType: { name: '', _id: '' },
         categories: [],
         sets: []
       });
       setEditingExerciceIndex(null);
     }
     else {
-      setSelectedType(exercice.exerciceType);
       setSelectedExercice({
         exercice: exercice.exercice,
         categories: exercice.categories,
@@ -226,8 +206,7 @@ const Session = () => {
       });
       setEditingExerciceIndex(index);
     }
-    setSelectedCategoryType('');
-    setStep(8);
+    setStep(6);
     scrollToElement();
   };
 
@@ -238,46 +217,19 @@ const Session = () => {
       categories: combination.category ? [combination.category] : [],
       sets: []
     });
-    setStep(6);
+    setStep(5);
     scrollToElement();
   }
 
-  const handleSearchCategory = (categoryName) => {
-    let selectedCategory;  // Declare a variable to hold the category
-
-    API.getCategory({ name: categoryName })
-      .then((response) => {
-        selectedCategory = response.data.categoryReturned; // Store the category
-
-        // Check if category already exists in selectedExercice.categories
-        const categoryExists = selectedExercice.categories.some(
-          cat => cat._id === selectedCategory._id
-        );
-
-        if (categoryExists) {
-          showAlert("Cette catégorie est déjà sélectionnée", "danger");
-          return Promise.reject("Category already exists");
-        }
-
-        return API.getCategorieType({ id: selectedCategory.type }); // Use the stored category
-      })
-      .then((response) => {
-        const categoryType = response.data.categorieTypeReturned;
-        setSelectedCategoryType(categoryType);
-
-        const newExercice = {
-          ...selectedExercice,
-          categories: [...selectedExercice.categories, selectedCategory] // Add the stored category to the categories array
-        };
-        setSelectedExercice(newExercice);
-        setStep(6);
-        scrollToElement();
-      })
-      .catch((error) => {
-        if (error !== "Category already exists") {
-          console.error('Error during category search:', error);
-        }
-      });
+  const handleSearchCategory = (category) => {
+    const newExercice = {
+      ...selectedExercice,
+      categories: [...selectedExercice.categories, category],
+      sets: selectedExercice.sets || []
+    };
+    setSelectedExercice(newExercice);
+    setStep(5);
+    scrollToElement();
   }
 
 
@@ -301,13 +253,11 @@ const Session = () => {
   }
 
   const handleNewExercice = () => {
-    setSelectedType('');
     setSelectedExercice({
       exercice: { name: { fr: '' }, _id: '' },
       categories: [],
       sets: []
     });
-    setSelectedCategoryType('');
     setEditingExerciceIndex(null);
     setStep(4);
     scrollToElement();
@@ -318,16 +268,17 @@ const Session = () => {
       ...selectedExercice,
       categories: []
     })
-    setStep(6);
+    setStep(5);
     scrollToElement();
   }
 
   const handleDeleteLastCategorie = () => {
     setSelectedExercice({
       ...selectedExercice,
-      categories: selectedExercice.categories.slice(0, -1)
+      categories: selectedExercice.categories.slice(0, -1),
+      sets: selectedExercice.sets || []
     })
-    setStep(6);
+    setStep(5);
     scrollToElement();
   }
 
@@ -338,10 +289,10 @@ const Session = () => {
       sets: []
     });
     if (categories.length === 0) {
-      setStep(6);
+      setStep(5);
     }
     else {
-      setStep(8);
+      setStep(6);
     }
     scrollToElement();
   }
@@ -351,7 +302,7 @@ const Session = () => {
       <div className="page-container">
         <NavigBar location="session" />
         <div className="content-wrap">
-          {step != 9 && (<div>
+          {step != 7 && (<div>
             <SessionProgressBar
               selectedName={selectedName}
               selectedDate={selectedDate}
@@ -394,18 +345,12 @@ const Session = () => {
             <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => { setStep(3); scrollToElement() }} onSearch={(combination) => handleSearchCombination(combination)} index={editingExerciceIndex} exercice={selectedExercice} onFavorite={handleFavorite} />
           )}
           {step === 5 && (
-            <ExerciceChoice selectedType={selectedType} onNext={handleNextExerciceChoice} onBack={() => { setStep(4); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} />
+            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(6)} onBack={() => { setStep(4); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} onDeleteCategories={handleGoToCategories} onDeleteLastCategorie={handleDeleteLastCategorie} />
           )}
           {step === 6 && (
-            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(8)} onBack={() => { setStep(5); scrollToElement() }} index={editingExerciceIndex} onSearch={(categoryName) => handleSearchCategory(categoryName)} exercice={selectedExercice} onDeleteCategories={handleGoToCategories} onDeleteLastCategorie={handleDeleteLastCategorie} />
-          )}
-          {step === 7 && (
-            <CategoryChoice selectedType={selectedCategoryType} onSkip={() => setStep(8)} onNext={handleNextCategoryChoice} onBack={() => { setStep(6); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} />
-          )}
-          {step === 8 && (
             <SetsChoice
               onAddSet={handleAddSet}
-              onBack={() => { setStep(6); scrollToElement() }}
+              onBack={() => { setStep(5); scrollToElement() }}
               onNext={handleNextExercice}
               editingSets={selectedExercices ? selectedExercices[editingExerciceIndex] ? selectedExercices[editingExerciceIndex].sets : null : null}
               index={editingExerciceIndex}
@@ -415,7 +360,7 @@ const Session = () => {
               onGoToExerciceType={() => { setStep(4); scrollToElement() }}
             />
           )}
-          {step === 9 && (
+          {step === 7 && (
             <SessionPost
               onBack={() => { setStep(4); scrollToElement() }}
               selectedName={selectedName}

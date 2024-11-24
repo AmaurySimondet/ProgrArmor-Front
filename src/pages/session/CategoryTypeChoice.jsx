@@ -5,8 +5,9 @@ import API from '../../utils/API';
 import Fuse from 'fuse.js';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import RenderExercice from './RenderExercice';
+import Alert from '../../components/Alert';
 
-const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice, onDeleteCategories, onDeleteLastCategorie }) => {
+const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteCategories, onDeleteLastCategorie }) => {
     const [categoryTypes, setCategoryTypes] = useState([]);
     const [allCategoryTypes, setAllCategoryTypes] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -15,20 +16,44 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
     const [allCategories, setAllCategories] = useState([]);
     const { width } = useWindowDimensions();
     const [emojis, setEmojis] = useState([]);
-    const [clickedCategory, setClickedCategory] = useState(null); // State to track the clicked category
+    const [alert, setAlert] = useState(null);
+    const [filteredCategories, setFilteredCategories] = useState([]);
+
+    const showAlert = (message, type) => {
+        setAlert({ message, type });
+    };
+
+    const handleClose = () => {
+        setAlert(null);
+    };
 
     useEffect(() => {
         // Fetch category types from the API
         API.getCategoryTypes()
-            .then(response => {
-                let fetchedTypes = response.data.categorieTypes || [];
-                // Keep only name and examples
-                fetchedTypes = fetchedTypes.map(type => ({
-                    name: type.name.fr,
-                    examples: type.examples.fr,
-                }));
-                setAllCategoryTypes(fetchedTypes);
-                setCategoryTypes(fetchedTypes.slice(0, 10)); // Show only the first 3 types initially
+            .then(async response => {
+                const fetchedTypes = response.data.categorieTypes || [];
+
+                // Fetch categories for each type
+                const typesWithCategories = await Promise.all(
+                    fetchedTypes.map(async type => {
+                        try {
+                            const categoriesResponse = await API.getCategories({ categorieType: type._id });
+                            return {
+                                ...type,
+                                categories: categoriesResponse.data.categories || []
+                            };
+                        } catch (error) {
+                            console.error(`Error fetching categories for type ${type.name.fr}:`, error);
+                            return {
+                                ...type,
+                                categories: []
+                            };
+                        }
+                    })
+                );
+
+                setAllCategoryTypes(typesWithCategories);
+                setCategoryTypes(typesWithCategories.slice(0, 10));
                 setLoading(false);
             })
             .catch(error => {
@@ -38,9 +63,8 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
 
         API.getCategories()
             .then(response => {
-                const fetchedNames = response.data.categories || [];
-                const uniqueNames = fetchedNames.map(categorie => categorie.name.fr).filter((value, index, self) => self.indexOf(value) === index);
-                setAllCategories(uniqueNames);
+                const categories = response.data.categories || [];
+                setAllCategories(categories);
             })
             .catch(error => {
                 console.error("Error fetching exercise names:", error);
@@ -54,17 +78,14 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
 
     const handleSearch = (event) => {
         setSearchQuery(event.target.value);
+        if (event.target.value === '') {
+            setFilteredCategories(allCategories.slice(0, 10));
+            return;
+        }
+        const fuse = new Fuse(allCategories, { keys: ['name.fr'] });
+        const results = fuse.search(event.target.value);
+        setFilteredCategories(results.map(result => result.item));
     };
-
-    // Configure Fuse.js for fuzzy searching
-    const options = {
-        includeScore: true,
-        threshold: 0.7, // Adjust this for more or fewer matches (0 is exact match, 1 is very loose)
-        keys: ['name'], // The key(s) you want to search within
-    };
-
-    const fuse = new Fuse(allCategories, options);
-    const filteredCategories = fuse.search(searchQuery).map(result => result.item);
 
     useEffect(() => {
         setEmojis(randomBodybuildingEmojis(allCategories.length));
@@ -72,11 +93,13 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
 
     // Handle category click with animation
     const handleCategoryClick = (categorie) => {
-        setClickedCategory(categorie);
-        onSearch(categorie);
-
-        // Reset the clicked state after a short delay to reset the animation
-        setTimeout(() => setClickedCategory(null), 500);
+        if (exercice.categories.some(c => c._id === categorie._id)) {
+            showAlert("Détail déjà ajouté !", "error");
+            return;
+        }
+        onNext(categorie);
+        showAlert("Détail ajouté ! Encore un autre ?", "success");
+        setSearchQuery('');
     };
 
     if (loading) {
@@ -106,6 +129,8 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
                 <button onClick={onDeleteLastCategorie} className='btn btn-white'>Supprimer dernier détail</button>
             </div>
 
+            {alert && <Alert message={alert.message} type={alert.type} onClose={handleClose} />}
+
             {/* Search Bar */}
             <input
                 type="text"
@@ -130,10 +155,10 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
                             filteredCategories.map((categorie, index) => (
                                 <div
                                     key={index}
-                                    onClick={() => handleCategoryClick(categorie)} // Use handleCategoryClick for animation
-                                    className={`inputClickable ${clickedCategory === categorie ? 'clicked' : ''}`} // Add 'clicked' class when clicked
+                                    onClick={() => handleCategoryClick(categorie)}
+                                    className="inputClickable"
                                 >
-                                    {categorie}
+                                    {categorie.name.fr}
                                 </div>
                             ))
                         ) : (
@@ -148,12 +173,26 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, onSearch, index, exercice,
                 {categoryTypes.map((type, index) => (
                     <div
                         key={index}
-                        onClick={() => onNext(type.name)}
                         className='sessionChoice'
                     >
                         <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>{emojis[index]}</div>
-                        <div>{type.name}</div>
-                        <div style={{ fontSize: '0.66rem' }}>{type.examples.join(', ')}</div>
+                        <div>{type.name.fr}</div>
+                        <select
+                            className="form-control"
+                            onChange={(e) => {
+                                const selectedCategory = type.categories.find(cat => cat._id === e.target.value);
+                                showAlert("Détail ajouté ! Encore un autre ?", "success");
+                                handleCategoryClick(selectedCategory);
+                            }}
+                            style={{ fontSize: '0.8rem', marginTop: '5px' }}
+                        >
+                            <option value="">Sélectionner une catégorie</option>
+                            {type.categories?.map((category, i) => (
+                                <option key={i} value={category._id}>
+                                    {category.name.fr}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 ))}
                 {moreTypesUnclicked && (

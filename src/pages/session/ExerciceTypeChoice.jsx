@@ -21,38 +21,55 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
 
     useEffect(() => {
         // Fetch exercise types from the API
-        API.getExerciceTypes() // Replace with the actual method to fetch exercise types
-            .then(response => {
-                const fetchedTypes = response.data.exerciceTypes || [];
-                setAllExerciceTypes(fetchedTypes);
-                setExerciceTypes(fetchedTypes.slice(0, 10)); // Show only the first 3 types initially
-            })
-            .catch(error => {
-                console.error("Error fetching exercise types:", error);
-            });
+        setLoading(true);
 
-        // Fetch all combinations from the API
-        API.getCombinations().then(response => {
-            setAllCombinations(response.data.combinations);
-        });
-
-        // TOP Exercices
-        (async () => {
+        // Fetch all data (exercise types, combinations, favorite exercices)
+        const fetchAllData = async () => {
             try {
+                // Fetch and process exercise types
+                const response = await API.getExerciceTypes();
+                const fetchedTypes = response.data.exerciceTypes || [];
+
+                // Fetch exercises for each type
+                const typesWithExercises = await Promise.all(
+                    fetchedTypes.map(async type => {
+                        try {
+                            const exercisesResponse = await API.getExercices({ exerciceType: type._id });
+                            return {
+                                ...type,
+                                exercises: exercisesResponse.data.exercices.sort((a, b) => a.name.fr.localeCompare(b.name.fr)) || []
+                            };
+                        } catch (error) {
+                            console.error(`Error fetching exercises for type ${type.name.fr}:`, error);
+                            return {
+                                ...type,
+                                exercises: []
+                            };
+                        }
+                    })
+                );
+
+                setAllExerciceTypes(typesWithExercises);
+                setExerciceTypes(typesWithExercises.slice(0, 10));
+                console.log("typesWithExercises", typesWithExercises);
+
+                // Fetch combinations
+                const combinationsResponse = await API.getCombinations();
+                setAllCombinations(combinationsResponse.data.combinations);
+
+                // Fetch favorite exercises
                 const favoriteExercices = await apiCalls.fetchFavoriteExercices(localStorage.getItem('id'));
                 setFavoriteExercices(favoriteExercices);
-            } catch (error) {
-                console.error("Error fetching favorite exercices:", error);
-            }
-        })();
-    }, []);
 
-    //when everything is loaded, set loading to false
-    useEffect(() => {
-        if (allExerciceTypes && allCombinations && favoriteExercices) {
-            setLoading(false);
-        }
-    }, [allExerciceTypes, allCombinations, favoriteExercices]);
+                setLoading(false);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                setLoading(false);
+            }
+        };
+
+        fetchAllData();
+    }, []);
 
     useEffect(() => {
         if (allExerciceTypes) {
@@ -95,20 +112,20 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
             <RenderExercice exercice={exercice} />
 
             {/* Favorite Exercices */}
-            {favoriteExercices.length > 0 &&
+            {favoriteExercices && favoriteExercices.length > 0 &&
                 <div>
                     <h3 style={{ color: '#9b0000' }}>Exercices favoris</h3>
                     <div
                         style={{
                             display: 'flex',
                             gap: '10px',
-                            justifyContent: 'flex-start',  // Align items to the start of the scrollable area
                             alignItems: 'center',
                             maxWidth: '95vw',
                             margin: '0 auto',
                             maxHeight: '250px',
                             overflowX: 'auto',  // Enable horizontal scrolling
                             whiteSpace: 'nowrap',  // Prevent items from wrapping to the next line
+                            justifyContent: 'space-evenly',
                         }}
                     >
                         {favoriteExercices.map((favorite) => (
@@ -172,15 +189,28 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
             )}
 
             <div className="sessionChoiceContainer">
-                {exerciceTypes.map((type, index) => (
+                {exerciceTypes?.map((type, index) => (
                     <div
                         key={index}
-                        onClick={() => onNext(type.name.fr)}
                         className='sessionChoice'
                     >
-                        <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>{emojis[index]}</div>
+                        <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>{emojis?.[index]}</div>
                         <div>{type.name.fr}</div>
-                        <div style={{ fontSize: '0.66rem' }}>{type.examples.fr.join(', ')}</div>
+                        <select
+                            className="form-control"
+                            onChange={(e) => {
+                                const selectedExercise = type.exercises.find(ex => ex._id === e.target.value);
+                                onNext(selectedExercise);
+                            }}
+                            style={{ fontSize: '0.8rem', marginTop: '5px' }}
+                        >
+                            <option value="">Sélectionner un exercice</option>
+                            {type.exercises?.map((exercise, i) => (
+                                <option key={i} value={exercise._id}>
+                                    {exercise.name.fr}
+                                </option>
+                            ))}
+                        </select>
                     </div>
                 ))}
                 {moreTypesUnclicked && (

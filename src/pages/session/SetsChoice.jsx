@@ -5,6 +5,35 @@ import RenderExercice from './RenderExercice';
 import Alert from '../../components/Alert';
 import API from '../../utils/API';
 
+const GranularitySelector = ({ granularity, onChange }) => {
+    return <div className="dropdown">
+        <button
+            className="btn btn-link p-0"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+            style={{ fontSize: '0.8rem', color: '#666' }}
+        >
+            ⚙️
+        </button>
+        <ul className="dropdown-menu dropdown-menu-end">
+            <li className="px-3 py-2">
+                <small>Précision</small>
+                <select
+                    className="form-control form-control-sm"
+                    value={granularity}
+                    onChange={onChange}
+                >
+                    <option value={0.1}>0.1 kg</option>
+                    <option value={0.25}>0.25 kg</option>
+                    <option value={0.5}>0.5 kg</option>
+                    <option value={1}>1 kg</option>
+                </select>
+            </li>
+        </ul>
+    </div>
+}
+
 const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, onGoToExerciceType, onGoToCategories }) => {
     const [sets, setSets] = useState(editingSets || [{
         unit: 'repetitions',
@@ -13,10 +42,6 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
         elastic: null,
         PR: null
     }]);
-    const [unit, setUnit] = useState('repetitions'); // Default to 'repetitions'
-    const [value, setValue] = useState('');
-    const [weightLoad, setWeightLoad] = useState(0);
-    const [elastic, setElastic] = useState({});
     const { width } = useWindowDimensions();
     const [alert, setAlert] = useState(null);
     const [topFormats, setTopFormats] = useState([]);
@@ -187,12 +212,15 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
             {/*Top Formats */}
             {topFormats.length > 0 &&
                 <div>
-                    <h3 style={{ color: '#9b0000' }}> Formats les plus utilisés </h3>
+                    <h3 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+                        Formats les plus utilisés
+                        <GranularitySelector granularity={granularity} onChange={handleGranularityChange} />
+                    </h3>
                     <div
                         style={{
                             display: 'flex',
                             gap: '10px',
-                            justifyContent: 'flex-start',  // Align items to the start of the scrollable area
+                            justifyContent: 'space-evenly',
                             alignItems: 'center',
                             maxWidth: '95vw',
                             maxHeight: '250px',
@@ -226,9 +254,9 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                         <option value="" disabled>
                                             Charge (kg)
                                         </option>
-                                        {[...Array(2000).keys()].map((i) => (
-                                            <option key={i / 4} value={i / 4}>
-                                                {i / 4}
+                                        {weightLoadOptions.map((option) => (
+                                            <option key={option} value={option}>
+                                                {option} kg
                                             </option>
                                         ))}
                                     </select>
@@ -275,32 +303,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                         <div>⚖️</div>
                                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
                                             Charge
-                                            <div className="dropdown">
-                                                <button
-                                                    className="btn btn-link p-0"
-                                                    type="button"
-                                                    data-bs-toggle="dropdown"
-                                                    aria-expanded="false"
-                                                    style={{ fontSize: '0.8rem', color: '#666' }}
-                                                >
-                                                    ⚙️
-                                                </button>
-                                                <ul className="dropdown-menu dropdown-menu-end">
-                                                    <li className="px-3 py-2">
-                                                        <small>Précision</small>
-                                                        <select
-                                                            className="form-control form-control-sm"
-                                                            value={granularity}
-                                                            onChange={(e) => handleGranularityChange(e)}
-                                                        >
-                                                            <option value={0.1}>0.1 kg</option>
-                                                            <option value={0.25}>0.25 kg</option>
-                                                            <option value={0.5}>0.5 kg</option>
-                                                            <option value={1}>1 kg</option>
-                                                        </select>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            <GranularitySelector granularity={granularity} onChange={handleGranularityChange} />
                                         </div>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                                             <select className="form-control" value={set.weightLoad} onChange={(e) => handleWeightLoadChange(index, e)}>
@@ -336,7 +339,10 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                         </select>
                                         {set.elastic?.use && (
                                             <div>
-                                                <div>Tension</div>
+                                                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+                                                    Tension
+                                                    <GranularitySelector granularity={granularity} onChange={handleGranularityChange} />
+                                                </div>
                                                 <select className="form-control" value={set.elastic?.tension || ''} onChange={(e) => handleChangeElasticTension(index, e)}>
                                                     <option value="" disabled>
                                                         Tension (kg)

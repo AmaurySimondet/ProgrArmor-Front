@@ -118,9 +118,9 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
 
             // when all seanceSets are created, redirect to the dashboard
             setAlert({ message: "Séance créée avec succès!", type: "success" });
-            // setTimeout(() => {
-            //     window.location.href = `/dashboard`
-            // }, 2000);
+            setTimeout(() => {
+                window.location.href = `/dashboard`
+            }, 2000);
         }).catch((error) => {
             setIsSubmitting(false); // Re-enable button if there's an error
             setAlert({ message: "Erreur lors de la création de la séance: " + error, type: "danger" });
