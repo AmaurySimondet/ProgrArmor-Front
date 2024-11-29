@@ -121,8 +121,7 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
                 position: 'absolute',
                 bottom: '0',
                 left: '0',
-                right: '0',
-                paddingBottom: '5px'
+                right: '0'
             }}>
                 {[...Array(numberOfSlides)].map((_, index) => (
                     <div

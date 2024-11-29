@@ -192,14 +192,15 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                     onChange={setPostTitle}
                     style={{
                         fontSize: width < 500 ? '25px' : '30px',
-                        marginBottom: "10px",
+                        marginBottom: "5px",
+                        marginTop: "10px",
                         height: "40px"
                     }}
                     autoFocus={true}
                     placeholder={"Titre"}
                 />
                 :
-                <h1 style={{ fontSize: width < 500 ? '25px' : '30px', marginBottom: "10px" }}>{postTitle}</h1>
+                <h1 style={{ fontSize: width < 500 ? '25px' : '30px', marginBottom: "5px", marginTop: "10px" }}>{postTitle}</h1>
             }
 
 
@@ -209,10 +210,11 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                     value={postDescription}
                     onChange={setPostDescription}
                     placeholder={"Description (optionnel)"}
-                    style={{ fontSize: '1rem', marginBottom: '20px', textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4", height: "125px", padding: "10px", borderRadius: "5px" }}
+                    style={{ fontSize: '1rem', marginBottom: "0px", textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4", height: "100px", padding: "10px", borderRadius: "5px" }}
                 />
-                :
-                <p style={{ fontSize: '1rem', marginBottom: '5px', textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4" }}>{postDescription}</p>
+                : postDescription ?
+                    <p style={{ fontSize: '1rem', marginBottom: "0px", textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4", padding: "10px", borderRadius: "5px" }}>{postDescription}</p>
+                    : null
             }
 
             {/* Stats */}

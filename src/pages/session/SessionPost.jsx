@@ -122,9 +122,9 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack, ti
                     });
 
                     setAlert({ message: "Séance mise à jour avec succès!", type: "success" });
-                    // setTimeout(() => {
-                    //     window.location.href = `/dashboard`
-                    // }, 2000);
+                    setTimeout(() => {
+                        window.location.href = `/dashboard`
+                    }, 2000);
                 }).catch((error) => {
                     setIsSubmitting(false);
                     setAlert({ message: "Erreur lors de la suppression des sets: " + error, type: "danger" });

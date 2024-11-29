@@ -12,8 +12,7 @@ const PostStats = ({ recordSummary, stats, width }) => {
     const containerStyle = {
         display: 'flex',
         flexDirection: 'column',
-        gap: '10px',
-        marginBottom: '15px'
+        marginBottom: '10px'
     };
 
     const statsRowStyle = {
@@ -77,8 +76,8 @@ const PostStats = ({ recordSummary, stats, width }) => {
                                 }}>
                                 <span className="pr-badge"
                                     style={record.PR === 'PR'
-                                        ? { color: "#00c853", margin: 0 }
-                                        : { color: "rgb(255 178 59)", margin: 0 }}>
+                                        ? { color: "#00c853", margin: 0, fontSize: "14px" }
+                                        : { color: "rgb(255 178 59)", margin: 0, fontSize: "14px" }}>
                                     {record.PR} x {record.number}
                                 </span>
                             </li>

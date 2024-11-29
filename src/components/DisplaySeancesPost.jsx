@@ -49,7 +49,7 @@ const DisplaySeancesPost = (props) => {
     }, [page]);
 
     return (
-        <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '40px', alignItems: 'center' }}>
+        <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
             {seances && seances.length > 0 ? (
                 seances.map((seance, index) => (
                     <div
