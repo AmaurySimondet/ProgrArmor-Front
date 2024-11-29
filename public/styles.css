@@ -3,6 +3,23 @@ a:hover {
     text-decoration: none;
 }
 
+h2 {
+    font-weight: 200;
+    margin-top: 2%;
+}
+
+h3 {
+    font-weight: 200;
+    font-size: 20px;
+
+}
+
+select {
+    border-color: hsl(0, 0%, 80%);
+    border-radius: 4px;
+
+}
+
 select:hover {
     cursor: pointer;
     border: solid;
@@ -542,23 +559,6 @@ img {
 
 .css-b62m3t-container>* {
     height: 50px;
-}
-
-h2 {
-    font-weight: 200;
-    margin-top: 2%;
-}
-
-h3 {
-    font-weight: 200;
-    font-size: 20px;
-
-}
-
-select {
-    border-color: hsl(0, 0%, 80%);
-    border-radius: 4px;
-
 }
 
 .col-form-label {
@@ -1103,8 +1103,12 @@ table.profile-table {
 
 .instagramPost {
     text-align: center;
-    width: 400px;
-    height: 400px;
+    width: 350px;
+    height: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    justify-content: center;
     background-color: #9b0000;
     align-content: center;
     flex-shrink: 0;
@@ -2335,21 +2339,6 @@ table.hometable td.inscription-img-td {
 
 /* Medium layout*/
 @media (max-width: 500px) {
-
-    h1 {
-        font-size: 35px !important;
-        /* 40px */
-    }
-
-    h2 {
-        font-size: 20px !important;
-        /* 20px */
-    }
-
-    h3 {
-        font-size: 16px !important;
-    }
-
     body {
         font-size: 14px;
         /* 16px */
@@ -2357,7 +2346,7 @@ table.hometable td.inscription-img-td {
     }
 
     .ProgArmor {
-        font-size: 22px !important;
+        font-size: 25px !important;
     }
 }
 

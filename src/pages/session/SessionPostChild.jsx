@@ -209,17 +209,17 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                     value={postDescription}
                     onChange={setPostDescription}
                     placeholder={"Description (optionnel)"}
-                    style={{ fontSize: '1rem', marginBottom: '20px', textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4", height: "125px" }}
+                    style={{ fontSize: '1rem', marginBottom: '20px', textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4", height: "125px", padding: "10px", borderRadius: "5px" }}
                 />
                 :
-                <p style={{ fontSize: '1rem', marginBottom: '20px', textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4" }}>{postDescription}</p>
+                <p style={{ fontSize: '1rem', marginBottom: '5px', textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4" }}>{postDescription}</p>
             }
 
             {/* Stats */}
-            <PostStats stats={stats} />
+            <PostStats recordSummary={recordSummary} stats={stats} width={width} />
 
             {/* Session Summary */}
-            <InstagramCarousel selectedName={selectedName} selectedExercices={selectedExercices} recordSummary={recordSummary} backgroundColors={backgroundColors} />
+            <InstagramCarousel selectedName={selectedName} selectedExercices={selectedExercices} backgroundColors={backgroundColors} />
         </div >
     );
 }

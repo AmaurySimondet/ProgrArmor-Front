@@ -5,12 +5,19 @@ import API from "./API";
 /**
  * Fetches seances data from the API and updates the state with the transformed seances
  * @param {string} user - The user ID to filter seances by
+ * @param {number} page - The page number to fetch
+ * @param {number} limit - The number of seances to fetch per page
  * @returns {Promise} A promise that resolves with the transformed seances
  */
-const fetchSeancesData = async (user) => {
+const fetchSeancesData = async (user, page = 1, limit = 3) => {
     try {
-        const response = await API.getSeances(user ? { user } : {});
-        const seancesFetched = response.data.seances;
+        const response = await API.getSeances({
+            ...(user ? { user } : {}),
+            page,
+            limit
+        });
+        const seancesFetched = response.data.seances.seances;
+        const hasMore = response.data.seances.hasMore;
 
         // Fetch seance sets for all seances
         const seanceSetsPromises = seancesFetched.map(async (seance) => {
@@ -40,7 +47,7 @@ const fetchSeancesData = async (user) => {
         const transformedSeances = await Promise.all(transformedSeancePromises);
 
         // Update state with the transformed seances
-        return transformedSeances;
+        return { seances: transformedSeances, hasMore };
     } catch (error) {
         console.error("Error fetching seances data:", error);
     }

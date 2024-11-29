@@ -1,4 +1,4 @@
-import { React, useState, useEffect } from "react";
+import { React, useState, useEffect, useRef, useCallback } from "react";
 import SessionPostChild from "../pages/session/SessionPostChild";
 import { stringToDate } from "../utils/dates";
 import { useWindowDimensions } from "../utils/useEffect";
@@ -10,33 +10,58 @@ const backgroundColors = ["#9C005D", "#9C1B00", "#9B0000", "#8B009C", "#9C3600"]
 const DisplaySeancesPost = (props) => {
     const { width } = useWindowDimensions();
     const [loading, setLoading] = useState(true);
-    const [seances, setSeances] = useState(null);
+    const [seances, setSeances] = useState([]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const observer = useRef();
+
+    // Last element callback for intersection observer
+    const lastSeanceElementRef = useCallback(node => {
+        if (loading) return;
+
+        if (observer.current) observer.current.disconnect();
+
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                setPage(prevPage => prevPage + 1);
+            }
+        });
+
+        if (node) observer.current.observe(node);
+    }, [loading, hasMore]);
 
     useEffect(() => {
-        // SEANCES
-        // wait for fetchSeancesData to complete before setting the loading state to false
-        const fetchSeances = async () => {
-            const seances = await fetchSeancesData(props.userId);
-            setSeances(seances);
-        };
-        fetchSeances().then(() => {
-            setLoading(false);
-        });
-    }, []);
+        setLoading(true);
 
-    if (loading) {
-        return <Loader />
-    }
+        const fetchSeances = async () => {
+            try {
+                const response = await fetchSeancesData(props.userId, page);
+                setSeances(prev => [...prev, ...response.seances]);
+                setHasMore(response.hasMore);
+            } catch (error) {
+                console.error('Error fetching seances:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSeances();
+    }, [page]);
 
     return (
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '40px', alignItems: 'center' }}>
             {seances && seances.length > 0 ? (
                 seances.map((seance, index) => (
-                    <div className="session-post" style={
-                        width < 400 ? { padding: '5px', margin: "20px 0 0 0" } :
-                            width < 550 ? { padding: '10px', margin: "20px 10px 0 10px" } :
-                                { padding: '20px', margin: "20px 20px 0 20px" }}
-                        key={seance._id}>
+                    <div
+                        ref={index === seances.length - 1 ? lastSeanceElementRef : null}
+                        className="session-post"
+                        style={
+                            width < 400 ? { padding: '5px', margin: "20px 0 0 0" } :
+                                width < 550 ? { padding: '10px', margin: "20px 10px 0 10px" } :
+                                    { padding: '20px', margin: "20px 20px 0 20px" }
+                        }
+                        key={seance._id}
+                    >
                         <SessionPostChild
                             id={seance._id}
                             user={seance.user}
@@ -55,6 +80,7 @@ const DisplaySeancesPost = (props) => {
             ) : (
                 <div>Aucune séances</div>
             )}
+            {loading && <Loader />}
         </div>
     )
 }

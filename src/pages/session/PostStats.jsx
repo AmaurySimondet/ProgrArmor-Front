@@ -1,62 +1,93 @@
 import React from 'react';
-import { useWindowDimensions } from '../../utils/useEffect';
 
-const PostStats = ({ stats }) => {
-    const { width } = useWindowDimensions();
+const PostStats = ({ recordSummary, stats, width }) => {
 
-    return (<div>
-        {width > 500 ? (
-            <div style={{ display: 'flex', justifyContent: 'space-around', gap: '20px', marginBottom: '20px' }}>
-                <div>
-                    <span> Sets</span>
-                    <h3> {stats.nSets} </h3>
+    const statStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: '8px',
+    };
+
+    const containerStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '10px',
+        marginBottom: '15px'
+    };
+
+    const statsRowStyle = {
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: width < 500 ? '0px' : '5px',
+        justifyContent: 'center',
+    };
+
+    const spanStyle = {
+        fontSize: width < 500 ? '0.8rem' : '1rem',
+        color: '#666'
+    };
+
+    const h3Style = {
+        margin: '5px 0',
+        fontSize: width < 500 ? '0.8rem' : '1.1rem'
+    };
+
+    return (
+        <div style={containerStyle}>
+            <div style={statsRowStyle}>
+                <div style={statStyle}>
+                    <span style={spanStyle}>Sets</span>
+                    <h3 style={h3Style}>{stats.nSets}</h3>
                 </div>
-                <div>
-                    <span>Reps/Secs</span>
-                    <h3> {stats.nReps} </h3>
+                <div style={statStyle}>
+                    <span style={spanStyle}>Reps/Secs</span>
+                    <h3 style={h3Style}>{stats.nReps}</h3>
                 </div>
-                <div>
-                    <span> Interval</span>
-                    <h3> {stats.intervalReps} </h3>
+                <div style={statStyle}>
+                    <span style={spanStyle}>Interval</span>
+                    <h3 style={h3Style}>{stats.intervalReps}</h3>
                 </div>
-                <div>
-                    <span> Charge </span>
-                    <h3> {stats.totalWeight}kg </h3>
+                <div style={statStyle}>
+                    <span style={spanStyle}>Charge</span>
+                    <h3 style={h3Style}>{stats.totalWeight}kg</h3>
                 </div>
-                <div>
-                    <span> Interval</span>
-                    <h3> {stats.intervalWeight}kg </h3>
+                <div style={statStyle}>
+                    <span style={spanStyle}>Interval</span>
+                    <h3 style={h3Style}>{stats.intervalWeight}kg</h3>
                 </div>
             </div>
-        ) : (
-            <div style={{ display: 'flex', justifyContent: 'space-around', gap: '20px', marginBottom: '20px' }}>
-                <div>
-                    <div>
-                        <span> Sets</span>
-                        <h3> {stats.nSets} </h3>
-                    </div>
-                    <div>
-                        <span>Reps/Secs</span>
-                        <h3> {stats.nReps} </h3>
-                    </div>
-                    <div>
-                        <span> Interval</span>
-                        <h3> {stats.intervalReps} </h3>
-                    </div>
+
+            {recordSummary && recordSummary.length > 0 && (
+                <div style={{ textAlign: 'center' }}>
+                    <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
+                        {recordSummary.map((record, idx) => (
+                            <li key={record.PR}
+                                className={`${record.PR ? 'personal-record' : ''}`.trim()}
+                                style={{
+                                    display: 'inline-block',
+                                    margin: '0 5px',
+                                    padding: '3px 8px',
+                                    borderRadius: '4px',
+                                    ...(record.PR === 'PR'
+                                        ? { backgroundColor: "#e0ffe0", border: "2px solid #00c853" }
+                                        : record.PR === "SB"
+                                            ? { backgroundColor: "#fff9c4", border: "2px solid #ffeb3b" }
+                                            : {})
+                                }}>
+                                <span className="pr-badge"
+                                    style={record.PR === 'PR'
+                                        ? { color: "#00c853", margin: 0 }
+                                        : { color: "rgb(255 178 59)", margin: 0 }}>
+                                    {record.PR} x {record.number}
+                                </span>
+                            </li>
+                        ))}
+                    </ul>
                 </div>
-                <div>
-                    <div>
-                        <span> Charge </span>
-                        <h3> {stats.totalWeight}kg </h3>
-                    </div>
-                    <div>
-                        <span> Interval</span>
-                        <h3> {stats.intervalWeight}kg </h3>
-                    </div>
-                </div>
-            </div>
-        )}
-    </div>);
+            )}
+        </div>
+    );
 };
 
 export default PostStats;
