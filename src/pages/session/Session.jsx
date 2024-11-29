@@ -56,14 +56,18 @@ const Session = () => {
           const selectedSessionSets = response.data.sets; // Adjust if needed
           setsToSeance(selectedSessionSets, selectedSession.name, selectedSession.date).then(seance => {
             setSelectedName(selectedSession.name);
-            // setSelectedExercices(seance.exercices);
-            setStep(3);
-            setLoading(false);
-
             // Check for PRs
             addPrToSets(seance.exercices, null, null).then(updatedExercices => {
               setSelectedExercices(updatedExercices);
             });
+            if (selectedSession.value === "params") {
+              setSelectedDate(selectedSession.date);
+              setStep(7);
+            }
+            else {
+              setStep(3);
+            }
+            setLoading(false);
           }
           );
         })
@@ -85,6 +89,7 @@ const Session = () => {
   }, [selectedExercices]);
 
   const handleNextSeanceChoice = (session) => {
+    console.log('session', session);
     setSelectedSession(session);
     setStep(2);
     scrollToElement();
@@ -367,6 +372,8 @@ const Session = () => {
               selectedDate={selectedDate}
               selectedExercices={selectedExercices}
               selectedExercice={selectedExercice}
+              title={selectedSession.title}
+              description={selectedSession.description}
             />
           )}
         </div>

@@ -42,7 +42,7 @@ function PrTable() {
     const handleSearchExercice = (event) => {
         setSearchExerciceQueryPrTable(event.target.value);
         if (event.target.value === '') {
-            setExercicesPrTable(allExercices.slice(0, 10));
+            setExercicesPrTable(allExercices.slice(0, 8));
             return;
         }
         const fuse = new Fuse(allExercices, { keys: ['name.fr'] });
@@ -53,7 +53,7 @@ function PrTable() {
     const handleSearchCategory = (event) => {
         setSearchCategoryQueryPrTable(event.target.value);
         if (event.target.value === '') {
-            setCategoriesPrTable(allCategories.slice(0, 10));
+            setCategoriesPrTable(allCategories.slice(0, 8));
             return;
         }
         const fuse = new Fuse(allCategories, { keys: ['name.fr'] });

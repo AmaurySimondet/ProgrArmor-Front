@@ -5,6 +5,7 @@ import PostStats from './PostStats';
 import InstagramCarousel from './InstagramCarousel';
 import API from '../../utils/API';
 import { getDetailedDate } from '../../utils/dates';
+
 function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, setPostDescription, selectedName, selectedExercices, recordSummary, selectedDate, stats, backgroundColors, editable }) {
     const { width } = useWindowDimensions();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);

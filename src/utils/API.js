@@ -103,6 +103,9 @@ export default {
       data: send
     });
   },
+  updateSeance: function (send) {
+    return axios.put(`${burl}/user/updateSeance`, send, { headers: headers, params: send });
+  },
 
 
 
@@ -123,6 +126,13 @@ export default {
   },
   getTopFormat: function (send) {
     return axios.get(`${burl}/user/topFormat`, { headers: headers, params: send });
+  },
+  deleteSeanceSets: function (send) {
+    return axios.delete(`${burl}/user/deleteSets`, {
+      headers: headers,
+      params: send,
+      data: send
+    });
   },
 
 

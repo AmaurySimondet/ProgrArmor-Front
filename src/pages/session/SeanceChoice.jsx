@@ -3,17 +3,41 @@ import Loader from '../../components/Loader';
 import { useWindowDimensions } from '../../utils/useEffect';
 import API from '../../utils/API';
 import { stringToDate } from '../../utils/dates';
+import { useSearchParams } from 'react-router-dom';
 
 const SessionChoice = ({ onNext }) => {
     const [allSessions, setAllSessions] = useState([]);
     const [loading, setLoading] = useState(true);
     const { width } = useWindowDimensions();
+    const [searchParams] = useSearchParams();
 
     useEffect(() => {
+        // Check if seance ID is in URL params
+        const seanceId = searchParams.get('id');
+
         // Fetch real session data from the API
-        API.getSeanceNames({ userId: localStorage.getItem("id") }) // Replace with actual user ID or other params if needed
+        API.getSeanceNames({ userId: localStorage.getItem("id") })
             .then(response => {
                 const seanceNames = response.data.seanceNames;
+
+                // If seanceId exists in URL, find and redirect to that session
+                if (seanceId) {
+                    const targetSeance = seanceNames.find(seance => seance._id === seanceId);
+                    if (targetSeance) {
+                        onNext({
+                            id: '1',
+                            title: targetSeance.title,
+                            name: targetSeance.name,
+                            icon: '🏋️',
+                            value: "params",
+                            description: targetSeance.description,
+                            subtitle: stringToDate(targetSeance.date),
+                            date: stringToDate(targetSeance.date),
+                            _id: targetSeance._id,
+                        });
+                        return;
+                    }
+                }
 
                 const initialSessions = [{ id: '1', title: 'Partir de zéro', icon: '✍️', value: "new" }];
 
@@ -71,7 +95,7 @@ const SessionChoice = ({ onNext }) => {
                 console.error("Error fetching seance names:", error);
                 setLoading(false);
             });
-    }, []);
+    }, [onNext, searchParams]);
 
     if (loading) {
         return <Loader />;

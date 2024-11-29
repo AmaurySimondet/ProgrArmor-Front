@@ -50,7 +50,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 );
 
                 setAllExerciceTypes(typesWithExercises);
-                setExerciceTypes(typesWithExercises.slice(0, 10));
+                setExerciceTypes(typesWithExercises.slice(0, 8));
                 console.log("typesWithExercises", typesWithExercises);
 
                 // Fetch combinations
@@ -85,7 +85,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
     const handleSearch = (event) => {
         setSearchQuery(event.target.value);
         if (event.target.value === '') {
-            setCombinations(allCombinations.slice(0, 10));
+            setCombinations(allCombinations.slice(0, 8));
             return;
         }
         const fuse = new Fuse(allCombinations, { keys: ['combinationName.fr'] });

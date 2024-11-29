@@ -6,10 +6,11 @@ import { seanceToSets } from "../../utils/sets";
 import Alert from '../../components/Alert';
 import SessionPostChild from './SessionPostChild';
 import API from '../../utils/API';
+import { useSearchParams } from 'react-router-dom';
 
-const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) => {
-    const [postTitle, setPostTitle] = useState('');
-    const [postDescription, setPostDescription] = useState('');
+const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack, title, description }) => {
+    const [postTitle, setPostTitle] = useState(title);
+    const [postDescription, setPostDescription] = useState(description);
     const [recordSummary, setRecordSummary] = useState(null);
     const { width } = useWindowDimensions();
     const [user, setUser] = useState(null);
@@ -17,7 +18,7 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
     const [stats, setStats] = useState({});
     const [alert, setAlert] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-
+    const [searchParams] = useSearchParams();
     const showAlert = (message, type) => {
         setAlert({ message, type });
     };
@@ -62,12 +63,10 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
                 recordSummary.push({ PR: pr, number });
             }
         });
-        console.log('Record Summary:', recordSummary);
         setRecordSummary(recordSummary);
 
         // User
         getUserById(localStorage.getItem("id")).then((response) => {
-            console.log('User:', response);
             setUser(response);
         });
 
@@ -101,30 +100,64 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack }) 
             recordSummary: recordSummary,
         };
 
-        API.createSeance({ seance: seance }).then((response) => {
-            const createdSeance = response.data.newSeance;
-            console.log('Created Seance:', createdSeance);
-            console.log('Created Seance id:', createdSeance._id, selectedExercices, localStorage.getItem("id"));
+        const seanceId = searchParams.get('id');
 
-            // for each set in selectedExercices, create a seanceSet
-            const seanceSets = seanceToSets(createdSeance._id, selectedExercices, localStorage.getItem("id"), selectedDate);
-            console.log('Seance Sets:', seanceSets);
-            seanceSets.forEach((seanceSet) => {
-                API.createSet({ set: seanceSet }).then((response)).catch((error) => {
-                    setIsSubmitting(false); // Re-enable button if there's an error
-                    setAlert({ message: "Erreur lors de la création du set: " + error, type: "danger" });
+        if (seanceId) {
+            // Update existing seance
+            API.updateSeance({ id: seanceId, seance: seance }).then((response) => {
+                const updatedSeance = response.data.updatedSeance;
+                console.log('Updated Seance:', updatedSeance);
+
+                // Delete existing sets
+                API.deleteSeanceSets({ seanceId }).then(() => {
+                    // Create new sets
+                    const seanceSets = seanceToSets(seanceId, selectedExercices, localStorage.getItem("id"), selectedDate);
+                    console.log('New Seance Sets:', seanceSets);
+
+                    seanceSets.forEach((seanceSet) => {
+                        API.createSet({ set: seanceSet }).then((response)).catch((error) => {
+                            setIsSubmitting(false);
+                            setAlert({ message: "Erreur lors de la mise à jour du set: " + error, type: "danger" });
+                        });
+                    });
+
+                    setAlert({ message: "Séance mise à jour avec succès!", type: "success" });
+                    // setTimeout(() => {
+                    //     window.location.href = `/dashboard`
+                    // }, 2000);
+                }).catch((error) => {
+                    setIsSubmitting(false);
+                    setAlert({ message: "Erreur lors de la suppression des sets: " + error, type: "danger" });
                 });
+            }).catch((error) => {
+                setIsSubmitting(false);
+                setAlert({ message: "Erreur lors de la mise à jour de la séance: " + error, type: "danger" });
             });
+        } else {
+            // Create new seance
+            API.createSeance({ seance: seance }).then((response) => {
+                const createdSeance = response.data.newSeance;
+                console.log('Created Seance:', createdSeance);
 
-            // when all seanceSets are created, redirect to the dashboard
-            setAlert({ message: "Séance créée avec succès!", type: "success" });
-            setTimeout(() => {
-                window.location.href = `/dashboard`
-            }, 2000);
-        }).catch((error) => {
-            setIsSubmitting(false); // Re-enable button if there's an error
-            setAlert({ message: "Erreur lors de la création de la séance: " + error, type: "danger" });
-        });
+                const seanceSets = seanceToSets(createdSeance._id, selectedExercices, localStorage.getItem("id"), selectedDate);
+                console.log('Seance Sets:', seanceSets);
+
+                seanceSets.forEach((seanceSet) => {
+                    API.createSet({ set: seanceSet }).then((response)).catch((error) => {
+                        setIsSubmitting(false);
+                        setAlert({ message: "Erreur lors de la création du set: " + error, type: "danger" });
+                    });
+                });
+
+                setAlert({ message: "Séance créée avec succès!", type: "success" });
+                setTimeout(() => {
+                    window.location.href = `/dashboard`
+                }, 2000);
+            }).catch((error) => {
+                setIsSubmitting(false);
+                setAlert({ message: "Erreur lors de la création de la séance: " + error, type: "danger" });
+            });
+        }
     };
 
     if (loading) {

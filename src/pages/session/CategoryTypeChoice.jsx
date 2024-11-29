@@ -53,7 +53,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
                 );
 
                 setAllCategoryTypes(typesWithCategories);
-                setCategoryTypes(typesWithCategories.slice(0, 10));
+                setCategoryTypes(typesWithCategories.slice(0, 8));
                 setLoading(false);
             })
             .catch(error => {
@@ -79,7 +79,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
     const handleSearch = (event) => {
         setSearchQuery(event.target.value);
         if (event.target.value === '') {
-            setFilteredCategories(allCategories.slice(0, 10));
+            setFilteredCategories(allCategories.slice(0, 8));
             return;
         }
         const fuse = new Fuse(allCategories, { keys: ['name.fr'] });

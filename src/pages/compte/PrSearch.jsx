@@ -42,7 +42,7 @@ function PrSearch() {
         const query = event.target.value;
         setSearchExerciceQueryPrSearch(query);
         if (query === '') {
-            setExercicesPrSearch(allExercices.slice(0, 10));
+            setExercicesPrSearch(allExercices.slice(0, 8));
             return;
         }
         const fuse = new Fuse(allExercices, { keys: ['name.fr'] });
@@ -54,7 +54,7 @@ function PrSearch() {
         const query = event.target.value;
         setSearchCategoryQueryPrSearch(query);
         if (query === '') {
-            setCategoriesPrSearch(allCategories.slice(0, 10));
+            setCategoriesPrSearch(allCategories.slice(0, 8));
             return;
         }
         const fuse = new Fuse(allCategories, { keys: ['name.fr'] });
