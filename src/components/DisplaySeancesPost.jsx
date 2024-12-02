@@ -48,6 +48,8 @@ const DisplaySeancesPost = (props) => {
         fetchSeances();
     }, [page]);
 
+    if (loading) return <Loader />;
+
     return (
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
             {seances && seances.length > 0 ? (
