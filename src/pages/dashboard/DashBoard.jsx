@@ -22,7 +22,7 @@ const DashBoard = () => {
                     <FollowSuggestions userId={localStorage.getItem('id')} />
 
                     {/* SEANCES */}
-                    <DisplaySeancesPost />
+                    <DisplaySeancesPost dashboard={true} />
                 </div>
 
 
