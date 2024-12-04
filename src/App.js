@@ -13,6 +13,8 @@ import Session from "./pages/session/Session.jsx";
 import Compte from "./pages/compte/Compte.jsx";
 import InstallApp from "./pages/aide/InstallApp.jsx";
 import Aide from "./pages/aide/Aide.jsx";
+import Followers from "./pages/compte/Followers.jsx";
+import Followings from "./pages/compte/Followings.jsx";
 
 // import eruda from "eruda";
 
@@ -54,7 +56,7 @@ function App() {
             </Route>
 
             <Route path="/compte/*" element={<PrivateRoute />}>
-                <Route exact path='/compte/*' element={<Compte />} />
+                <Route exact path='' element={<Compte />} />
             </Route>
 
             <Route path="/notifications/*" element={<PrivateRoute />}>

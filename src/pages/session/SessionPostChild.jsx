@@ -13,7 +13,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
 
     const handleDelete = async () => {
         setIsDeleting(true);
-        await API.deleteSeance({ id, user: user.id });
+        await API.deleteSeance({ id, user: user._id });
         setIsDeleting(false);
         window.location.href = `/dashboard`;
     };
@@ -31,10 +31,10 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                             borderRadius: "50%",
                             border: "1px solid black",
                         }}
-                        onClick={() => window.location.href = `/compte?id=${user.id}`}
+                        onClick={() => window.location.href = `/compte?id=${user._id}`}
                     />
                     <div>
-                        {user ? <strong><a href={`/compte?id=${user.id}`}>{user.fName} {user.lName}</a></strong> : <strong>Prénom Nom</strong>}
+                        {user ? <strong><a href={`/compte?id=${user._id}`}>{user.fName} {user.lName}</a></strong> : <strong>Prénom Nom</strong>}
                         <br />
                         <i>{getDetailedDate(selectedDate)}</i>
                     </div>
@@ -116,6 +116,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                             zIndex: 1,
                             right: 0
                         }}>
+                            <p style={{ color: 'gray', fontSize: '8px', margin: "5px" }}><i>{id}</i></p>
                             <a href="#"
                                 // className="dropdown-item" 
                                 style={{

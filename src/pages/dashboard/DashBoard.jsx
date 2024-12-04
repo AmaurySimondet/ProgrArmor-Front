@@ -19,7 +19,7 @@ const DashBoard = () => {
                 <div className="content-wrap">
 
                     {/* USERS */}
-                    <FollowSuggestions userId={localStorage.getItem('userId')} />
+                    <FollowSuggestions userId={localStorage.getItem('id')} />
 
                     {/* SEANCES */}
                     <DisplaySeancesPost />

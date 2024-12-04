@@ -1,10 +1,7 @@
 import React from 'react';
-import { useWindowDimensions } from '../../utils/useEffect';
 
 
 const CompteStats = ({ stats }) => {
-    const { width } = useWindowDimensions();
-    console.log(stats);
 
     return (<div>
         <p style={{ margin: '0 20px' }}> 3 derniers mois: </p>
@@ -18,7 +15,7 @@ const CompteStats = ({ stats }) => {
                 <ul>
                     {Array.isArray(stats?.topExercices) ?
                         stats.topExercices.slice(0, 3).map((exercise, index) => (
-                            <li key={index}>{exercise.fullName}</li>
+                            <li key={exercise._id}>{exercise.fullName}</li>
                         ))
                         : null
                     }

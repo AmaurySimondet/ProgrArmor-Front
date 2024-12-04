@@ -4,15 +4,15 @@ import API from "./API";
 
 /**
  * Fetches seances data from the API and updates the state with the transformed seances
- * @param {string} user - The user ID to filter seances by
+ * @param {string} users - The string version of the list of user IDs to filter seances by
  * @param {number} page - The page number to fetch
  * @param {number} limit - The number of seances to fetch per page
  * @returns {Promise} A promise that resolves with the transformed seances
  */
-const fetchSeancesData = async (user, page = 1, limit = 3) => {
+const fetchSeancesData = async (users, page = 1, limit = 3) => {
     try {
         const response = await API.getSeances({
-            ...(user ? { user } : {}),
+            users,
             page,
             limit
         });

@@ -157,7 +157,7 @@ function Connexion() {
 
 
                 {/* PAGE CONTENT */}
-                <div className="content-wrap" style={{ marginBottom: 0 }}>
+                <div className="content-wrap popInElement" style={{ marginBottom: 0 }}>
 
 
                     <div className="tr-connexion">

@@ -567,6 +567,27 @@ img {
 }
 
 /* COMPTE */
+.follow-btn {
+    transition: all 0.3s ease;
+}
+
+.follow-btn.following {
+    transform: scale(1);
+}
+
+.follow-btn.following:hover {
+    background-color: #DF4F5F !important;
+    transform: scale(0.95);
+}
+
+.follow-btn.not-following {
+    transform: scale(1);
+}
+
+.follow-btn.not-following:hover {
+    transform: scale(1.05);
+}
+
 .profile-pic {
     border-radius: 50%;
     width: 200px;
@@ -1795,6 +1816,7 @@ table.hometable td.inscription-img-td {
 .icon-navbar {
     width: 40px;
     margin-right: 10px;
+    transition: 0.5s;
 }
 
 .param-choice-toggle .icon-navbar {

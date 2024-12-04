@@ -151,7 +151,7 @@ function Inscription() {
 
 
                 {/* PAGE CONTENT */}
-                <div className="content-wrap">
+                <div className="content-wrap popInElement">
 
                     {/* DIV 1 */}
                     <div

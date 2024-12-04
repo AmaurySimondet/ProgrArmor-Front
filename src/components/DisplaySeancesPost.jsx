@@ -4,6 +4,7 @@ import { stringToDate } from "../utils/dates";
 import { useWindowDimensions } from "../utils/useEffect";
 import { fetchSeancesData } from "../utils/seance";
 import Loader from "./Loader";
+import API from "../utils/API";
 
 const backgroundColors = ["#9C005D", "#9C1B00", "#9B0000", "#8B009C", "#9C3600"];
 
@@ -13,7 +14,24 @@ const DisplaySeancesPost = (props) => {
     const [seances, setSeances] = useState([]);
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
+    const [currentUser, setCurrentUser] = useState(null);
     const observer = useRef();
+
+    async function getUser() {
+        const { data: currentUserData } = await API.getUser({ id: localStorage.getItem('id') });
+        if (currentUserData.success === false) {
+            alert(currentUserData.message);
+        } else {
+            console.log(currentUserData.profile);
+            setCurrentUser(currentUserData.profile);
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        setLoading(true);
+        getUser();
+    }, []);
 
     // Last element callback for intersection observer
     const lastSeanceElementRef = useCallback(node => {
@@ -31,12 +49,11 @@ const DisplaySeancesPost = (props) => {
     }, [loading, hasMore]);
 
     useEffect(() => {
-        setLoading(true);
-
         const fetchSeances = async () => {
             try {
-                const response = await fetchSeancesData(props.userId, page);
-                setSeances(prev => [...prev, ...response.seances]);
+                const followings = currentUser?.following?.length > 0 ? currentUser?.following?.join(',') + ',' + currentUser?._id : currentUser?._id;
+                const response = await fetchSeancesData(props.userId || followings, page);
+                setSeances(prev => [...prev, ...(response.seances || [])]);
                 setHasMore(response.hasMore);
             } catch (error) {
                 console.error('Error fetching seances:', error);
@@ -45,13 +62,17 @@ const DisplaySeancesPost = (props) => {
             }
         };
 
-        fetchSeances();
-    }, [page]);
+        if (currentUser) {
+            if (page === 1) setLoading(true);
+            fetchSeances();
+        }
+    }, [currentUser, page]);
 
-    if (loading) return <Loader />;
+    if (loading && page === 1) return <Loader />;
 
     return (
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
+            {currentUser.following.length === 0 && <h3 style={{ padding: "20px", margin: "0", fontWeight: "normal" }}>Tu ne suis personne pour le moment, donc on t'affiche tes propres séances... Pars stalker des athlètes !</h3>}
             {seances && seances.length > 0 ? (
                 seances.map((seance, index) => (
                     <div
@@ -82,7 +103,7 @@ const DisplaySeancesPost = (props) => {
             ) : (
                 <div>Aucune séances</div>
             )}
-            {loading && <Loader />}
+            {loading && page > 1 && <Loader />}
         </div>
     )
 }

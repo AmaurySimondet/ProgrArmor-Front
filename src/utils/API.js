@@ -73,6 +73,12 @@ export default {
   getStats: function (userId) {
     return axios.get(`${burl}/user/userStats`, { headers: headers, params: { userId } });
   },
+  followUser: function (send) {
+    return axios.post(`${burl}/user/followUser`, send, { headers: headers });
+  },
+  unfollowUser: function (send) {
+    return axios.post(`${burl}/user/unfollowUser`, send, { headers: headers });
+  },
 
 
 

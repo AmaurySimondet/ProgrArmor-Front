@@ -81,12 +81,22 @@ function Stats({ stats, userId }) {
                         dateMin = new Date(new Date().setMonth(new Date().getMonth() - 3));
                 }
 
-                const topExerciceSets = await API.getSeanceSets({
+                let topExerciceSets = await API.getSeanceSets({
                     userId: userId,
                     exercice: stats.topExercices[selectedExercise].exercice._id,
                     categories: stats.topExercices[selectedExercise].categories.map(category => { return { category: category.category._id } }),
                     dateMin: dateMin.toISOString()
                 });
+
+                if (topExerciceSets.data.sets.length === 0) {
+                    topExerciceSets = await API.getSeanceSets({
+                        userId: userId,
+                        exercice: stats.topExercices[selectedExercise].exercice._id,
+                        categories: stats.topExercices[selectedExercise].categories.map(category => { return { category: category.category._id } }),
+                        dateMin: new Date(0).toISOString()
+                    });
+                    setSelectedTimeframe('max');
+                }
                 exerciceData.push(topExerciceSets.data.sets);
 
                 console.log(exerciceData);

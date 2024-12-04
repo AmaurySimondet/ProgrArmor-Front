@@ -16,7 +16,6 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
         const handleScroll = () => {
             if (carousel) {
                 const scrollPosition = carousel.scrollLeft;
-                console.log("scrollPosition", scrollPosition);
 
                 // Define scroll position ranges based on your observed values
                 let newSlide;
