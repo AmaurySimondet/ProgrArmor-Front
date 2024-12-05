@@ -1,15 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import API from "../utils/API";
 
 function NavigBar(props) {
-    const [gearIsClicked, setGearIsClicked] = useState(false);
     const [toggled, setToggled] = useState(false);
+    const [user, setUser] = useState(null);
     const [clickedWarning, setClickedWarning] = useState(false);
-
-    function handleClick() {
-        setGearIsClicked(oldGear => {
-            return !oldGear
-        })
-    }
 
     function toggling() {
         setToggled(oldToggled => {
@@ -17,30 +12,18 @@ function NavigBar(props) {
         })
     }
 
-    const [dimensions, setDimensions] = React.useState({
-        height: window.innerHeight,
-        width: window.innerWidth
-    })
-
-    React.useEffect(() => {
-        function handleResize() {
-            setDimensions({
-                height: window.innerHeight,
-                width: window.innerWidth
-            })
-        }
-
-        var timeout = false;
-        window.addEventListener('resize', function () {
-            clearTimeout(timeout);;
-            timeout = setTimeout(handleResize, 200);
-        });
-    })
-
-    function handleClickWarning() {
-        setClickedWarning(true);
-
+    async function getUser() {
+        const { data } = await API.getUser({ id: localStorage.getItem('id') });
+        if (data.success === false) {
+            alert(data.message);
+        } else {
+            setUser(data.profile);
+        };
     }
+
+    useEffect(() => {
+        getUser();
+    }, []);
 
     return (
         <div>
@@ -74,8 +57,8 @@ function NavigBar(props) {
                             <a className="nav-link" href="/session"><img className="icon-navbar" src={require('../images/icons/write.webp')} alt='session' /> Nouvelle séance</a>
                             <a className="nav-link" href="/programme"><img className="icon-navbar" src={require('../images/icons/plus.webp')} alt='programme' /> Programmes</a>
                             <hr style={{ borderColor: "black" }} />
-                            <a className="nav-link" href={`/compte?id=${localStorage.getItem('id')}`}> <img className="icon-navbar" src={require('../images/profilepic.webp')} alt='compte' style={{ borderRadius: "50%", border: "1px solid black" }} />Compte </a>
-                            <a className="nav-link" href="/aide"> <img className="icon-navbar" src={require('../images/icons/icons8-question-mark-96.webp')} alt='compte' style={{ filter: "invert(1)" }} /> Aide </a>
+                            <a className="nav-link" href={`/compte?id=${localStorage.getItem('id')}`}> <img className="icon-navbar" src={require('../images/profilepic.webp')} alt='compte' style={{ borderRadius: "50%", border: "1px solid black" }} />{user?.fName} {user?.lName}</a>
+                            <a className="nav-link" href="/aide"> <img className="icon-navbar" src={require('../images/icons/icons8-question-mark-96.webp')} alt='aide' style={{ filter: "invert(1)" }} /> Aide </a>
                             <hr style={{ borderColor: "black" }} />
                             <a className="nav-link" href="/a_propos"> A propos </a>
                             <a className="nav-link" href="/CGU"> CGU </a>
@@ -84,27 +67,6 @@ function NavigBar(props) {
 
                 </div>
             </nav>
-            {
-                props.show === true ?
-                    clickedWarning ?
-                        null
-                        :
-                        <div className="warning-border">
-                            <div className="text">
-                                <p className="La-croix" onClick={handleClickWarning}> <strong>  X </strong> </p>
-                                <p className="attention" > <strong> Attention ! </strong>  </p>
-                                <p> Ce site est encore en version pré-alpha, cela signifie : </p>
-                                <p> - que ProgArmor se garde tout droit concernant votre accès à ce site, </p>
-                                <p> - que ProgArmor se garde tout droit concernant vos données,
-                                    et que celles-ci pourraient être supprimées pour des raisons de développement ou pour tout autre raison, </p>
-                                <p> - que le site peut comporter de nombreux bugs et manquer de fonctionnalités, </p>
-                                <br />
-                                <p> Vous êtes donc conviez à indiquer toute suggestion et tout bug avec un maximum {"d'information "}
-                                    en message direct sur {"l'un de nos réseaux ou par tout autre moyen"}</p>
-                            </div>
-                        </div>
-                    : null
-            }
         </div >
     )
 }

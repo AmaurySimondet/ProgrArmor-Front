@@ -125,7 +125,6 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                             maxHeight: '250px',
                             overflowX: 'auto',  // Enable horizontal scrolling
                             whiteSpace: 'nowrap',  // Prevent items from wrapping to the next line
-                            justifyContent: 'space-evenly',
                         }}
                     >
                         {favoriteExercices.map((favorite) => (

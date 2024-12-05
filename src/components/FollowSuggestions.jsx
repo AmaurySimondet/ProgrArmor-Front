@@ -96,7 +96,8 @@ const FollowSuggestions = ({ userId }) => {
                     paddingBottom: '20px',
                     scrollbarWidth: 'none',
                     position: 'relative', // Required for the index positioning
-                    maxWidth: '600px',
+                    maxWidth: '700px',
+                    minWidth: '350px',
                 }}>
                     {users && users.length > 0 ? (
                         users.map((user, index) => (

@@ -13,14 +13,10 @@ import Session from "./pages/session/Session.jsx";
 import Compte from "./pages/compte/Compte.jsx";
 import InstallApp from "./pages/aide/InstallApp.jsx";
 import Aide from "./pages/aide/Aide.jsx";
-import Followers from "./pages/compte/Followers.jsx";
-import Followings from "./pages/compte/Followings.jsx";
 
-// import eruda from "eruda";
+import eruda from "eruda";
 
 function App() {
-
-    // document.body.style.zoom = "95%";
 
     // //console
     // let el = document.createElement('div');

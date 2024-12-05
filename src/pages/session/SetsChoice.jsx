@@ -46,7 +46,25 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     const [alert, setAlert] = useState(null);
     const [topFormats, setTopFormats] = useState([]);
     const [topFormatWeight, setTopFormatWeight] = useState(0);
-    const [granularity, setGranularity] = useState(1);
+    const [granularity, setGranularity] = useState(() => {
+        if (!editingSets) return 1;
+
+        // Get all decimal parts from weightLoads
+        const decimalParts = editingSets
+            .map(set => set.weightLoad % 1)  // Get decimal part only
+            .filter(decimal => decimal > 0);  // Ignore whole numbers
+
+        if (decimalParts.length === 0) return 1;  // All whole numbers
+
+        // Find the smallest non-zero decimal
+        const smallestDecimal = Math.min(...decimalParts);
+
+        // Match to closest standard granularity
+        if (smallestDecimal <= 0.1) return 0.1;
+        if (smallestDecimal <= 0.25) return 0.25;
+        if (smallestDecimal <= 0.5) return 0.5;
+        return 1;
+    });
     const [tensionOptions, setTensionOptions] = useState([]);
     const [weightLoadOptions, setWeightLoadOptions] = useState([]);
 
@@ -220,7 +238,6 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                         style={{
                             display: 'flex',
                             gap: '10px',
-                            justifyContent: 'space-evenly',
                             alignItems: 'center',
                             maxWidth: '95vw',
                             maxHeight: '250px',
@@ -274,7 +291,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
             <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
                 {sets.length > 0 ? (
                     sets.map((set, index) => (
-                        <div key={index} style={{ marginBottom: '10px', width: '100%', maxWidth: '600px', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '10px' }}>
+                        <div className="popInElement" key={index} style={{ marginBottom: '10px', width: '100%', maxWidth: '600px', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '10px' }}>
                             <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                                 <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
                                     <label >

@@ -26,7 +26,8 @@ const SessionChoice = ({ onNext }) => {
                     if (targetSeance) {
                         onNext({
                             id: '1',
-                            title: targetSeance.title,
+                            postTitle: targetSeance.title,
+                            title: targetSeance.name,
                             name: targetSeance.name,
                             icon: '🏋️',
                             value: "params",

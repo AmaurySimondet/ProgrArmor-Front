@@ -372,7 +372,7 @@ const Session = () => {
               selectedDate={selectedDate}
               selectedExercices={selectedExercices}
               selectedExercice={selectedExercice}
-              title={selectedSession.title}
+              title={selectedSession.postTitle}
               description={selectedSession.description}
             />
           )}

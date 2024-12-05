@@ -39,7 +39,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                         <i>{getDetailedDate(selectedDate)}</i>
                     </div>
                 </div>
-                {user?.id === localStorage.getItem('id') && !editable ? (
+                {user?._id === localStorage.getItem('id') && !editable ? (
                     <div className="dropdown">
                         <img
                             src={require('../../images/icons/three-dots.webp')}

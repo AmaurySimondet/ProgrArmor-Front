@@ -54,7 +54,6 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
                     paddingBottom: '20px',
                     scrollbarWidth: 'none',
                     position: 'relative', // Required for the index positioning
-                    justifyContent: 'space-evenly',
                 }}
                 className="carousel-container"
             >
@@ -76,7 +75,7 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
                                     <span style={{ position: 'absolute', left: 0, top: 0, fontSize: width < 500 ? "2em" : "3em" }}>
                                         {emojis[idx]}
                                     </span>
-                                    <h3 style={{ fontSize: "16px" }}>
+                                    <h3 style={{ fontSize: "16px", fontWeight: "normal" }}>
                                         {selectedExercices[idx].exercice.name.fr}{' '}
                                         {selectedExercices[idx].categories.length > 0 &&
                                             '- ' + selectedExercices[idx].categories.map((category) => category.name.fr).join(', ')}
@@ -94,7 +93,7 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
                                         <span style={{ position: 'absolute', left: 0, top: 0, fontSize: width < 500 ? "2em" : "3em" }}>
                                             {emojis[idx + 1]}
                                         </span>
-                                        <h3 style={{ fontSize: "16px" }}>
+                                        <h3 style={{ fontSize: "16px", fontWeight: "normal" }}>
                                             {selectedExercices[idx + 1].exercice.name.fr}{' '}
                                             {selectedExercices[idx + 1].categories.length > 0 &&
                                                 '- ' + selectedExercices[idx + 1].categories.map((category) => category.name.fr).join(', ')}

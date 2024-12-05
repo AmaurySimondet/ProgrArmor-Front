@@ -51,7 +51,7 @@ const renderSets = (sets, hasModifications, className = "set-item") => {
                 {PR && className !== "" && (
                     // if PR green, if SB yellow
                     <span className="pr-badge" style={PR === 'PR' ? { color: "#00c853" } : { color: "rgb(255 178 59)" }}>
-                        🎉 {PR}! 🎉
+                        {PR}
                     </span>
                 )}
 
