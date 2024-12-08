@@ -18,6 +18,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
         window.location.href = `/dashboard`;
     };
 
+
     return (
         <div>
             {/* User Info and options */}
