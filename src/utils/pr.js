@@ -9,6 +9,7 @@ import API from "./API";
  */
 export const isPersonalRecord = async (set, exercice, categories) => {
     // Extract necessary data from the set
+    console.log("set for pr", set);
     const { unit, value, weightLoad, elastic } = set;
 
     if (value === 0) return null; // Ignore sets with 0 reps
@@ -25,12 +26,14 @@ export const isPersonalRecord = async (set, exercice, categories) => {
         if (value) query.value = { $gte: value };
         if (weightLoad) query.weightLoad = { $gte: weightLoad };
         if (elastic && elastic.use) {
-            if (elastic.use === "resistance") { query.elastic = { tension: { $gte: elastic.tension } } };
-            if (elastic.use === "assistance") { query.elastic = { tension: { $lte: elastic.tension } } };
+            if (elastic.use === "resistance") { query["elastic.tension"] = { $gte: elastic.tension } };
+            if (elastic.use === "assistance") { query["elastic.tension"] = { $lte: elastic.tension } };
         }
 
+        console.log("query for pr in db", query);
         let sets = await API.getSeanceSets(query);
         sets = sets.data.sets;
+        console.log("sets for pr in db", sets);
 
         // Check if the set is a personal record
         if (sets.length === 0) {

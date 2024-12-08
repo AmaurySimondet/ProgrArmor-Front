@@ -15,8 +15,10 @@ import Loader from "../../components/Loader";
 import SessionPost from "./SessionPost";
 import { COLORS } from "../../utils/colors";
 import Alert from "../../components/Alert";
+import { useSearchParams } from 'react-router-dom';
 
 const Session = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [step, setStep] = useState(1);
   const [selectedSession, setSelectedSession] = useState(null);
   const [selectedName, setSelectedName] = useState('');
@@ -45,18 +47,16 @@ const Session = () => {
   };
 
   useEffect(() => {
-    if (!selectedSession) return;
+    if (!selectedSession || selectedSession.fromUrl) return;
 
     setLoading(true);
 
     if (selectedSession.value !== 'new') {
-      // Fetch the selected session from the API
       API.getSeanceSets({ userId: localStorage.getItem("id"), seanceId: selectedSession._id })
         .then(response => {
-          const selectedSessionSets = response.data.sets; // Adjust if needed
+          const selectedSessionSets = response.data.sets;
           setsToSeance(selectedSessionSets, selectedSession.name, selectedSession.date).then(seance => {
             setSelectedName(selectedSession.name);
-            // Check for PRs
             addPrToSets(seance.exercices, null, null).then(updatedExercices => {
               setSelectedExercices(updatedExercices);
             });
@@ -68,8 +68,7 @@ const Session = () => {
               setStep(3);
             }
             setLoading(false);
-          }
-          );
+          });
         })
         .catch(error => {
           console.error('Error fetching selected session or sets:', error);
@@ -82,11 +81,6 @@ const Session = () => {
       setLoading(false);
     }
   }, [selectedSession]);
-
-
-  useEffect(() => {
-    console.log('selectedExercices', selectedExercices);
-  }, [selectedExercices]);
 
   const handleNextSeanceChoice = (session) => {
     console.log('session', session);
@@ -237,15 +231,41 @@ const Session = () => {
     scrollToElement();
   }
 
-
+  // Add this useEffect to load state from URL params on initial load
   useEffect(() => {
-    console.log("index", editingExerciceIndex);
-  }, [editingExerciceIndex]);
+    const stateFromUrl = searchParams.get('state');
+    if (stateFromUrl) {
+      try {
+        const parsedState = JSON.parse(decodeURIComponent(stateFromUrl));
+        if (parsedState.selectedSession) {
+          parsedState.selectedSession.fromUrl = true;
+        }
+        setStep(parsedState.step);
+        setSelectedSession(parsedState.selectedSession);
+        setSelectedName(parsedState.selectedName);
+        setSelectedDate(parsedState.selectedDate);
+        setSelectedExercices(parsedState.selectedExercices);
+        setSelectedExercice(parsedState.selectedExercice);
+        setEditingExerciceIndex(parsedState.editingExerciceIndex);
+      } catch (error) {
+        console.error('Error parsing state from URL:', error);
+      }
+    }
+  }, []);
 
+  // Add this useEffect to update URL when state changes
   useEffect(() => {
-    console.log("selectedExercices", selectedExercices);
-  }, [selectedExercices]);
-
+    const state = {
+      step,
+      selectedSession,
+      selectedName,
+      selectedDate,
+      selectedExercices,
+      selectedExercice,
+      editingExerciceIndex
+    };
+    setSearchParams({ state: encodeURIComponent(JSON.stringify(state)) });
+  }, [step, selectedSession, selectedName, selectedDate, selectedExercices, selectedExercice, editingExerciceIndex]);
 
   if (loading) {
     return <div className="page-container">
