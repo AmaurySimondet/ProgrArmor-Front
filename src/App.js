@@ -14,7 +14,7 @@ import Compte from "./pages/compte/Compte.jsx";
 import InstallApp from "./pages/aide/InstallApp.jsx";
 import Aide from "./pages/aide/Aide.jsx";
 
-import eruda from "eruda";
+// import eruda from "eruda";
 
 function App() {
 

@@ -114,6 +114,40 @@ function Compte() {
     }
   };
 
+  const handleShare = async () => {
+    try {
+      if (window.navigator.share) {
+        // Use native share on mobile devices that support it (including iOS)
+        await window.navigator.share({
+          title: `Profil de ${user?.fName} ${user?.lName}`,
+          text: `Découvrez le profil de ${user?.fName} ${user?.lName} sur ProgArmor: le meilleur site pour progresser en musculation !`,
+          url: window.location.href
+        });
+      } else {
+        // Fallback for desktop or devices without share API
+        const textArea = document.createElement('textarea');
+        textArea.value = window.location.href;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+
+        const button = document.querySelector('.share-btn');
+        const currentButton = button.cloneNode(true);
+        button.style.backgroundColor = '#4CAF50';  // Green color
+        button.innerHTML = width > 700 ? 'Copié !' : '✓';
+
+        // Reset button after 2 seconds
+        setTimeout(() => {
+          button.style.backgroundColor = '';
+          button.innerHTML = currentButton.innerHTML;
+        }, 2000);
+      }
+    } catch (error) {
+      console.error('Error sharing:', error);
+    }
+  };
+
   if (loading) {
     return <Loader />
   }
@@ -164,7 +198,11 @@ function Compte() {
                   </div>
 
                   <div style={{ display: 'flex', gap: '10px' }}>
-                    <button className="btn btn-white" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <button
+                      className="btn btn-white share-btn"
+                      onClick={handleShare}
+                      style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+                    >
                       <>
                         <img
                           src={require('../../images/icons/share.webp')}
