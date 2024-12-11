@@ -154,23 +154,22 @@ function Compte() {
     if (!file) return;
 
     try {
-      setImageUploading(true); // Start loading
+      setImageUploading(true);
 
+      // Create FormData object
       const formData = new FormData();
       formData.append('image', file);
       formData.append('userId', localStorage.getItem('id'));
 
-      await API.uploadPP({
-        image: file,
-        userId: localStorage.getItem('id')
-      });
+      // Update the API call to send FormData
+      await API.uploadPP(formData);  // Send formData directly instead of an object
 
       await getUser(); // Refresh user data to show new image
     } catch (error) {
       console.error("Error uploading image:", error);
       alert("Erreur lors du téléchargement de l'image");
     } finally {
-      setImageUploading(false); // End loading
+      setImageUploading(false);
     }
   };
 
