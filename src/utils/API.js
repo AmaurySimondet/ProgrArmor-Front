@@ -82,6 +82,20 @@ export default {
 
 
 
+  // AWS
+  uploadPP: function (send) {
+    const formData = new FormData();
+    formData.append('image', send.image);
+    formData.append('userId', send.userId);
+
+    return axios.post(`${burl}/user/aws/upload-pp`, formData, {
+      headers: {
+        ...headers,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+
 
 
 

@@ -23,6 +23,7 @@ function Compte() {
   const [stats, setStats] = useState(null);
   const { width } = useWindowDimensions();
   const [animationClass, setAnimationClass] = useState("");
+  const [imageUploading, setImageUploading] = useState(false);
 
   useEffect(() => {
     // Trigger animation when the value changes
@@ -148,6 +149,31 @@ function Compte() {
     }
   };
 
+  const handleImageUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    try {
+      setImageUploading(true); // Start loading
+
+      const formData = new FormData();
+      formData.append('image', file);
+      formData.append('userId', localStorage.getItem('id'));
+
+      await API.uploadPP({
+        image: file,
+        userId: localStorage.getItem('id')
+      });
+
+      await getUser(); // Refresh user data to show new image
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert("Erreur lors du téléchargement de l'image");
+    } finally {
+      setImageUploading(false); // End loading
+    }
+  };
+
   if (loading) {
     return <Loader />
   }
@@ -168,17 +194,71 @@ function Compte() {
               <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
                 {/* USER INFO */}
                 <div style={{ display: 'flex', alignItems: 'center', margin: '20px', gap: '20px' }}>
-                  <img
-                    className="icon-navbar"
-                    src={require('../../images/profilepic.webp')}
-                    alt='compte'
-                    style={{
-                      borderRadius: "50%",
-                      border: "1px solid black",
-                      width: "100px",
-                      height: "100px"
-                    }}
-                  />
+                  <div style={{ position: 'relative' }}>
+                    {user?._id === localStorage.getItem('id') && (
+                      <input
+                        type="file"
+                        id="imageUpload"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        style={{ display: 'none' }}
+                      />
+                    )}
+                    <div style={{ position: 'relative' }}>
+                      <img
+                        className="icon-navbar"
+                        src={user?.profilePic ? user?.profilePic : require('../../images/profilepic.webp')}
+                        alt='compte'
+                        style={{
+                          borderRadius: "50%",
+                          border: "1px solid black",
+                          width: "100px",
+                          height: "100px",
+                          opacity: imageUploading ? 0.5 : 1,
+                          cursor: user?._id === localStorage.getItem('id') ? 'pointer' : 'default'
+                        }}
+                        onClick={() => {
+                          if (user?._id === localStorage.getItem('id')) {
+                            document.getElementById('imageUpload').click();
+                          }
+                        }}
+                      />
+                      {imageUploading && user?._id === localStorage.getItem('id') && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '50%',
+                          left: '50%',
+                          transform: 'translate(-50%, -50%)',
+                          width: '30px',
+                          height: '30px',
+                          border: '3px solid #f3f3f3',
+                          borderTop: '3px solid #3498db',
+                          borderRadius: '50%',
+                          animation: 'spin 1s linear infinite',
+                        }} />
+                      )}
+                    </div>
+                    {user?._id === localStorage.getItem('id') && !imageUploading && (
+                      <div style={{
+                        position: 'absolute',
+                        bottom: '5px',
+                        right: '5px',
+                        backgroundColor: 'white',
+                        borderRadius: '50%',
+                        padding: '5px',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                        cursor: 'pointer'
+                      }}
+                        onClick={() => document.getElementById('imageUpload').click()}
+                      >
+                        <img
+                          src={require('../../images/icons/camera.webp')}
+                          alt="upload"
+                          style={{ width: '20px', height: '20px' }}
+                        />
+                      </div>
+                    )}
+                  </div>
                   <h2>{user?.fName} {user?.lName}</h2>
                 </div>
 

@@ -26,7 +26,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                     <img
                         className="icon-navbar"
-                        src={require('../../images/profilepic.webp')}
+                        src={user?.profilePic ? user?.profilePic : require('../../images/profilepic.webp')}
                         alt='compte'
                         style={{
                             borderRadius: "50%",

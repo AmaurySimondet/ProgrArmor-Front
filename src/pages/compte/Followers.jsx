@@ -35,7 +35,7 @@ const Followers = ({ user, title, dataKey }) => {
                     <div key={follower._id} style={{ display: 'flex', alignItems: 'center', margin: '20px', gap: '20px' }}>
                         <img
                             className="icon-navbar"
-                            src={require('../../images/profilepic.webp')}
+                            src={follower?.profilePic ? follower?.profilePic : require('../../images/profilepic.webp')}
                             alt='compte'
                             style={{
                                 borderRadius: "50%",
