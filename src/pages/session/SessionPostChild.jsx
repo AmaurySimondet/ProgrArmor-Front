@@ -6,7 +6,7 @@ import InstagramCarousel from './InstagramCarousel';
 import API from '../../utils/API';
 import { getDetailedDate } from '../../utils/dates';
 
-function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, setPostDescription, selectedName, selectedExercices, recordSummary, selectedDate, stats, backgroundColors, editable }) {
+function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, setPostDescription, selectedName, selectedExercices, recordSummary, selectedDate, stats, backgroundColors, editable, seancePhotos }) {
     const { width } = useWindowDimensions();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -223,7 +223,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
             <PostStats recordSummary={recordSummary} stats={stats} width={width} />
 
             {/* Session Summary */}
-            <InstagramCarousel selectedName={selectedName} selectedExercices={selectedExercices} backgroundColors={backgroundColors} />
+            <InstagramCarousel seanceId={id} selectedName={selectedName} selectedExercices={selectedExercices} backgroundColors={backgroundColors} editable={editable} selectedDate={selectedDate} seancePhotos={seancePhotos} />
         </div >
     );
 }

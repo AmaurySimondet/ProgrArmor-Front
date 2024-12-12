@@ -8,7 +8,7 @@ import SessionPostChild from './SessionPostChild';
 import API from '../../utils/API';
 import { useSearchParams } from 'react-router-dom';
 
-const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack, title, description }) => {
+const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, onBack, title, description, seancePhotos }) => {
     const [postTitle, setPostTitle] = useState(title);
     const [postDescription, setPostDescription] = useState(description);
     const [recordSummary, setRecordSummary] = useState(null);
@@ -82,7 +82,7 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack, ti
         setLoading(false);
     }, [selectedExercices]);
 
-    const handlePostSubmit = () => {
+    const handlePostSubmit = async () => {
         if (!postTitle) {
             showAlert("Veuillez ajouter un titre à votre séance.", "danger");
             return;
@@ -101,10 +101,20 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack, ti
         };
 
         const seanceId = searchParams.get('id');
+        let updatedPhotos = await API.getPhotos(localStorage.getItem('id'), selectedDate, selectedName).then((response) => {
+            return response.data.images;
+        });
+        if (seanceId) {
+            const seancePhotos = await API.getPhotosBySeanceId(seanceId).then((response) => {
+                return response.data.images;
+            });
+            updatedPhotos = updatedPhotos.concat(seancePhotos);
+        }
+        console.log('Updated Photos:', updatedPhotos);
 
         if (seanceId) {
             // Update existing seance
-            API.updateSeance({ id: seanceId, seance: seance }).then((response) => {
+            API.updateSeance({ id: seanceId, seance: seance, photoIds: updatedPhotos.map(photo => photo._id) }).then((response) => {
                 const updatedSeance = response.data.updatedSeance;
                 console.log('Updated Seance:', updatedSeance);
 
@@ -135,7 +145,7 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack, ti
             });
         } else {
             // Create new seance
-            API.createSeance({ seance: seance }).then((response) => {
+            API.createSeance({ seance: seance, photoIds: updatedPhotos.map(photo => photo._id) }).then((response) => {
                 const createdSeance = response.data.newSeance;
                 console.log('Created Seance:', createdSeance);
 
@@ -174,7 +184,7 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack, ti
             <div className="session-post" style={width < 400 ? { padding: '5px', margin: "80px 0 0 0" } : width < 550 ? { padding: '10px', margin: "80px 10px 0 10px" } : { padding: '20px' }}>
 
                 <SessionPostChild
-                    id={null}
+                    id={seanceId}
                     user={user}
                     postTitle={postTitle}
                     setPostTitle={setPostTitle}
@@ -187,6 +197,7 @@ const SessionPost = ({ selectedName, selectedDate, selectedExercices, onBack, ti
                     stats={stats}
                     backgroundColors={backgroundColors}
                     editable={true}
+                    seancePhotos={seancePhotos}
                 />
 
                 {/* Updated Submit Button */}

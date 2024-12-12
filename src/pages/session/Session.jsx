@@ -220,20 +220,11 @@ const Session = () => {
     scrollToElement();
   }
 
-  const handleSearchCategory = (category) => {
-    const newExercice = {
-      ...selectedExercice,
-      categories: [...selectedExercice.categories, category],
-      sets: selectedExercice.sets || []
-    };
-    setSelectedExercice(newExercice);
-    setStep(5);
-    scrollToElement();
-  }
-
   // Add this useEffect to load state from URL params on initial load
   useEffect(() => {
     const stateFromUrl = searchParams.get('state');
+    const seanceId = searchParams.get('id');
+
     if (stateFromUrl) {
       try {
         const parsedState = JSON.parse(decodeURIComponent(stateFromUrl));
@@ -264,7 +255,13 @@ const Session = () => {
       selectedExercice,
       editingExerciceIndex
     };
-    setSearchParams({ state: encodeURIComponent(JSON.stringify(state)) });
+
+    // Preserve existing params while updating state
+    const currentParams = Object.fromEntries(searchParams.entries());
+    setSearchParams({
+      ...currentParams,
+      state: encodeURIComponent(JSON.stringify(state))
+    });
   }, [step, selectedSession, selectedName, selectedDate, selectedExercices, selectedExercice, editingExerciceIndex]);
 
   if (loading) {
@@ -387,6 +384,7 @@ const Session = () => {
           )}
           {step === 7 && (
             <SessionPost
+              seanceId={selectedSession._id}
               onBack={() => { setStep(4); scrollToElement() }}
               selectedName={selectedName}
               selectedDate={selectedDate}
@@ -394,6 +392,7 @@ const Session = () => {
               selectedExercice={selectedExercice}
               title={selectedSession.postTitle}
               description={selectedSession.description}
+              seancePhotos={selectedSession.seancePhotos}
             />
           )}
         </div>

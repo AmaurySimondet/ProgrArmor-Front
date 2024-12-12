@@ -91,6 +91,40 @@ export default {
       }
     });
   },
+  uploadSeancePhoto: (formData) => {
+    return axios.post(`${burl}/user/aws/upload-seance-photo`, formData, {
+      headers: {
+        ...headers,
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+  },
+  getPhotos: function (userId, seanceDate, seanceName) {
+    return axios.get(`${burl}/user/aws/get-seance-photos`, {
+      headers: headers,
+      params: {
+        userId,
+        seanceDate,
+        seanceName
+      }
+    });
+  },
+  getPhotosBySeanceId: function (seanceId) {
+    return axios.get(`${burl}/user/aws/get-seance-photos-by-id`, {
+      headers: headers,
+      params: {
+        seanceId
+      }
+    });
+  },
+  deleteSeancePhoto: function (photoUrl) {
+    return axios.delete(`${burl}/user/aws/delete-seance-photo`, {
+      headers: headers,
+      params: {
+        photoUrl
+      }
+    });
+  },
 
 
 

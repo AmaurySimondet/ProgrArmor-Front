@@ -34,6 +34,7 @@ const SessionChoice = ({ onNext }) => {
                             description: targetSeance.description,
                             subtitle: stringToDate(targetSeance.date),
                             date: stringToDate(targetSeance.date),
+                            seancePhotos: targetSeance.seancePhotos,
                             _id: targetSeance._id,
                         });
                         return;
@@ -52,7 +53,7 @@ const SessionChoice = ({ onNext }) => {
                         value: "last",
                         subtitle: seanceNames[0].name + " le " + stringToDate(seanceNames[0].date),
                         date: stringToDate(seanceNames[0].date),
-                        _id: seanceNames[0]._id
+                        // _id: seanceNames[0]._id
                     })
                 }
 

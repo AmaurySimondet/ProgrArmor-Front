@@ -97,6 +97,7 @@ const DisplaySeancesPost = (props) => {
                             backgroundColors={backgroundColors}
                             recordSummary={seance.recordSummary ? seance.recordSummary : []}
                             editable={false}
+                            seancePhotos={seance.seancePhotos ? seance.seancePhotos : []}
                         />
                     </div>
                 ))

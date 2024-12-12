@@ -1,14 +1,21 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import { renderSets } from '../../utils/sets';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
+import API from '../../utils/API';
 
 
-function InstagramCarousel({ selectedName, selectedExercices, recordSummary, backgroundColors }) {
+function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgroundColors, editable, selectedDate, seancePhotos }) {
     const emojis = randomBodybuildingEmojis(selectedExercices.length);
     const { width } = useWindowDimensions();
     const carouselRef = useRef(null);
     const [currentSlide, setCurrentSlide] = React.useState(0);
+    const [photos, setPhotos] = useState(seancePhotos ? seancePhotos.map(url => ({ cloudfrontUrl: url })) : []);
+    const [imageUploading, setImageUploading] = useState(false);
+    const [numberOfSlides, setNumberOfSlides] = useState(
+        Math.ceil(selectedExercices.length / 2) + (seancePhotos?.length || 0)
+    );
+    const [deletingPhotos, setDeletingPhotos] = useState({});
 
     React.useEffect(() => {
         const carousel = carouselRef.current;
@@ -16,33 +23,151 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
         const handleScroll = () => {
             if (carousel) {
                 const scrollPosition = carousel.scrollLeft;
+                const firstLastSlideWidth = width <= 500 ? 200 : 150;
+                const slideWidth = 350;
 
-                // Define scroll position ranges based on your observed values
+                // Adjust calculation based on position
                 let newSlide;
-                if (width <= 500) { // Mobile
-                    if (scrollPosition < 200) newSlide = 0;
-                    else if (scrollPosition < 500) newSlide = 1;
-                    else if (scrollPosition < 800) newSlide = 2;
-                    else newSlide = 3;
-                } else { // Desktop
-                    if (scrollPosition < 150) newSlide = 0;
-                    else if (scrollPosition < 450) newSlide = 1;
-                    else if (scrollPosition < 750) newSlide = 2;
-                    else newSlide = 3;
+                if (scrollPosition < firstLastSlideWidth) {
+                    newSlide = 0;
+                } else if (scrollPosition > (numberOfSlides - 2) * slideWidth + firstLastSlideWidth) {
+                    newSlide = numberOfSlides - 1;
+                } else {
+                    newSlide = Math.floor((scrollPosition - firstLastSlideWidth) / slideWidth) + 1;
                 }
 
-                setCurrentSlide(newSlide);
+                setCurrentSlide(Math.min(newSlide, numberOfSlides - 1));
             }
         };
 
         carousel?.addEventListener('scroll', handleScroll);
         return () => carousel?.removeEventListener('scroll', handleScroll);
-    }, [width]); // Add width as a dependency
+    }, [width, numberOfSlides, photos]); // Add width as a dependency
 
-    const numberOfSlides = Math.ceil(selectedExercices.length / 2);
+    React.useEffect(() => {
+        const exerciseSlides = Math.ceil(selectedExercices.length / 2);
+        const photoSlides = photos.length;
+        setNumberOfSlides(exerciseSlides + photoSlides);
+    }, [selectedExercices.length, photos.length]);
+
+    React.useEffect(() => {
+        if (editable) {  // Only fetch if we don't have seancePhotos
+            const fetchPhotos = async () => {
+                let updatedPhotos = await API.getPhotos(localStorage.getItem('id'), selectedDate, selectedName).then((response) => {
+                    return response.data.images;
+                });
+                if (seanceId) {
+                    const seancePhotos = await API.getPhotosBySeanceId(seanceId).then((response) => {
+                        return response.data.images;
+                    });
+                    updatedPhotos = updatedPhotos.concat(seancePhotos);
+                }
+                setPhotos(updatedPhotos);
+            };
+            fetchPhotos();
+        }
+    }, []);
+
+    const handleImageUpload = async (event) => {
+        const files = Array.from(event.target.files);
+        if (files.length === 0) return;
+
+        try {
+            setImageUploading(true);
+
+            // Then upload new photos
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append('image', file);
+                formData.append('seanceDate', selectedDate);
+                formData.append('seanceName', selectedName);
+                formData.append('userId', localStorage.getItem('id'));
+
+                await API.uploadSeancePhoto(formData);
+            }
+
+            // Get updated photos after all uploads
+            let updatedPhotos = await API.getPhotos(localStorage.getItem('id'), selectedDate, selectedName).then((response) => {
+                return response.data.images;
+            });
+            if (seanceId) {
+                const seancePhotos = await API.getPhotosBySeanceId(seanceId).then((response) => {
+                    return response.data.images;
+                });
+                updatedPhotos = updatedPhotos.concat(seancePhotos);
+            }
+            setPhotos(updatedPhotos);
+        } catch (error) {
+            console.error("Error uploading images:", error);
+            alert("Erreur lors du téléchargement des images");
+        } finally {
+            setImageUploading(false);
+        }
+    };
+
+    const handleDeleteImage = async (photoUrl) => {
+        try {
+            setDeletingPhotos(prev => ({ ...prev, [photoUrl]: true }));
+            await API.deleteSeancePhoto(photoUrl);
+            setPhotos(photos.filter(photo => photo.cloudfrontUrl !== photoUrl));
+        } catch (error) {
+            console.error("Error deleting image:", error);
+            alert("Erreur lors de la suppression de l'image");
+        } finally {
+            setDeletingPhotos(prev => ({ ...prev, [photoUrl]: false }));
+        }
+    };
 
     return (
         <div style={{ position: 'relative' }}>
+            {/* Photo Upload Section */}
+            {editable && (
+                <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+                    <input
+                        type="file"
+                        id="photos"
+                        accept="image/*"
+                        multiple
+                        onChange={handleImageUpload}
+                        style={{ display: 'none' }}
+                    />
+                    <div
+                        style={{
+                            border: '2px dashed #ccc',
+                            borderRadius: '8px',
+                            padding: '20px',
+                            cursor: 'pointer',
+                            position: 'relative',
+                            opacity: imageUploading ? 0.5 : 1
+                        }}
+                        onClick={() => document.getElementById('photos').click()}
+                    >
+                        <img
+                            src={require('../../images/icons/camera.webp')}
+                            alt="upload"
+                            style={{ width: '30px', height: '30px', marginBottom: '10px' }}
+                        />
+                        <p style={{ margin: '0' }}>Ajouter des photos de la séance</p>
+
+                        {imageUploading && (
+                            <div style={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                width: '30px',
+                                height: '30px',
+                                border: '3px solid #f3f3f3',
+                                borderTop: '3px solid #3498db',
+                                borderRadius: '50%',
+                                animation: 'spin 1s linear infinite',
+                            }} />
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Existing Carousel Content */}
             <div
                 key={selectedName}
                 ref={carouselRef}
@@ -53,10 +178,45 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
                     gap: '20px',
                     paddingBottom: '20px',
                     scrollbarWidth: 'none',
-                    position: 'relative', // Required for the index positioning
+                    position: 'relative',
                 }}
                 className="carousel-container"
             >
+                {photos.length > 0 && (
+                    photos.map((photo, idx) => (
+                        <div className="instagramPost popInElement" style={{ padding: '0', position: 'relative' }}>
+                            <img src={photo.cloudfrontUrl} alt="seance" style={{
+                                width: '100%',
+                                height: '100%',
+                                objectFit: 'cover',
+                                opacity: deletingPhotos[photo.cloudfrontUrl] ? 0.5 : 1
+                            }} />
+                            {editable && (
+                                <button
+                                    onClick={() => handleDeleteImage(photo.cloudfrontUrl)}
+                                    disabled={deletingPhotos[photo.cloudfrontUrl]}
+                                    style={{
+                                        position: 'absolute',
+                                        top: '10px',
+                                        right: '10px',
+                                        background: 'red',
+                                        color: 'white',
+                                        border: 'none',
+                                        borderRadius: '50%',
+                                        width: '20px',
+                                        height: '20px',
+                                        cursor: deletingPhotos[photo.cloudfrontUrl] ? 'not-allowed' : 'pointer',
+                                        textAlign: 'center',
+                                        lineHeight: '20px',
+                                    }}
+                                >
+                                    {deletingPhotos[photo.cloudfrontUrl] ? '...' : '×'}
+                                </button>
+                            )}
+                        </div>
+                    ))
+                )}
+
 
                 {/* Each Exercise as a Slide */}
                 {selectedExercices.map((exercice, idx) => {
@@ -67,7 +227,7 @@ function InstagramCarousel({ selectedName, selectedExercices, recordSummary, bac
                         <div
                             key={exercice._id}
                             className="instagramPost"
-                            style={{ backgroundColor: backgroundColors[(idx / 2 + 1) % backgroundColors.length] }}
+                            style={{ backgroundColor: backgroundColors[idx % backgroundColors.length] }}
                         >
                             {/* First exercise in the pair */}
                             <ul style={{ listStyleType: 'none', ...(width < 500 ? { padding: '5px' } : {}) }}>
