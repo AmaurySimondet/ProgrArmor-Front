@@ -134,7 +134,7 @@ function Inscription() {
             window.location = "/dashboard";
         }
         else {
-            console.log(result.data.message)
+            alert(result.data.message)
         }
     }
 

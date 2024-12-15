@@ -145,7 +145,19 @@ function Connexion() {
         }
     }
 
+    async function createTokenAndId() {
+        const result = await API.verifyToken({ token: localStorage.getItem("token") });
+        if (result.data.success === true) {
+            window.location = "/dashboard";
+        }
+        else {
+            alert(result.data.message)
+        }
+    }
 
+    if (localStorage.getItem("token")) {
+        createTokenAndId();
+    }
 
     return (
         <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>

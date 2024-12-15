@@ -1,5 +1,10 @@
 import API from "./API";
 
+/**
+ * Build favorite exercices with full details
+ * @param {array} favoriteExercices 
+ * @returns {array} favoriteExercices with full details
+ */
 async function buildFavoriteExercices(favoriteExercices) {
     // Fetch details for each exercise in parallel
     const fetchDetailsPromises = favoriteExercices.map(async (exercice) => {
@@ -10,10 +15,9 @@ async function buildFavoriteExercices(favoriteExercices) {
             // Fetch category details
             let categories = [];
             if (exercice.categories && exercice.categories.length > 0) {
-                const categoryDetailsPromises = exercice.categories.map(async (categoryObj) => {
-                    const categoryDetails = await API.getCategory({ id: categoryObj.category, fields: ["name", "_id", "type"] });
+                const categoryDetailsPromises = exercice.categories.map(async (categoryId) => {
+                    const categoryDetails = await API.getCategory({ id: categoryId, fields: ["name", "_id", "type"] });
                     return {
-                        ...categoryObj,
                         category: categoryDetails.data.categoryReturned
                     };
                 });

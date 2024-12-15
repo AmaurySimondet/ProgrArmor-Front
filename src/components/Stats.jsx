@@ -2,6 +2,8 @@ import { React, useState, useEffect } from "react";
 import { XAxis, Tooltip, CartesianGrid, Line, ResponsiveContainer, Bar, ComposedChart, Legend } from 'recharts';
 import API from "../utils/API.js";
 import Loader from "./Loader.jsx";
+import { dateBasedOnTimeframe } from "../utils/dates.js";
+import { useWindowDimensions } from "../utils/useEffect.js";
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
@@ -18,6 +20,12 @@ const CustomTooltip = ({ active, payload, label }) => {
                                     item.name}: {item.value}
                 </p>
             ))}
+            {/* Add elastic use information if it exists in the payload */}
+            {payload[0]?.payload?.elastic?.use &&
+                <p className="chart-desc">
+                    Utilisation: {payload[0].payload.elastic.use}
+                </p>
+            }
         </div>
     );
 };
@@ -30,10 +38,12 @@ function Stats({ stats, userId }) {
         'elastic.tension': 1
     });
     const [regularityScore, setRegularityScore] = useState(null);
-    const [favoriteExercises, setFavoriteExercises] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedExercise, setSelectedExercise] = useState(0); // Default to first exercise
     const [selectedTimeframe, setSelectedTimeframe] = useState('3m'); // Default to 3 months
+    const [prTableResults, setPrTableResults] = useState(null);
+    const { width } = useWindowDimensions();
+
     const handleMouseEnter = (o) => {
         const { dataKey } = o;
 
@@ -60,26 +70,80 @@ function Stats({ stats, userId }) {
         });
     };
 
+    const handlePrTable = async () => {
+        const PrTableQuery = {
+            exercice: stats.topExercices[selectedExercise].exercice._id,
+            categories: stats.topExercices[selectedExercise].categories.map(category => ({ category: category.category._id })),
+            userId: userId,
+            dateMin: dateBasedOnTimeframe(selectedTimeframe).toISOString()
+        };
+
+        try {
+            const response = await API.getPRs(PrTableQuery);
+            setPrTableResults(response.data.prs);
+        } catch (error) {
+            console.error("Error fetching PRs:", error);
+        }
+    };
+
+    const PrTableElement = ({ PrTableResults }) => {
+        return (
+            <div className="popInElement">
+                {/* Repetitions Table */}
+                <table border="1" style={{ width: '100%', textAlign: 'center', backgroundColor: 'white', overflowX: 'auto', marginBottom: '20px' }}
+                    className="table table-hover table-striped table-bordered">
+                    <thead className="thead-white">
+                        <tr>
+                            <th>{width > 700 ? 'Plage de répétition' : 'Plage'}</th>
+                            <th>{width > 700 ? 'Repetitions' : 'Reps'}</th>
+                            <th>Charge</th>
+                            <th>Elastique</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.keys(PrTableResults).map(category => (
+                            <tr key={category}>
+                                <td>{category}</td>
+                                <td>{PrTableResults[category].repetitions?.value || '-'}</td>
+                                <td>{PrTableResults[category].repetitions?.weightLoad || '-'}</td>
+                                <td>{PrTableResults[category].repetitions?.elastic?.use} {PrTableResults[category].repetitions?.elastic?.tension || '-'}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+
+                {/* Seconds Table */}
+                <table border="1" style={{ width: '100%', textAlign: 'center', backgroundColor: 'white', overflowX: 'auto' }}
+                    className="table table-hover table-striped table-bordered">
+                    <thead className="thead-white">
+                        <tr>
+                            <th>{width > 700 ? 'Plage temporelle' : 'Plage'}</th>
+                            <th>{width > 700 ? 'Secondes' : 'Secs'}</th>
+                            <th>Charge</th>
+                            <th>Elastique</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {Object.keys(PrTableResults).map(category => (
+                            <tr key={category}>
+                                <td>{category}</td>
+                                <td>{PrTableResults[category].seconds?.value || '-'}</td>
+                                <td>{PrTableResults[category].seconds?.weightLoad || '-'}</td>
+                                <td>{PrTableResults[category].seconds?.elastic?.use} {PrTableResults[category].seconds?.elastic?.tension || '-'}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
+                await handlePrTable();
                 const exerciceData = [];
-
-                // Calculate date range based on selected timeframe
-                let dateMin;
-                switch (selectedTimeframe) {
-                    case '3m':
-                        dateMin = new Date(new Date().setMonth(new Date().getMonth() - 3));
-                        break;
-                    case '1y':
-                        dateMin = new Date(new Date().setFullYear(new Date().getFullYear() - 1));
-                        break;
-                    case 'max':
-                        dateMin = new Date(0); // Beginning of time
-                        break;
-                    default:
-                        dateMin = new Date(new Date().setMonth(new Date().getMonth() - 3));
-                }
+                const dateMin = dateBasedOnTimeframe(selectedTimeframe);
 
                 let topExerciceSets = await API.getSeanceSets({
                     userId: userId,
@@ -173,6 +237,9 @@ function Stats({ stats, userId }) {
                 );
             })}
 
+            {/* PR Table */}
+            {prTableResults && <PrTableElement PrTableResults={prTableResults} />}
+
             {/* Regularity Score
             {regularityScore && (
                 <section className="stats-section">
@@ -192,27 +259,7 @@ function Stats({ stats, userId }) {
                         </div>
                     </div>
                 </section>
-            )}
-
-            <section className="chart-section">
-                <h2>Top Exercises</h2>
-                <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                        <Pie
-                            data={favoriteExercises}
-                            dataKey="count"
-                            nameKey="name"
-                            cx="50%"
-                            cy="50%"
-                            innerRadius={60}
-                            outerRadius={80}
-                            fill="#8884d8"
-                            label
-                        />
-                        <Tooltip />
-                    </PieChart>
-                </ResponsiveContainer>
-            </section> */}
+            )}*/}
         </div>
     );
 }

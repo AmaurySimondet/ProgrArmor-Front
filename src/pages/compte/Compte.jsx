@@ -309,8 +309,8 @@ function Compte() {
                         {currentUser.following.includes(searchParams.get('id')) ? 'Ne Plus Suivre' : 'Suivre'}
                       </button>
                     }
-                    <button className="btn btn-black" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                      {searchParams.get('id') === localStorage.getItem('id') ? (
+                    {searchParams.get('id') === localStorage.getItem('id') &&
+                      <button className="btn btn-black" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
                         <>
                           <img
                             src={require('../../images/icons/write.webp')}
@@ -326,25 +326,7 @@ function Compte() {
                           />
                           {width > 700 ? 'Modifier' : null}
                         </>
-                      ) : (
-                        <>
-                          <img
-                            src={require('../../images/icons/messages.webp')}
-                            alt="messages"
-                            style={{
-                              width: '20px',
-                              height: '20px',
-                              filter: 'invert(1)',
-                              transition: 'filter 0.2s',
-                              ':hover': {
-                                filter: 'invert(0)'
-                              }
-                            }}
-                          />
-                          {width > 700 ? 'Message' : null}
-                        </>
-                      )}
-                    </button>
+                      </button>}
                     {searchParams.get('id') === localStorage.getItem('id') && (
                       <button
                         className="btn btn-danger"

@@ -12,7 +12,7 @@ function Token() {
             window.location = "/dashboard";
         }
         else {
-            alert(result.data.message)
+            console.log(result.data.message)
         }
     }
 
