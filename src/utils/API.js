@@ -125,6 +125,11 @@ export default {
       }
     });
   },
+  getUserImages: function (userId) {
+    return axios.get(`${burl}/user/aws/images/${userId}`, {
+      headers: headers
+    });
+  },
 
 
 

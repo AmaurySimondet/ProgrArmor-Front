@@ -30,7 +30,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                         alt='compte'
                         style={{
                             borderRadius: "50%",
-                            border: "1px solid black",
+                            border: "1px solid white",
                         }}
                         onClick={() => window.location.href = `/compte?id=${user._id}`}
                     />

@@ -39,7 +39,7 @@ const Followers = ({ user, title, dataKey }) => {
                             alt='compte'
                             style={{
                                 borderRadius: "50%",
-                                border: "1px solid black",
+                                border: "1px solid white",
                                 width: "100px",
                                 height: "100px"
                             }}

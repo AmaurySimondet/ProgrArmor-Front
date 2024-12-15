@@ -186,6 +186,7 @@ function Stats({ stats, userId }) {
                     className="form-control"
                     onChange={(e) => {
                         setSelectedExercise(parseInt(e.target.value));
+                        setSelectedTimeframe('3m');
                     }}
                     style={{ width: '70%' }}
                 >

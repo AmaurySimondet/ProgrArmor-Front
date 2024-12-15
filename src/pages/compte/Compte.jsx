@@ -24,6 +24,7 @@ function Compte() {
   const { width } = useWindowDimensions();
   const [animationClass, setAnimationClass] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
+  const [userImages, setUserImages] = useState(null);
 
   useEffect(() => {
     // Trigger animation when the value changes
@@ -51,24 +52,33 @@ function Compte() {
   }
 
   useEffect(() => {
-    getUser().then(() => {
-      API.getStats(searchParams.get('id')).then(async res => {
-        const favoriteExercices = await apiCalls.buildFavoriteExercices(res.data.stats.topExercices);
+    getUser().then(async () => {
+      try {
+        // Get stats
+        const statsRes = await API.getStats(searchParams.get('id'));
+        const favoriteExercices = await apiCalls.buildFavoriteExercices(statsRes.data.stats.topExercices);
         const formattedStats = {
-          seances: res.data.stats.seances || 0,
+          seances: statsRes.data.stats.seances || 0,
           topExercices: favoriteExercices ? favoriteExercices.map(ex => ({
             ...ex,
             fullName: ex.categories.length > 0 ?
               `${ex.exercice.name.fr} - ${ex.categories.map(cat => cat.category.name.fr).join(', ')}` :
               `${ex.exercice.name.fr}`
           })) : [],
-          prs: res.data.stats.prs || 0,
-          favoriteDay: res.data.stats.favoriteDay || 'N/A'
+          prs: statsRes.data.stats.prs || 0,
+          favoriteDay: statsRes.data.stats.favoriteDay || 'N/A'
         };
         setStats(formattedStats);
-      }).then(() => {
+
+        // Get user images
+        const imagesRes = await API.getUserImages(searchParams.get('id'));
+        console.log(imagesRes.data.images);
+        setUserImages(imagesRes.data.images);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
         setLoading(false);
-      });
+      }
     });
   }, []);
 
@@ -177,13 +187,276 @@ function Compte() {
     return <Loader />
   }
 
+  const UserInfo = () => {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', margin: '20px', gap: '20px' }}>
+        <div style={{ position: 'relative' }}>
+          {user?._id === localStorage.getItem('id') && (
+            <input
+              type="file"
+              id="imageUpload"
+              accept="image/*"
+              onChange={handleImageUpload}
+              style={{ display: 'none' }}
+            />
+          )}
+          <div style={{ position: 'relative' }}>
+            <img
+              className="icon-navbar"
+              src={user?.profilePic ? user?.profilePic : require('../../images/profilepic.webp')}
+              alt='compte'
+              style={{
+                borderRadius: "50%",
+                border: "1px solid white",
+                width: "100px",
+                height: "100px",
+                opacity: imageUploading ? 0.5 : 1,
+                cursor: user?._id === localStorage.getItem('id') ? 'pointer' : 'default'
+              }}
+              onClick={() => {
+                if (user?._id === localStorage.getItem('id')) {
+                  document.getElementById('imageUpload').click();
+                }
+              }}
+            />
+            {imageUploading && user?._id === localStorage.getItem('id') && (
+              <div style={{
+                position: 'absolute',
+                top: '50%',
+                left: '50%',
+                transform: 'translate(-50%, -50%)',
+                width: '30px',
+                height: '30px',
+                border: '3px solid #f3f3f3',
+                borderTop: '3px solid #3498db',
+                borderRadius: '50%',
+                animation: 'spin 1s linear infinite',
+              }} />
+            )}
+          </div>
+          {user?._id === localStorage.getItem('id') && !imageUploading && (
+            <div style={{
+              position: 'absolute',
+              bottom: '5px',
+              right: '5px',
+              backgroundColor: 'white',
+              borderRadius: '50%',
+              padding: '5px',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
+              cursor: 'pointer'
+            }}
+              onClick={() => document.getElementById('imageUpload').click()}
+            >
+              <img
+                src={require('../../images/icons/camera.webp')}
+                alt="upload"
+                style={{ width: '20px', height: '20px' }}
+              />
+            </div>
+          )}
+        </div>
+        <h2>{user?.fName} {user?.lName}</h2>
+      </div>
+    )
+  }
+
+
+  const UserActions = () => {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '20px 20px' }}>
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <div>
+            Abonnés<br />
+            <a href={`/compte?id=${user._id}&tab=followers`} className={animationClass} style={{ fontWeight: 'bold' }}>
+              {user?.followers?.length}
+            </a>
+          </div>
+          <div>
+            Abonnements<br />
+            <a href={`/compte?id=${user._id}&tab=followings`} style={{ fontWeight: 'bold' }}>{user?.following?.length}</a>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', gap: '10px' }}>
+          <button
+            className="btn btn-white share-btn"
+            onClick={handleShare}
+            style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+          >
+            <>
+              <img
+                src={require('../../images/icons/share.webp')}
+                alt="share"
+                style={{
+                  width: '20px',
+                  height: '20px',
+                  transition: 'filter 0.2s',
+                  ':hover': {
+                    filter: 'invert(1)'
+                  }
+                }}
+              />
+              {width > 700 ? 'Partager' : null}
+            </>
+          </button>
+          {searchParams.get('id') !== localStorage.getItem('id') &&
+            <button
+              className={`btn ${currentUser.following.includes(searchParams.get('id'))
+                ? "btn-white follow-btn following"
+                : "btn-black follow-btn not-following"}`}
+              style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+              onClick={handleFollowToggle}
+            >
+              {currentUser.following.includes(searchParams.get('id')) ? 'Ne Plus Suivre' : 'Suivre'}
+            </button>
+          }
+          {searchParams.get('id') === localStorage.getItem('id') &&
+            <button className="btn btn-black" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+              <>
+                <img
+                  src={require('../../images/icons/write.webp')}
+                  alt="edit"
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    transition: 'filter 0.2s',
+                    ':hover': {
+                      filter: 'invert(1)'
+                    }
+                  }}
+                />
+                {width > 700 ? 'Modifier' : null}
+              </>
+            </button>}
+          {searchParams.get('id') === localStorage.getItem('id') && (
+            <button
+              className="btn btn-danger"
+              style={{ backgroundColor: '#DF4F5F' }}
+              onClick={() => {
+                localStorage.removeItem('token');
+                localStorage.removeItem('id');
+                window.location.href = '/';
+              }}
+            >
+              <>
+                <img
+                  src={require('../../images/icons/se-deconnecter.webp')}
+                  alt="edit"
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    transition: 'filter 0.2s',
+                    ':hover': {
+                      filter: 'invert(1)'
+                    }
+                  }}
+                />
+                {width > 700 ? 'Déconnexion' : null}
+              </>
+            </button>
+          )}
+        </div>
+      </div>
+    )
+  }
+
+
+  const Tabs = () => {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <ul className="tabs" role="navigation" style={{ listStyle: 'none', padding: 0, display: 'flex', justifyContent: 'center' }}>
+          <li className={activeTab === 'seances' ? 'selected' : ''}>
+            <a className="tab" onClick={() => handleTabChange('seances')}>
+              <img src={require('../../images/icons/write.webp')} alt="seances" style={{ width: '20px', height: '20px', filter: 'invert(1)' }} />
+              {width > 700 ? ' Séances' : null}
+            </a>
+          </li>
+          <li className={activeTab === 'statistiques' ? 'selected' : ''}>
+            <a className="tab" onClick={() => handleTabChange('statistiques')}>
+              <img src={require('../../images/icons/chart.webp')} alt="statistiques" style={{ width: '20px', height: '20px', filter: 'invert(1)' }} />
+              {width > 700 ? ' Statistiques' : null}
+            </a>
+          </li>
+          <li className={activeTab === 'other' ? 'selected' : ''}>
+            <a className="tab" onClick={() => handleTabChange('other')}>
+              <img src={require('../../images/icons/three-dots.webp')} alt="other" style={{ width: '20px', height: '20px' }} />
+              {width > 700 ? ' Autre' : null}
+            </a>
+            <ul style={{ display: activeTab === 'other' ? 'block' : 'none', position: 'absolute', backgroundColor: 'white', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', borderRadius: '4px', padding: '8px 0' }}>
+              <div style={{ padding: '8px 16px', cursor: 'pointer' }} onClick={() => handleTabChange('prSearch')}>
+                Est-ce un PR ?
+              </div>
+              <div style={{ padding: '8px 16px', cursor: 'pointer' }} onClick={() => handleTabChange('prTable')}>
+                Tableau PR
+              </div>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    )
+  }
+
+  const UserImages = () => {
+    if (!userImages) {
+      return (
+        <div id="header-photos">
+          <div style={{
+            height: '312px',
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+          }}>
+            Chargement...
+          </div>
+        </div>
+      );
+    }
+
+    const handleImageClick = (imageUrl) => {
+      window.open(imageUrl, '_blank');
+    };
+
+    return (
+      <div id="header-photos">
+        <ul className="profile-image-grid" style={{
+          gridTemplateColumns: userImages.length < 4 ? `repeat(${userImages.length}, 1fr)` : 'repeat(4, 1fr)',
+        }}>
+          {userImages?.slice(0, 4).map((image, index) => (
+            <li key={image._id} style={{
+              height: '100%',
+              position: 'relative'
+            }}>
+              <div
+                role="button"
+                onClick={() => handleImageClick(image.cloudfrontUrl)}
+                tabIndex="0"
+                style={{
+                  cursor: 'pointer',
+                  position: 'relative',
+                  height: '100%',
+                  width: '100%'
+                }}
+              >
+                <div className="profile-image-container"
+                  style={{
+                    backgroundImage: `url(${image.cloudfrontUrl})`,
+                  }}
+                />
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div >
+    );
+  };
+
   return (
     <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
       <div className="page-container">
         <NavigBar location="session" />
 
         <div className="content-wrap popInElement">
-
           {searchParams.get('tab') === 'followers' ? (
             <Followers user={user} title="Abonnés de" dataKey="followers" />
           ) : searchParams.get('tab') === 'followings' ? (
@@ -191,207 +464,18 @@ function Compte() {
           ) : (
             <div>
               <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
-                {/* USER INFO */}
-                <div style={{ display: 'flex', alignItems: 'center', margin: '20px', gap: '20px' }}>
-                  <div style={{ position: 'relative' }}>
-                    {user?._id === localStorage.getItem('id') && (
-                      <input
-                        type="file"
-                        id="imageUpload"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        style={{ display: 'none' }}
-                      />
-                    )}
-                    <div style={{ position: 'relative' }}>
-                      <img
-                        className="icon-navbar"
-                        src={user?.profilePic ? user?.profilePic : require('../../images/profilepic.webp')}
-                        alt='compte'
-                        style={{
-                          borderRadius: "50%",
-                          border: "1px solid black",
-                          width: "100px",
-                          height: "100px",
-                          opacity: imageUploading ? 0.5 : 1,
-                          cursor: user?._id === localStorage.getItem('id') ? 'pointer' : 'default'
-                        }}
-                        onClick={() => {
-                          if (user?._id === localStorage.getItem('id')) {
-                            document.getElementById('imageUpload').click();
-                          }
-                        }}
-                      />
-                      {imageUploading && user?._id === localStorage.getItem('id') && (
-                        <div style={{
-                          position: 'absolute',
-                          top: '50%',
-                          left: '50%',
-                          transform: 'translate(-50%, -50%)',
-                          width: '30px',
-                          height: '30px',
-                          border: '3px solid #f3f3f3',
-                          borderTop: '3px solid #3498db',
-                          borderRadius: '50%',
-                          animation: 'spin 1s linear infinite',
-                        }} />
-                      )}
-                    </div>
-                    {user?._id === localStorage.getItem('id') && !imageUploading && (
-                      <div style={{
-                        position: 'absolute',
-                        bottom: '5px',
-                        right: '5px',
-                        backgroundColor: 'white',
-                        borderRadius: '50%',
-                        padding: '5px',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                        cursor: 'pointer'
-                      }}
-                        onClick={() => document.getElementById('imageUpload').click()}
-                      >
-                        <img
-                          src={require('../../images/icons/camera.webp')}
-                          alt="upload"
-                          style={{ width: '20px', height: '20px' }}
-                        />
-                      </div>
-                    )}
-                  </div>
-                  <h2>{user?.fName} {user?.lName}</h2>
-                </div>
-
-                {/* USER ACTIONS */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '20px 20px' }}>
-                  <div style={{ display: 'flex', gap: '20px' }}>
-                    <div>
-                      Abonnés<br />
-                      <a href={`/compte?id=${user._id}&tab=followers`} className={animationClass} style={{ fontWeight: 'bold' }}>
-                        {user?.followers?.length}
-                      </a>
-                    </div>
-                    <div>
-                      Abonnements<br />
-                      <a href={`/compte?id=${user._id}&tab=followings`} style={{ fontWeight: 'bold' }}>{user?.following?.length}</a>
-                    </div>
-                  </div>
-
-                  <div style={{ display: 'flex', gap: '10px' }}>
-                    <button
-                      className="btn btn-white share-btn"
-                      onClick={handleShare}
-                      style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
-                    >
-                      <>
-                        <img
-                          src={require('../../images/icons/share.webp')}
-                          alt="share"
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            transition: 'filter 0.2s',
-                            ':hover': {
-                              filter: 'invert(1)'
-                            }
-                          }}
-                        />
-                        {width > 700 ? 'Partager' : null}
-                      </>
-                    </button>
-                    {searchParams.get('id') !== localStorage.getItem('id') &&
-                      <button
-                        className={`btn ${currentUser.following.includes(searchParams.get('id'))
-                          ? "btn-white follow-btn following"
-                          : "btn-black follow-btn not-following"}`}
-                        style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
-                        onClick={handleFollowToggle}
-                      >
-                        {currentUser.following.includes(searchParams.get('id')) ? 'Ne Plus Suivre' : 'Suivre'}
-                      </button>
-                    }
-                    {searchParams.get('id') === localStorage.getItem('id') &&
-                      <button className="btn btn-black" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                        <>
-                          <img
-                            src={require('../../images/icons/write.webp')}
-                            alt="edit"
-                            style={{
-                              width: '20px',
-                              height: '20px',
-                              transition: 'filter 0.2s',
-                              ':hover': {
-                                filter: 'invert(1)'
-                              }
-                            }}
-                          />
-                          {width > 700 ? 'Modifier' : null}
-                        </>
-                      </button>}
-                    {searchParams.get('id') === localStorage.getItem('id') && (
-                      <button
-                        className="btn btn-danger"
-                        style={{ backgroundColor: '#DF4F5F' }}
-                        onClick={() => {
-                          localStorage.removeItem('token');
-                          localStorage.removeItem('id');
-                          window.location.href = '/';
-                        }}
-                      >
-                        <>
-                          <img
-                            src={require('../../images/icons/se-deconnecter.webp')}
-                            alt="edit"
-                            style={{
-                              width: '20px',
-                              height: '20px',
-                              transition: 'filter 0.2s',
-                              ':hover': {
-                                filter: 'invert(1)'
-                              }
-                            }}
-                          />
-                          {width > 700 ? 'Déconnexion' : null}
-                        </>
-                      </button>
-                    )}
+                <div style={{ position: 'relative' }}>
+                  <UserImages user={user} />
+                  <div style={{ marginTop: '-40px' }}>
+                    <UserInfo user={user} />
                   </div>
                 </div>
+
+                <UserActions user={user} />
 
                 <CompteStats stats={stats} />
 
-
-
-                {/* Tabs navigation */}
-                <div style={{ display: 'flex', justifyContent: 'center' }}>
-                  <ul className="tabs" role="navigation" style={{ listStyle: 'none', padding: 0, display: 'flex', justifyContent: 'center' }}>
-                    <li className={activeTab === 'seances' ? 'selected' : ''}>
-                      <a className="tab" onClick={() => handleTabChange('seances')}>
-                        <img src={require('../../images/icons/write.webp')} alt="seances" style={{ width: '20px', height: '20px', filter: 'invert(1)' }} />
-                        {width > 700 ? ' Séances' : null}
-                      </a>
-                    </li>
-                    <li className={activeTab === 'statistiques' ? 'selected' : ''}>
-                      <a className="tab" onClick={() => handleTabChange('statistiques')}>
-                        <img src={require('../../images/icons/chart.webp')} alt="statistiques" style={{ width: '20px', height: '20px', filter: 'invert(1)' }} />
-                        {width > 700 ? ' Statistiques' : null}
-                      </a>
-                    </li>
-                    <li className={activeTab === 'other' ? 'selected' : ''}>
-                      <a className="tab" onClick={() => handleTabChange('other')}>
-                        <img src={require('../../images/icons/three-dots.webp')} alt="other" style={{ width: '20px', height: '20px' }} />
-                        {width > 700 ? ' Autre' : null}
-                      </a>
-                      <ul style={{ display: activeTab === 'other' ? 'block' : 'none', position: 'absolute', backgroundColor: 'white', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', borderRadius: '4px', padding: '8px 0' }}>
-                        <div style={{ padding: '8px 16px', cursor: 'pointer' }} onClick={() => handleTabChange('prSearch')}>
-                          Est-ce un PR ?
-                        </div>
-                        <div style={{ padding: '8px 16px', cursor: 'pointer' }} onClick={() => handleTabChange('prTable')}>
-                          Tableau PR
-                        </div>
-                      </ul>
-                    </li>
-                  </ul>
-                </div>
+                <Tabs />
 
                 {/* Render active tab component */}
                 {activeTab === 'statistiques' && <Stats stats={stats} userId={searchParams.get('id')} />}
@@ -401,9 +485,6 @@ function Compte() {
               </div>
             </div>
           )}
-
-
-
         </div>
 
         <Footer />
