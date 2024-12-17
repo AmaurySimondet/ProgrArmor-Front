@@ -5,6 +5,7 @@ import InscriptionForm from "./InscriptionForm.jsx";
 import Footer from "../../components/Footer.jsx";
 import API from "../../utils/API.js";
 import { COLORS } from "../../utils/colors.js";
+import createTokenAndId from "../../utils/token.js";
 
 function Inscription() {
     const [dimensions, setDimensions] = useState({
@@ -127,16 +128,6 @@ function Inscription() {
             timeout = setTimeout(handleResize, 200);
         });
     })
-
-    async function createTokenAndId() {
-        const result = await API.verifyToken({ token: localStorage.getItem("token") });
-        if (result.data.success === true) {
-            window.location = "/dashboard";
-        }
-        else {
-            alert(result.data.message)
-        }
-    }
 
     if (localStorage.getItem("token")) {
         createTokenAndId();

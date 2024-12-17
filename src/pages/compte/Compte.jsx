@@ -421,6 +421,7 @@ function Compte() {
       <div id="header-photos">
         <ul className="profile-image-grid" style={{
           gridTemplateColumns: userImages.length < 4 ? `repeat(${userImages.length}, 1fr)` : 'repeat(4, 1fr)',
+          height: width > 700 ? '250px' : '150px'
         }}>
           {userImages?.slice(0, 4).map((image, index) => (
             <li key={image._id} style={{
@@ -465,8 +466,11 @@ function Compte() {
             <div>
               <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
                 <div style={{ position: 'relative' }}>
-                  <UserImages user={user} />
-                  <div style={{ marginTop: '-40px' }}>
+                  {userImages?.length > 0 ?
+                    <UserImages user={user} />
+                    : null
+                  }
+                  <div style={{ marginTop: userImages?.length > 0 ? '-28px' : '0' }}>
                     <UserInfo user={user} />
                   </div>
                 </div>

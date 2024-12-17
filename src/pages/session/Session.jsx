@@ -50,36 +50,42 @@ const Session = () => {
     if (!selectedSession || selectedSession.fromUrl) return;
 
     setLoading(true);
+    let sessionId = selectedSession._id;
 
-    if (selectedSession.value !== 'new') {
-      API.getSeanceSets({ userId: localStorage.getItem("id"), seanceId: selectedSession._id })
-        .then(response => {
+    const fetchSessionData = async () => {
+      try {
+        if (selectedSession.value === "last") {
+          const response = await API.getLastSeance({ userId: localStorage.getItem("id") });
+          sessionId = response.data.lastSeance._id;
+        }
+
+        if (selectedSession.value !== 'new') {
+          const response = await API.getSeanceSets({ userId: localStorage.getItem("id"), seanceId: sessionId });
           const selectedSessionSets = response.data.sets;
-          setsToSeance(selectedSessionSets, selectedSession.name, selectedSession.date).then(seance => {
-            setSelectedName(selectedSession.name);
-            addPrToSets(seance.exercices, null, null).then(updatedExercices => {
-              setSelectedExercices(updatedExercices);
-            });
-            if (selectedSession.value === "params") {
-              setSelectedDate(selectedSession.date);
-              setStep(7);
-            }
-            else {
-              setStep(3);
-            }
-            setLoading(false);
-          });
-        })
-        .catch(error => {
-          console.error('Error fetching selected session or sets:', error);
-        });
-    }
-    else {
-      setSelectedName('');
-      setSelectedExercices([]);
-      setStep(2);
-      setLoading(false);
-    }
+          const seance = await setsToSeance(selectedSessionSets, selectedSession.name, selectedSession.date);
+          setSelectedName(selectedSession.name);
+          const updatedExercices = await addPrToSets(seance.exercices, null, null);
+          setSelectedExercices(updatedExercices);
+
+          if (selectedSession.value === "params") {
+            setSelectedDate(selectedSession.date);
+            setStep(7);
+          } else {
+            setStep(3);
+          }
+        } else {
+          setSelectedName('');
+          setSelectedExercices([]);
+          setStep(2);
+        }
+      } catch (error) {
+        console.error('Error fetching selected session or sets:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSessionData();
   }, [selectedSession]);
 
   const handleNextSeanceChoice = (session) => {

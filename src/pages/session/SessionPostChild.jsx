@@ -211,6 +211,13 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                 <InlineEditable
                     value={postDescription}
                     onChange={setPostDescription}
+                    onKeyDown={(e) => {
+                        // Handle Enter key
+                        if (e.key === "Enter") {
+                            e.preventDefault(); // Prevent default behavior
+                            setPostDescription((prev) => prev + "\n"); // Append a new line
+                        }
+                    }}
                     placeholder={"Description (optionnel)"}
                     style={{ fontSize: '1rem', marginBottom: "0px", textAlign: 'justify', lineHeight: '1.6', backgroundColor: "#f9f4f4", height: "100px", padding: "10px", borderRadius: "5px" }}
                 />

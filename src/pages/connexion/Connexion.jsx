@@ -7,6 +7,7 @@ import API from "../../utils/API.js";
 import emailjs from 'emailjs-com';
 import { v4 as uuidv4 } from 'uuid';
 import { COLORS } from "../../utils/colors.js";
+import createTokenAndId from "../../utils/token.js";
 
 function Connexion() {
     const [mdpClicked, setMdpClicked] = useState(false);
@@ -142,16 +143,6 @@ function Connexion() {
             else {
                 alert("Erreur lors de la modification du mot de passe");
             }
-        }
-    }
-
-    async function createTokenAndId() {
-        const result = await API.verifyToken({ token: localStorage.getItem("token") });
-        if (result.data.success === true) {
-            window.location = "/dashboard";
-        }
-        else {
-            alert(result.data.message)
         }
     }
 

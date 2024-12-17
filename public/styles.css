@@ -580,12 +580,18 @@ img {
     height: 100%;
     width: 100%;
     border-radius: 4px;
+    transition: all 0.5s ease;
 }
+
+.profile-image-container:hover {
+    transform: scale(1.05);
+}
+
 
 .profile-image-grid {
     margin: 0 0 9px 0;
     padding: 0 24px;
-    height: 280px;
+    height: 35vh;
     isolation: isolate;
     overflow: hidden;
     width: 100%;
@@ -879,6 +885,9 @@ table.profile-table {
 
 .sessionSummaryExercice {
     transition: transform 0.3s ease-in-out;
+    width: fit-content !important;
+    min-width: fit-content !important;
+    display: inline-block !important;
 }
 
 .sessionSummaryExercice:hover {

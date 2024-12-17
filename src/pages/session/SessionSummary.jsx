@@ -78,7 +78,7 @@ const SessionSummary = ({
                                                     className={"sessionSummaryExercice"}
                                                     style={{
                                                         ...provided.draggableProps.style,
-                                                        transition: 'transform 0.2s ease',
+                                                        transition: 'transform 0.2s ease'
                                                     }}
                                                 >
                                                     <h3 className={idx === index ? 'clickable' : "clickable progarmor-red"}>
