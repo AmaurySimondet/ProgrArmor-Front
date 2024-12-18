@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import API from "../utils/API";
+import { getUserById } from "../utils/user";
 
 function NavigBar(props) {
     const [toggled, setToggled] = useState(false);
@@ -12,17 +12,8 @@ function NavigBar(props) {
         })
     }
 
-    async function getUser() {
-        const { data } = await API.getUser({ id: localStorage.getItem('id') });
-        if (data.success === false) {
-            alert(data.message);
-        } else {
-            setUser(data.profile);
-        };
-    }
-
     useEffect(() => {
-        getUser();
+        getUserById(localStorage.getItem('id')).then(setUser);
     }, []);
 
     return (

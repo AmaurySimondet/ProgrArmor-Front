@@ -13,6 +13,7 @@ import Session from "./pages/session/Session.jsx";
 import Compte from "./pages/compte/Compte.jsx";
 import InstallApp from "./pages/aide/InstallApp.jsx";
 import Aide from "./pages/aide/Aide.jsx";
+import Notifications from "./pages/notifications/Notifications.jsx";
 
 // import eruda from "eruda";
 

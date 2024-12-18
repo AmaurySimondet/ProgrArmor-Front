@@ -7,6 +7,7 @@ import Select from 'react-select';
 import Niveaux from './Programme/Niveaux';
 import TypeDeProgrammes from './Programme/TypeDeProgrammes';
 import { customStyles, customStylesDark, customStylesDarkMini, customStylesMini } from "../../utils/customStyles";
+import { getUserById } from "../../utils/user";
 
 function Accomplissements() {
     const [dimensions, setDimensions] = useState({
@@ -20,22 +21,8 @@ function Accomplissements() {
     const [selectedNiveau, setSelectedNiveau] = useState(null);
     const [selectedType, setSelectedType] = useState(null);
 
-    async function getUser() {
-        const { data } = await API.getUser({ id: localStorage.getItem("id") });
-        if (data.success === false) {
-            alert(data.message);
-        } else {
-            console.log(data.profile);
-            if (data.profile.modeSombre && data.profile.modeSombre === true) {
-                // 👇 add class to body element
-                document.body.classList.add('darkMode');
-            }
-            setUser(data.profile);
-        };
-    }
-
     useEffect(() => {
-        setTimeout(getUser, 50);
+        getUserById(localStorage.getItem('id')).then(setUser);
     }, []);
 
     function imageFallback(id) {

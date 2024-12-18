@@ -1,19 +1,5 @@
 import API from './API';
 
-async function getUser(id) {
-    const { data } = await API.getUser({ id: id });
-    if (data.success === false) {
-        console.log(data.message);
-    } else {
-        // console.log(data.profile);
-        if (data.profile.modeSombre && data.profile.modeSombre === true) {
-            // 👇 add class to body element
-            document.body.classList.add('darkMode');
-        }
-        return data.profile;
-    };
-}
-
 async function getUserById(id) {
     const { data } = await API.getUser({ id: id });
     if (data.success === false) {
@@ -23,15 +9,4 @@ async function getUserById(id) {
     };
 }
 
-async function getProgrammesByUser(id) {
-    const { data } = await API.getProgrammesByUser({ userId: id });
-    if (data.success === false) {
-        console.log("getProgrammeByUser", data.message);
-        return null;
-    } else {
-        console.log("getProgrammeByUser", data.programmes);
-        return data.programmes;
-    };
-}
-
-export { getUser, getUserById, getProgrammesByUser }
+export { getUserById }

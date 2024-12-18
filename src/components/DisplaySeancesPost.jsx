@@ -5,6 +5,7 @@ import { useWindowDimensions } from "../utils/useEffect";
 import { fetchSeancesData } from "../utils/seance";
 import Loader from "./Loader";
 import API from "../utils/API";
+import { getUserById } from "../utils/user";
 
 const backgroundColors = ["#9C005D", "#9C1B00", "#9B0000", "#8B009C", "#9C3600"];
 
@@ -17,20 +18,9 @@ const DisplaySeancesPost = (props) => {
     const [currentUser, setCurrentUser] = useState(null);
     const observer = useRef();
 
-    async function getUser() {
-        const { data: currentUserData } = await API.getUser({ id: localStorage.getItem('id') });
-        if (currentUserData.success === false) {
-            alert(currentUserData.message);
-        } else {
-            console.log(currentUserData.profile);
-            setCurrentUser(currentUserData.profile);
-            setLoading(false);
-        }
-    };
-
     useEffect(() => {
         setLoading(true);
-        getUser();
+        getUserById(localStorage.getItem('id')).then(setCurrentUser);
     }, []);
 
     // Last element callback for intersection observer

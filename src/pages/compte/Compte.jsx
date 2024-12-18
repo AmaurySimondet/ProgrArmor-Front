@@ -13,6 +13,7 @@ import Stats from "../../components/Stats.jsx";
 import apiCalls from "../../utils/apiCalls";
 import { useWindowDimensions } from "../../utils/useEffect";
 import Followers from "./Followers.jsx";
+import { getUserById } from "../../utils/user";
 
 function Compte() {
   const [searchParams] = useSearchParams();
@@ -40,20 +41,13 @@ function Compte() {
     setActiveTab(tab);
   };
 
-  async function getUser() {
-    const { data } = await API.getUser({ id: searchParams.get('id') });
-    const { data: currentUserData } = await API.getUser({ id: localStorage.getItem('id') });
-    if (data.success === false) {
-      alert(data.message);
-    } else {
-      setUser(data.profile);
-      setCurrentUser(currentUserData.profile);
-    };
-  }
-
   useEffect(() => {
-    getUser().then(async () => {
+    const fetchData = async () => {
       try {
+        // Get user data
+        getUserById(searchParams.get('id')).then(setUser);
+        getUserById(localStorage.getItem('id')).then(setCurrentUser);
+
         // Get stats
         const statsRes = await API.getStats(searchParams.get('id'));
         const favoriteExercices = await apiCalls.buildFavoriteExercices(statsRes.data.stats.topExercices);
@@ -72,14 +66,15 @@ function Compte() {
 
         // Get user images
         const imagesRes = await API.getUserImages(searchParams.get('id'));
-        console.log(imagesRes.data.images);
         setUserImages(imagesRes.data.images);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
         setLoading(false);
       }
-    });
+    };
+
+    fetchData();
   }, []);
 
   const handleFollowToggle = async () => {

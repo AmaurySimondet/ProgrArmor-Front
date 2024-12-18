@@ -1,29 +1,13 @@
 import Footer from "../../components/Footer";
 import NavigBar from "../../components/NavigBar";
-import { React, useState, useEffect } from "react"
+import { React, useState } from "react"
 import InstallApp from "./InstallApp";
-import API from "../../utils/API";
 import ConversionBerger from "./ConversionBerger";
 import { COLORS } from "../../utils/colors";
 
 function Aide() {
     const [clickInstallApp, setClickInstallApp] = useState(false);
     const [clickBerger, setClickBerger] = useState(false);
-    const [user, setUser] = useState();
-
-    async function getUser() {
-        const { data } = await API.getUser({ id: localStorage.getItem("id") });
-        if (data.success === false) {
-            alert(data.message);
-        } else {
-            console.log(data.profile);
-            if (data.profile.modeSombre && data.profile.modeSombre === true) {
-                // 👇 add class to body element
-                document.body.classList.add('darkMode');
-            }
-            setUser(data.profile);
-        };
-    }
 
     function handleClickInstallApp() {
         setClickInstallApp(!clickInstallApp)
@@ -33,16 +17,10 @@ function Aide() {
         setClickBerger(!clickBerger)
     }
 
-    useEffect(() => {
-        getUser();
-    }, [])
-
     return (
         <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
             <div className="page-container">
                 <NavigBar location="aide" />
-
-
 
 
                 {/* PAGE CONTENT */}
@@ -62,7 +40,7 @@ function Aide() {
                         </h2>
 
                         <div className={clickInstallApp ? "extended-huge" : "not-extended"}>
-                            <InstallApp modeSombre={user ? user.modeSombre === true ? true : false : false} />
+                            <InstallApp />
                         </div>
 
                         <h2
@@ -76,7 +54,7 @@ function Aide() {
                         </h2>
 
                         <div className={clickBerger ? "extended" : " not-extended"}>
-                            <ConversionBerger modeSombre={user ? user.modeSombre === true ? true : false : false} />
+                            <ConversionBerger />
                         </div>
                     </div>
 
