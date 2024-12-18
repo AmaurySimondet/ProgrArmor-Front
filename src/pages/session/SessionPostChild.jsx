@@ -37,7 +37,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                     <div>
                         {user ? <strong><a href={`/compte?id=${user._id}`}>{user.fName} {user.lName}</a></strong> : <strong>Prénom Nom</strong>}
                         <br />
-                        <i>{getDetailedDate(selectedDate)}</i>
+                        <i>{selectedName} - {getDetailedDate(selectedDate)}</i>
                     </div>
                 </div>
                 {user?._id === localStorage.getItem('id') && !editable ? (

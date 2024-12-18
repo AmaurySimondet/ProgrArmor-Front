@@ -45,10 +45,10 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
     }, [width, numberOfSlides, photos]); // Add width as a dependency
 
     React.useEffect(() => {
-        const exerciseSlides = Math.ceil(selectedExercices.length / 2);
+        const exerciseGroups = groupExercises(selectedExercices).length;
         const photoSlides = photos.length;
-        setNumberOfSlides(exerciseSlides + photoSlides);
-    }, [selectedExercices.length, photos.length]);
+        setNumberOfSlides(exerciseGroups + photoSlides);
+    }, [selectedExercices, photos.length]); // Make sure to include groupExercises in dependencies if needed
 
     React.useEffect(() => {
         if (editable) {  // Only fetch if we don't have seancePhotos
@@ -118,6 +118,43 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
         }
     };
 
+    // New function to estimate exercise height
+    const estimateExerciseHeight = (exercise) => {
+        const BASE_HEIGHT = 70; // Base height for exercise name and emoji
+        const SET_HEIGHT = 25; // Height per set
+        const setsCount = exercise.sets?.length || 0;
+        return BASE_HEIGHT + (setsCount * SET_HEIGHT);
+    };
+
+    // New function to group exercises
+    const groupExercises = (exercises) => {
+        const MAX_HEIGHT = 400; // Maximum height for a slide
+        const groups = [];
+        let currentGroup = [];
+        let currentHeight = 0;
+
+        exercises.forEach((exercise) => {
+            const exerciseHeight = estimateExerciseHeight(exercise);
+
+            if (currentHeight + exerciseHeight > MAX_HEIGHT) {
+                // Start new group if current one would exceed max height
+                groups.push(currentGroup);
+                currentGroup = [exercise];
+                currentHeight = exerciseHeight;
+            } else {
+                currentGroup.push(exercise);
+                currentHeight += exerciseHeight;
+            }
+        });
+
+        // Add remaining exercises
+        if (currentGroup.length > 0) {
+            groups.push(currentGroup);
+        }
+
+        return groups;
+    };
+
     return (
         <div style={{ position: 'relative' }}>
             {/* Photo Upload Section */}
@@ -179,6 +216,7 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
                     paddingBottom: '20px',
                     scrollbarWidth: 'none',
                     position: 'relative',
+                    justifyContent: numberOfSlides == 1 ? 'center' : 'flex-start',
                 }}
                 className="carousel-container"
             >
@@ -217,58 +255,42 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
                     ))
                 )}
 
-
-                {/* Each Exercise as a Slide */}
-                {selectedExercices.map((exercice, idx) => {
-                    // Only render pairs of exercises
-                    if (idx % 2 !== 0) return null;
-
-                    return (
-                        <div
-                            key={exercice._id}
-                            className="instagramPost"
-                            style={{ backgroundColor: backgroundColors[idx % backgroundColors.length] }}
-                        >
-                            {/* First exercise in the pair */}
-                            <ul style={{ listStyleType: 'none', ...(width < 500 ? { padding: '5px' } : {}) }}>
-                                <li className="sessionSummaryExercice" style={{ position: 'relative', paddingLeft: '4em', marginBottom: "20px" }}>
+                {/* Exercise Groups */}
+                {groupExercises(selectedExercices).map((group, groupIdx) => (
+                    <div
+                        key={`group-${groupIdx}`}
+                        className="instagramPost"
+                        style={{ backgroundColor: backgroundColors[groupIdx % backgroundColors.length] }}
+                    >
+                        <ul style={{ listStyleType: 'none', ...(width < 500 ? { padding: '5px' } : {}) }}>
+                            {group.map((exercise, idx) => (
+                                <li
+                                    key={exercise._id}
+                                    className="sessionSummaryExercice"
+                                    style={{
+                                        position: 'relative',
+                                        paddingLeft: '4em',
+                                        marginBottom: idx < group.length - 1 ? "20px" : "0"
+                                    }}
+                                >
                                     <span style={{ position: 'absolute', left: 0, top: 0, fontSize: width < 500 ? "2em" : "3em" }}>
-                                        {emojis[idx]}
+                                        {emojis[selectedExercices.indexOf(exercise)]}
                                     </span>
                                     <h3 style={{ fontSize: "16px", fontWeight: "normal" }}>
-                                        {selectedExercices[idx].exercice.name.fr}{' '}
-                                        {selectedExercices[idx].categories.length > 0 &&
-                                            '- ' + selectedExercices[idx].categories.map((category) => category.name.fr).join(', ')}
+                                        {exercise.exercice.name.fr}{' '}
+                                        {exercise.categories.length > 0 &&
+                                            '- ' + exercise.categories.map((category) => category.name.fr).join(', ')}
                                     </h3>
-                                    {selectedExercices[idx].sets && selectedExercices[idx].sets.length > 0 && (
+                                    {exercise.sets && exercise.sets.length > 0 && (
                                         <ul style={{ listStyleType: 'none', padding: 0, textAlign: '-webkit-center', fontSize: "14px" }}>
-                                            {renderSets(selectedExercices[idx].sets, false, "")}
+                                            {renderSets(exercise.sets, false, "")}
                                         </ul>
                                     )}
                                 </li>
-
-                                {/* Second exercise in the pair, if it exists */}
-                                {selectedExercices[idx + 1] && (
-                                    <li className="sessionSummaryExercice" style={{ position: 'relative', paddingLeft: '4em' }}>
-                                        <span style={{ position: 'absolute', left: 0, top: 0, fontSize: width < 500 ? "2em" : "3em" }}>
-                                            {emojis[idx + 1]}
-                                        </span>
-                                        <h3 style={{ fontSize: "16px", fontWeight: "normal" }}>
-                                            {selectedExercices[idx + 1].exercice.name.fr}{' '}
-                                            {selectedExercices[idx + 1].categories.length > 0 &&
-                                                '- ' + selectedExercices[idx + 1].categories.map((category) => category.name.fr).join(', ')}
-                                        </h3>
-                                        {selectedExercices[idx + 1].sets && selectedExercices[idx + 1].sets.length > 0 && (
-                                            <ul style={{ listStyleType: 'none', padding: 0, textAlign: '-webkit-center', fontSize: "14px" }}>
-                                                {renderSets(selectedExercices[idx + 1].sets, false, "")}
-                                            </ul>
-                                        )}
-                                    </li>
-                                )}
-                            </ul>
-                        </div>
-                    );
-                })}
+                            ))}
+                        </ul>
+                    </div>
+                ))}
             </div>
 
             {/* Add slide indicators */}

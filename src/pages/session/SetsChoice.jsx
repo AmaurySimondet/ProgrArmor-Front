@@ -199,7 +199,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <Tooltip id="my-tooltip" />
-            <h1 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h1 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h1>
             <h1 style={{ marginTop: '0' }}>
@@ -358,6 +358,14 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                             <div>
                                                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
                                                     Tension
+                                                    <span
+                                                        data-tooltip-id="my-tooltip"
+                                                        data-tooltip-html={tooltipText}
+                                                        data-tooltip-place="top"
+                                                        style={{ cursor: 'help', fontSize: '0.8rem', opacity: 0.7 }}
+                                                    >
+                                                        ℹ️
+                                                    </span>
                                                     <GranularitySelector granularity={granularity} onChange={handleGranularityChange} />
                                                 </div>
                                                 <select className="form-control" value={set.elastic?.tension || ''} onChange={(e) => handleChangeElasticTension(index, e)}>
@@ -398,6 +406,9 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
 
 
             <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center', gap: '10px' }}>
+                <button onClick={() => setSets([...sets, { unit: "reps", value: "", weightLoad: "", elastic: null }])} className='btn btn-dark'>
+                    Ajouter Série
+                </button>
                 <button onClick={handleNextExercice} className='btn btn-white'>
                     Valider
                 </button>

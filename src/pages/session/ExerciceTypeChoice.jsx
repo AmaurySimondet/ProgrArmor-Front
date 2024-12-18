@@ -50,8 +50,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 );
 
                 setAllExerciceTypes(typesWithExercises);
-                setExerciceTypes(typesWithExercises.slice(0, 8));
-                console.log("typesWithExercises", typesWithExercises);
+                setExerciceTypes(typesWithExercises.slice(0, 7));
 
                 // Fetch combinations
                 const combinationsResponse = await API.getCombinations();
@@ -85,7 +84,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
     const handleSearch = (event) => {
         setSearchQuery(event.target.value);
         if (event.target.value === '') {
-            setCombinations(allCombinations.slice(0, 8));
+            setCombinations(allCombinations.slice(0, 7));
             return;
         }
         const fuse = new Fuse(allCombinations, { keys: ['combinationName.fr'] });
@@ -102,7 +101,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <h1
-                style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}
             >
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h1>

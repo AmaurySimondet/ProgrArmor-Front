@@ -53,7 +53,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
                 );
 
                 setAllCategoryTypes(typesWithCategories);
-                setCategoryTypes(typesWithCategories.slice(0, 8));
+                setCategoryTypes(typesWithCategories.slice(0, 7));
                 setLoading(false);
             })
             .catch(error => {
@@ -79,7 +79,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
     const handleSearch = (event) => {
         setSearchQuery(event.target.value);
         if (event.target.value === '') {
-            setFilteredCategories(allCategories.slice(0, 8));
+            setFilteredCategories(allCategories.slice(0, 7));
             return;
         }
         const fuse = new Fuse(allCategories, { keys: ['name.fr'] });
@@ -110,12 +110,12 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
                 <h1
-                    style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                    style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}
                 >
                     <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
                 </h1>
                 <h1
-                    style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px' }}
+                    style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}
                 >
                     <span onClick={onSkip} style={{ cursor: 'pointer' }} className="clickable"> Passer &gt; </span>
                 </h1>
