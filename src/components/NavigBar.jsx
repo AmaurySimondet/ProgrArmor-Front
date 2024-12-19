@@ -1,10 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { getUserById } from "../utils/user";
-
+import API from "../utils/API";
 function NavigBar(props) {
     const [toggled, setToggled] = useState(false);
     const [user, setUser] = useState(null);
-    const [clickedWarning, setClickedWarning] = useState(false);
+    const [notifications, setNotifications] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                getUserById(localStorage.getItem('id')).then(setUser);
+                const response = await API.getNotifications({
+                    userId: localStorage.getItem('id')
+                });
+                const unreadNotifications = response.data.notifications.filter(notification => !notification.read);
+                setNotifications(unreadNotifications);
+            } catch (error) {
+                console.error("Error fetching notifications:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchData();
+    }, []);
 
     function toggling() {
         setToggled(oldToggled => {
@@ -12,16 +31,14 @@ function NavigBar(props) {
         })
     }
 
-    useEffect(() => {
-        getUserById(localStorage.getItem('id')).then(setUser);
-    }, []);
-
     return (
         <div>
             <nav className="navbar navbar-expand navbar-light bg-light navigbar">
-                <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-                    <span className="navbar-toggler-icon"></span>
-                </button>
+                <div className="position-relative">
+                    <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                        <span className="navbar-toggler-icon"></span>
+                    </button>
+                </div>
                 <a className="navbar-brand" href="/dashboard"><img className="logo-navbar" src={require('../images/icons/logo-navbar.webp')} alt="logo" /></a>
                 <a className="navbar-brand" href="/dashboard">
                     <h1 className="ProgArmor">ProgArmor
@@ -30,7 +47,18 @@ function NavigBar(props) {
                 </a>
 
                 <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
-                    <img className={toggled ? "toggler-icon scaled" : "toggler-icon not-scaled"} onClick={toggling} src={require('../images/icons/output-onlinepngtools.webp')} alt="logo" />
+                    <div className={toggled ? "toggler-icon scaled" : "toggler-icon not-scaled"} >
+                        <img onClick={toggling} src={require('../images/icons/output-onlinepngtools.webp')} alt="logo" />
+                        <span className="badge rounded-pill bg-warning text-dark popInElement"
+                            style={{
+                                scale: "1.5",
+                                fontWeight: "bold",
+                                boxShadow: "0 0 5px rgba(255, 255, 255, 0.5)",
+                                visibility: notifications.length > 0 ? "visible" : "hidden"
+                            }}>
+                            {notifications.length}
+                        </span>
+                    </div>
 
                     <div>
                         <div className={toggled ? "toggle-is-clicked extended" : "toggle-is-clicked not-extended"}
@@ -44,7 +72,20 @@ function NavigBar(props) {
                             </div>
                             <hr style={{ borderColor: "black" }} />
                             <a className="nav-link" href="/dashboard"><img className="icon-navbar" src={require('../images/icons/home.webp')} alt='home' /> Dashboard</a>
-                            <a className="nav-link" href="/notifications"><img className="icon-navbar" src={require('../images/icons/notifications.webp')} alt='notifications' /> Notifications</a>
+                            <a className="nav-link" href="/notifications">
+                                <img className="icon-navbar" src={require('../images/icons/notifications.webp')} alt='notifications' />
+                                Notifications
+                                {notifications.length > 0 && (
+                                    <span className="badge rounded-pill bg-warning text-dark popInElement"
+                                        style={{
+                                            marginLeft: "10px",
+                                            fontWeight: "bold",
+                                            boxShadow: "0 0 5px rgba(255, 255, 255, 0.5)"
+                                        }}>
+                                        {notifications.length}
+                                    </span>
+                                )}
+                            </a>
                             <a className="nav-link" href="/session"><img className="icon-navbar" src={require('../images/icons/write.webp')} alt='session' /> Nouvelle séance</a>
                             <a className="nav-link" href="/programme"><img className="icon-navbar" src={require('../images/icons/plus.webp')} alt='programme' /> Programmes</a>
                             <hr style={{ borderColor: "black" }} />
@@ -57,7 +98,7 @@ function NavigBar(props) {
                     </div>
 
                 </div>
-            </nav>
+            </nav >
         </div >
     )
 }

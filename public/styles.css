@@ -1650,7 +1650,7 @@ table.profile-table {
 }
 
 .scaled {
-    transform: scaleX(1.5);
+    transform: scaleX(1.2);
     transition: transform 0.5s linear;
 }
 
@@ -1897,10 +1897,11 @@ table.hometable td.inscription-img-td {
 }
 
 .toggler-icon {
-    width: 45px;
     z-index: 2;
     position: absolute;
-    right: 35px;
+    right: 10px;
+    scale: 0.7;
+    top: -23px;
     transition: 0.5s;
 }
 
@@ -2322,7 +2323,7 @@ table.hometable td.inscription-img-td {
 }
 
 /* Smallest layout */
-@media (max-width: 370px) {
+@media (max-width: 400px) {
 
     .piechart {
         font-size: 5px;

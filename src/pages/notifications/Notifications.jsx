@@ -6,56 +6,21 @@ import Loader from "../../components/Loader";
 import { useWindowDimensions } from "../../utils/useEffect";
 import { formatDate } from "../../utils/dates";
 import { getUserById } from "../../utils/user";
+import API from "../../utils/API";
 
 function Notifications() {
     const [notifications, setNotifications] = useState([]);
-    const [notificationUsers, setNotificationUsers] = useState({});
     const [loading, setLoading] = useState(true);
     const { width } = useWindowDimensions();
     const [user, setUser] = useState(null);
-
-    // Fake API call for notifications
-    const fakeGetNotifications = async () => {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        return {
-            data: {
-                notifications: [
-                    {
-                        _id: '1',
-                        type: 'follow',
-                        fromUser: "6365489f44d4b4000470882b",
-                        forUser: "669f552741728ab8cfcd4b72",
-                        createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
-                        read: false
-                    },
-                    {
-                        _id: '2',
-                        type: 'like',
-                        fromUser: "63650f0a730196141891cd3a",
-                        forUser: "669f552741728ab8cfcd4b72",
-                        createdAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
-                        read: true
-                    },
-                    {
-                        _id: '3',
-                        type: 'comment',
-                        fromUser: "669f552741728ab8cfcd4b72",
-                        forUser: "669f552741728ab8cfcd4b72",
-                        createdAt: new Date(Date.now() - 172800000).toISOString(), // 2 days ago
-                        read: false
-                    }
-                ]
-            }
-        };
-    };
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 getUserById(localStorage.getItem('id')).then(setUser);
-                const response = await fakeGetNotifications();
+                const response = await API.getNotifications({
+                    userId: localStorage.getItem('id')
+                });
                 setNotifications(response.data.notifications);
             } catch (error) {
                 console.error("Error fetching notifications:", error);
@@ -66,29 +31,6 @@ function Notifications() {
 
         fetchData();
     }, []);
-
-    useEffect(() => {
-        const fetchNotificationUsers = async () => {
-            const userPromises = notifications.map(notification =>
-                getUserById(notification.fromUser)
-            );
-
-            const users = await Promise.all(userPromises);
-
-            const usersMap = {};
-            notifications.forEach((notification, index) => {
-                usersMap[notification.fromUser] = users[index];
-            });
-
-            console.log(usersMap);
-
-            setNotificationUsers(usersMap);
-        };
-
-        if (notifications.length > 0) {
-            fetchNotificationUsers();
-        }
-    }, [notifications]);
 
     const getNotificationText = (notification) => {
         switch (notification.type) {
@@ -101,6 +43,29 @@ function Notifications() {
             default:
                 return 'a interagi avec votre profil';
         }
+    };
+
+    const handleNotificationClick = async (notification) => {
+        // Mark notification as read when clicked
+        if (!notification.read) {
+            try {
+                await API.markNotificationAsRead({
+                    notificationId: notification._id
+                });
+
+                // Update local state to show notification as read
+                setNotifications(prevNotifications =>
+                    prevNotifications.map(n =>
+                        n._id === notification._id ? { ...n, read: true } : n
+                    )
+                );
+            } catch (error) {
+                console.error("Error marking notification as read:", error);
+            }
+        }
+
+        // Navigate to user profile
+        window.location.href = `/compte?id=${notification.fromUser._id}`;
     };
 
     if (loading) return <Loader />;
@@ -117,7 +82,7 @@ function Notifications() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '0 20px' }}>
                             {notifications.length > 0 ? (
                                 notifications.map(notification => {
-                                    const fromUser = notificationUsers[notification.fromUser];
+                                    const fromUser = notification.fromUser;
                                     return (
                                         <div
                                             key={notification._id}
@@ -130,7 +95,7 @@ function Notifications() {
                                                 boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
                                                 cursor: 'pointer'
                                             }}
-                                            onClick={() => window.location.href = `/compte?id=${notification.fromUser}`}
+                                            onClick={() => handleNotificationClick(notification)}
                                         >
                                             <img
                                                 src={fromUser?.profilePic || require('../../images/profilepic.webp')}

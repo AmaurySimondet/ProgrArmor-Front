@@ -57,7 +57,7 @@ function App() {
             </Route>
 
             <Route path="/notifications/*" element={<PrivateRoute />}>
-                <Route exact path='/notifications/*' element={<Travaux />} />
+                <Route exact path='/notifications/*' element={<Notifications />} />
             </Route>
 
             <Route path="/aide" element={<PrivateRoute />}>

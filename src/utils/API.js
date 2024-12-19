@@ -163,6 +163,20 @@ export default {
   },
 
 
+  //NOTIFICATIONS
+  getNotifications: function (send) {
+    return axios.get(`${burl}/user/notifications`, {
+      headers: headers,
+      params: send
+    });
+  },
+  markNotificationAsRead: function (send) {
+    return axios.put(`${burl}/user/notifications/read`, send, {
+      headers: headers
+    });
+  },
+
+
 
 
 
