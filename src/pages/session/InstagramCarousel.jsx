@@ -3,6 +3,7 @@ import { useWindowDimensions } from '../../utils/useEffect';
 import { renderSets } from '../../utils/sets';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import API from '../../utils/API';
+import { resizeImage, validateFileSize } from '../../utils/mediaUtils';
 
 
 function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgroundColors, editable, selectedDate, seancePhotos }) {
@@ -79,15 +80,25 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
         try {
             setImageUploading(true);
 
-            // Then upload new photos
             for (const file of files) {
-                const formData = new FormData();
-                formData.append('image', file);
-                formData.append('seanceDate', selectedDate);
-                formData.append('seanceName', selectedName);
-                formData.append('userId', localStorage.getItem('id'));
+                try {
+                    // Validate file size
+                    validateFileSize(file);
 
-                await API.uploadSeancePhoto(formData);
+                    // Resize if it's an image
+                    const processedFile = await resizeImage(file);
+
+                    const formData = new FormData();
+                    formData.append('image', processedFile);
+                    formData.append('seanceDate', selectedDate);
+                    formData.append('seanceName', selectedName);
+                    formData.append('userId', localStorage.getItem('id'));
+
+                    await API.uploadSeancePhoto(formData);
+                } catch (error) {
+                    alert(error.message);
+                    continue;
+                }
             }
 
             // Get updated photos after all uploads
@@ -103,7 +114,7 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
             setPhotos(updatedPhotos);
         } catch (error) {
             console.error("Error uploading images:", error);
-            alert("Erreur lors du téléchargement des images: " + error.message + error.response.data);
+            alert("Erreur lors du téléchargement des images");
         } finally {
             setImageUploading(false);
         }
