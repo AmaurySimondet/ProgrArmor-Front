@@ -68,6 +68,10 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
         }
     }, []);
 
+    React.useEffect(() => {
+        console.log(photos);
+    }, [photos]);
+
     const handleImageUpload = async (event) => {
         const files = Array.from(event.target.files);
         if (files.length === 0) return;
@@ -99,7 +103,7 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
             setPhotos(updatedPhotos);
         } catch (error) {
             console.error("Error uploading images:", error);
-            alert("Erreur lors du téléchargement des images");
+            alert("Erreur lors du téléchargement des images: " + error.message + error.response.data);
         } finally {
             setImageUploading(false);
         }
@@ -163,7 +167,7 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
                     <input
                         type="file"
                         id="photos"
-                        accept="image/*"
+                        accept="image/*,video/*"
                         multiple
                         onChange={handleImageUpload}
                         style={{ display: 'none' }}
@@ -184,7 +188,7 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
                             alt="upload"
                             style={{ width: '30px', height: '30px', marginBottom: '10px' }}
                         />
-                        <p style={{ margin: '0' }}>Ajouter des photos de la séance</p>
+                        <p style={{ margin: '0' }}>Ajouter des photos ou vidéos de la séance</p>
 
                         {imageUploading && (
                             <div style={{
@@ -223,12 +227,31 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
                 {photos.length > 0 && (
                     photos.map((photo, idx) => (
                         <div className="instagramPost popInElement" style={{ padding: '0', position: 'relative' }}>
-                            <img src={photo.cloudfrontUrl} alt="seance" style={{
-                                width: '100%',
-                                height: '100%',
-                                objectFit: 'cover',
-                                opacity: deletingPhotos[photo.cloudfrontUrl] ? 0.5 : 1
-                            }} />
+                            {photo.cloudfrontUrl.toLowerCase().endsWith('.mp4') ? (
+                                <video
+                                    controls
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        opacity: deletingPhotos[photo.cloudfrontUrl] ? 0.5 : 1
+                                    }}
+                                >
+                                    <source src={photo.cloudfrontUrl} type="video/mp4" />
+                                    Your browser does not support the video tag.
+                                </video>
+                            ) : (
+                                <img
+                                    src={photo.cloudfrontUrl}
+                                    alt="seance"
+                                    style={{
+                                        width: '100%',
+                                        height: '100%',
+                                        objectFit: 'cover',
+                                        opacity: deletingPhotos[photo.cloudfrontUrl] ? 0.5 : 1
+                                    }}
+                                />
+                            )}
                             {editable && (
                                 <button
                                     onClick={() => handleDeleteImage(photo.cloudfrontUrl)}

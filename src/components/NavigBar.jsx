@@ -5,6 +5,7 @@ function NavigBar(props) {
     const [toggled, setToggled] = useState(false);
     const [user, setUser] = useState(null);
     const [notifications, setNotifications] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
