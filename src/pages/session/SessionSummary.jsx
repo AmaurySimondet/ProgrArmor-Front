@@ -120,4 +120,5 @@ const SessionSummary = ({
     );
 };
 
+
 export default SessionSummary;
