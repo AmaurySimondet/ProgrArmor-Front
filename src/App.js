@@ -70,7 +70,9 @@ function App() {
                 <Route exact path='/session/*' element={<Session />} />
             </Route>
 
-            <Route path="/seance" element={<SingleSeanceView />} />
+            <Route path="/seance" element={<PrivateRoute />}>
+                <Route exact path='' element={<SingleSeanceView />} />
+            </Route>
         </Routes>
     );
 };

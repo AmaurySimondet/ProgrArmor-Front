@@ -1,4 +1,4 @@
-export const MAX_FILE_SIZE = 200 * 1024 * 1024; // 5MB
+export const MAX_FILE_SIZE = 100 * 1024 * 1024; // 100MB
 
 // Client-side image resize before upload
 export const resizeImage = async (file) => {
