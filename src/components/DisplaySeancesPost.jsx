@@ -4,7 +4,6 @@ import { stringToDate } from "../utils/dates";
 import { useWindowDimensions } from "../utils/useEffect";
 import { fetchSeancesData } from "../utils/seance";
 import Loader from "./Loader";
-import API from "../utils/API";
 import { getUserById } from "../utils/user";
 
 const backgroundColors = ["#9C005D", "#9C1B00", "#9B0000", "#8B009C", "#9C3600"];
