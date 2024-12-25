@@ -1,51 +1,43 @@
 import axios from "axios";
-
 const headers = {
   "Content-Type": "application/json"
 };
-
-const defaultConfig = {
-  headers: headers,
-  credentials: 'include',
-  withCredentials: true
-};
-
 const burl = process.env.REACT_APP_BACKEND_URL;
 
 export default {
 
   //LOGIN SIGNUP
   login: function (email, password) {
-    return axios.post(`${burl}/user/login`, { email, password }, defaultConfig);
+    return axios.post(`${burl}/user/login`, { email, password }, { headers: headers });
 
   },
   signup: function (send) {
-    return axios.post(`${burl}/user/signup`, send, defaultConfig);
+    return axios.post(`${burl}/user/signup`, send, { headers: headers });
 
   },
   verifyToken: function (send) {
-    return axios.post(`${burl}/user/verifyToken`, send, defaultConfig);
+    return axios.post(`${burl}/user/verifyToken`, send, { headers: headers });
 
   },
   facebook: function () {
-    return axios.get(`${burl}/user/auth/facebook`, defaultConfig)
+    return axios.get(`${burl}/user/auth/facebook`, { headers: headers })
 
   },
   facebookAuthenticate: function () {
-    return axios.get(`${burl}/user/auth/facebook/authenticate`, defaultConfig)
+    return axios.get(`${burl}/user/auth/facebook/authenticate`, { headers: headers })
 
   },
   google: function () {
-    return axios.get(`${burl}/user/auth/google`, defaultConfig)
+    return axios.get(`${burl}/user/auth/google`, { headers: headers })
 
   },
   googleAuthenticate: function () {
-    return axios.get(`${burl}/user/auth/google/authenticate`, defaultConfig)
+    return axios.get(`${burl}/user/auth/google/authenticate`, { headers: headers })
 
   },
   isAuth: async function () {
     if (localStorage.getItem("token") !== null) {
-      const result = await axios.post(`${burl}/user/verifyToken`, { token: localStorage.getItem("token") }, defaultConfig);
+      const result = await axios.post(`${burl}/user/verifyToken`, { token: localStorage.getItem("token") }, { headers: headers });
       //        console.log(result)
       if (result.data.success === true) {
         return true
@@ -55,7 +47,7 @@ export default {
 
   },
   logout: function () {
-    return axios.get(`${burl}/user/logout`, defaultConfig);
+    return axios.get(`${burl}/user/logout`, { headers: headers });
 
   },
 
@@ -64,7 +56,7 @@ export default {
 
   //NIVEAU
   getNiveau: function (send) {
-    return axios.post(`${burl}/user/getNiveau`, send, defaultConfig);
+    return axios.post(`${burl}/user/getNiveau`, send, { headers: headers });
   },
 
 
@@ -73,19 +65,19 @@ export default {
 
   //USER
   getUser: function (id) {
-    return axios.post(`${burl}/user/getUser`, id, defaultConfig);
+    return axios.post(`${burl}/user/getUser`, id, { headers: headers });
   },
   getUsers: function () {
-    return axios.get(`${burl}/user/getUsers`, defaultConfig);
+    return axios.get(`${burl}/user/getUsers`, { headers: headers });
   },
   getStats: function (userId) {
-    return axios.get(`${burl}/user/userStats`, { ...defaultConfig, params: { userId } });
+    return axios.get(`${burl}/user/userStats`, { headers: headers, params: { userId } });
   },
   followUser: function (send) {
-    return axios.post(`${burl}/user/followUser`, send, defaultConfig);
+    return axios.post(`${burl}/user/followUser`, send, { headers: headers });
   },
   unfollowUser: function (send) {
-    return axios.post(`${burl}/user/unfollowUser`, send, defaultConfig);
+    return axios.post(`${burl}/user/unfollowUser`, send, { headers: headers });
   },
 
 
@@ -93,7 +85,6 @@ export default {
   // AWS
   uploadPP: (formData) => {
     return axios.post(`${burl}/user/aws/upload-pp`, formData, {
-      ...defaultConfig,
       headers: {
         ...headers,
         'Content-Type': 'multipart/form-data'
@@ -102,7 +93,6 @@ export default {
   },
   uploadSeancePhoto: (formData) => {
     return axios.post(`${burl}/user/aws/upload-seance-photo`, formData, {
-      ...defaultConfig,
       headers: {
         ...headers,
         'Content-Type': 'multipart/form-data'
@@ -111,7 +101,7 @@ export default {
   },
   getPhotos: function (userId, seanceDate, seanceName) {
     return axios.get(`${burl}/user/aws/get-seance-photos`, {
-      ...defaultConfig,
+      headers: headers,
       params: {
         userId,
         seanceDate,
@@ -121,7 +111,7 @@ export default {
   },
   getPhotosBySeanceId: function (seanceId) {
     return axios.get(`${burl}/user/aws/get-seance-photos-by-id`, {
-      ...defaultConfig,
+      headers: headers,
       params: {
         seanceId
       }
@@ -129,14 +119,16 @@ export default {
   },
   deleteSeancePhoto: function (photoUrl) {
     return axios.delete(`${burl}/user/aws/delete-seance-photo`, {
-      ...defaultConfig,
+      headers: headers,
       params: {
         photoUrl
       }
     });
   },
   getUserImages: function (userId) {
-    return axios.get(`${burl}/user/aws/images/${userId}`, defaultConfig);
+    return axios.get(`${burl}/user/aws/images/${userId}`, {
+      headers: headers
+    });
   },
 
 
@@ -145,41 +137,43 @@ export default {
 
   //SEANCES
   getSeanceNames: function (send) {
-    return axios.get(`${burl}/user/seance/names`, { ...defaultConfig, params: send });
+    return axios.get(`${burl}/user/seance/names`, { headers: headers, params: send });
   },
   getLastSeance: function (send) {
-    return axios.get(`${burl}/user/seance/last`, { ...defaultConfig, params: send });
+    return axios.get(`${burl}/user/seance/last`, { headers: headers, params: send });
   },
   getSeance: function (send) {
-    return axios.get(`${burl}/user/seance`, { ...defaultConfig, params: send });
+    return axios.get(`${burl}/user/seance`, { headers: headers, params: send });
   },
   getSeances: function (send) {
-    return axios.get(`${burl}/user/seances`, { ...defaultConfig, params: send });
+    return axios.get(`${burl}/user/seances`, { headers: headers, params: send });
   },
   createSeance: function (send) {
-    return axios.post(`${burl}/user/createSeance`, send, { ...defaultConfig, params: send });
+    return axios.post(`${burl}/user/createSeance`, send, { headers: headers, params: send });
   },
   deleteSeance: function (send) {
     return axios.delete(`${burl}/user/deleteSeance`, {
-      ...defaultConfig,
+      headers: headers,
       params: send,
       data: send
     });
   },
   updateSeance: function (send) {
-    return axios.put(`${burl}/user/updateSeance`, send, { ...defaultConfig, params: send });
+    return axios.put(`${burl}/user/updateSeance`, send, { headers: headers, params: send });
   },
 
 
   //NOTIFICATIONS
   getNotifications: function (send) {
     return axios.get(`${burl}/user/notifications`, {
-      ...defaultConfig,
+      headers: headers,
       params: send
     });
   },
   markNotificationAsRead: function (send) {
-    return axios.put(`${burl}/user/notifications/read`, send, defaultConfig);
+    return axios.put(`${burl}/user/notifications/read`, send, {
+      headers: headers
+    });
   },
 
 
@@ -188,23 +182,23 @@ export default {
 
   // SEANCE SETS
   getSeanceSets: function (send) {
-    return axios.get(`${burl}/user/sets`, { ...defaultConfig, params: send });
+    return axios.get(`${burl}/user/sets`, { headers: headers, params: send });
   },
   getTopExercices: function (send) {
-    return axios.get(`${burl}/user/topExercices`, { ...defaultConfig, params: send });
+    return axios.get(`${burl}/user/topExercices`, { headers: headers, params: send });
   },
   createSet: function (send) {
-    return axios.post(`${burl}/user/createSet`, send, { ...defaultConfig, params: send });
+    return axios.post(`${burl}/user/createSet`, send, { headers: headers, params: send });
   },
   getPRs: function (send) {
-    return axios.get(`${burl}/user/pr`, { ...defaultConfig, params: send });
+    return axios.get(`${burl}/user/pr`, { headers: headers, params: send });
   },
   getTopFormat: function (send) {
-    return axios.get(`${burl}/user/topFormat`, { ...defaultConfig, params: send });
+    return axios.get(`${burl}/user/topFormat`, { headers: headers, params: send });
   },
   deleteSeanceSets: function (send) {
     return axios.delete(`${burl}/user/deleteSets`, {
-      ...defaultConfig,
+      headers: headers,
       params: send,
       data: send
     });
@@ -215,12 +209,12 @@ export default {
   // EXERCICE TYPES
   getExerciceTypes: function (send) {
     return axios.get(`${burl}/user/exerciceTypes`, {
-      ...defaultConfig, params: send
+      headers: headers, params: send
     });
   },
   getExerciceType: function (send) {
     return axios.get(`${burl}/user/exerciceType`, {
-      ...defaultConfig, params: send
+      headers: headers, params: send
     });
   },
 
@@ -229,19 +223,19 @@ export default {
   // EXERCICES
   getExercices: function (send) {
     return axios.get(`${burl}/user/exercices`, {
-      ...defaultConfig, params: send
+      headers: headers, params: send
     });
   },
 
   getExercice: function (send) {
     return axios.get(`${burl}/user/exercice`, {
-      ...defaultConfig, params: send
+      headers: headers, params: send
     });
   },
 
   getCombinations: function (send) {
     return axios.get(`${burl}/user/combinations`, {
-      ...defaultConfig, params: send
+      headers: headers, params: send
     });
   },
 
@@ -250,12 +244,12 @@ export default {
   // CATEGORIES TYPES
   getCategoryTypes: function (send) {
     return axios.get(`${burl}/user/categorietypes`, {
-      ...defaultConfig, params: send
+      headers: headers, params: send
     });
   },
   getCategorieType: function (send) {
     return axios.get(`${burl}/user/categorietype`, {
-      ...defaultConfig, params: send
+      headers: headers, params: send
     });
   },
 
@@ -263,27 +257,27 @@ export default {
   // CATEGORIES
   getCategories: function (send) {
     return axios.get(`${burl}/user/categories`, {
-      ...defaultConfig, params: send
+      headers: headers, params: send
     });
   },
   getCategory: function (send) {
     return axios.get(`${burl}/user/category`, {
-      ...defaultConfig, params: send
+      headers: headers, params: send
     });
   },
 
 
   //COMPTE
   modifyUser: function (send) {
-    return axios.post(`${burl}/user/modifyUser`, send, defaultConfig);
+    return axios.post(`${burl}/user/modifyUser`, send, { headers: headers });
 
   },
   resetPassword: function (send) {
-    return axios.post(`${burl}/user/resetPassword`, send, defaultConfig);
+    return axios.post(`${burl}/user/resetPassword`, send, { headers: headers });
 
   },
   reguScore: function (send) {
-    return axios.post(`${burl}/user/reguScore`, send, defaultConfig);
+    return axios.post(`${burl}/user/reguScore`, send, { headers: headers });
 
   },
 
@@ -295,70 +289,70 @@ export default {
 
   //PROGRAMMES
   createProgramme: function (send) {
-    return axios.post(`${burl}/user/createProgramme`, send, defaultConfig);
+    return axios.post(`${burl}/user/createProgramme`, send, { headers: headers });
   },
 
   getProgrammes: function (send) {
     send.id = localStorage.getItem("id")
-    return axios.post(`${burl}/user/getProgrammes`, send, defaultConfig);
+    return axios.post(`${burl}/user/getProgrammes`, send, { headers: headers });
   },
 
   deleteProgramme: function (send) {
-    return axios.post(`${burl}/user/deleteProgramme`, send, defaultConfig);
+    return axios.post(`${burl}/user/deleteProgramme`, send, { headers: headers });
   },
 
   getProgrammesByUser: function (send) {
-    return axios.post(`${burl}/user/getProgrammesByUser`, send, defaultConfig);
+    return axios.post(`${burl}/user/getProgrammesByUser`, send, { headers: headers });
 
   },
 
   getProgramme: function (send) {
-    return axios.post(`${burl}/user/getProgramme`, send, defaultConfig);
+    return axios.post(`${burl}/user/getProgramme`, send, { headers: headers });
 
   },
 
   likeProgramme: function (send) {
-    return axios.post(`${burl}/user/likeProgramme`, send, defaultConfig);
+    return axios.post(`${burl}/user/likeProgramme`, send, { headers: headers });
 
   },
 
   getProgrammeLikes: function (send) {
-    return axios.post(`${burl}/user/getProgrammeLikes`, send, defaultConfig);
+    return axios.post(`${burl}/user/getProgrammeLikes`, send, { headers: headers });
 
   },
 
   isProgrammeLiked: function (send) {
-    return axios.post(`${burl}/user/isProgrammeLiked`, send, defaultConfig);
+    return axios.post(`${burl}/user/isProgrammeLiked`, send, { headers: headers });
 
   },
 
   isProgrammeCommented: function (send) {
-    return axios.post(`${burl}/user/isProgrammeCommented`, send, defaultConfig);
+    return axios.post(`${burl}/user/isProgrammeCommented`, send, { headers: headers });
 
   },
 
   whoLiked: function (send) {
-    return axios.post(`${burl}/user/whoLiked`, send, defaultConfig);
+    return axios.post(`${burl}/user/whoLiked`, send, { headers: headers });
 
   },
 
   getProgrammeCreator: function (send) {
-    return axios.post(`${burl}/user/getProgrammeCreator`, send, defaultConfig);
+    return axios.post(`${burl}/user/getProgrammeCreator`, send, { headers: headers });
 
   },
 
   whoCommented: function (send) {
-    return axios.post(`${burl}/user/whoCommented`, send, defaultConfig);
+    return axios.post(`${burl}/user/whoCommented`, send, { headers: headers });
 
   },
 
   sendComment: function (send) {
-    return axios.post(`${burl}/user/sendComment`, send, defaultConfig);
+    return axios.post(`${burl}/user/sendComment`, send, { headers: headers });
 
   },
 
   getComments: function (send) {
-    return axios.post(`${burl}/user/getComments`, send, defaultConfig);
+    return axios.post(`${burl}/user/getComments`, send, { headers: headers });
 
   },
 };
