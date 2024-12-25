@@ -96,7 +96,9 @@ export default {
       headers: {
         ...headers,
         'Content-Type': 'multipart/form-data'
-      }
+      },
+      maxContentLength: Infinity,
+      maxBodyLength: Infinity
     });
   },
   getPhotos: function (userId, seanceDate, seanceName) {
