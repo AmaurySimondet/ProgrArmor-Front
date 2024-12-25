@@ -202,7 +202,17 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                     placeholder={"Titre"}
                 />
                 :
-                <h1 style={{ fontSize: width < 500 ? '25px' : '30px', marginBottom: "5px", marginTop: "10px" }}>{postTitle}</h1>
+                <h1
+                    style={{
+                        fontSize: width < 500 ? '25px' : '30px',
+                        marginBottom: "5px",
+                        marginTop: "10px",
+                        cursor: 'pointer'
+                    }}
+                    onClick={() => window.location.href = `/seance?id=${id}`}
+                >
+                    {postTitle}
+                </h1>
             }
 
 

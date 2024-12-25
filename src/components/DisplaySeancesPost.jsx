@@ -31,6 +31,7 @@ const DisplaySeancesPost = (props) => {
         observer.current = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting && hasMore) {
                 setPage(prevPage => prevPage + 1);
+                setLoading(true);
             }
         });
 
@@ -52,12 +53,12 @@ const DisplaySeancesPost = (props) => {
         };
 
         if (currentUser) {
-            if (page === 1) setLoading(true);
+            setLoading(true);
             fetchSeances();
         }
     }, [currentUser, page]);
 
-    if (loading && page === 1) return <Loader />;
+    if (loading) return <Loader />;
 
     return (
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
@@ -66,7 +67,7 @@ const DisplaySeancesPost = (props) => {
                 seances.map((seance, index) => (
                     <div
                         ref={index === seances.length - 1 ? lastSeanceElementRef : null}
-                        className="session-post"
+                        className="session-post clickable"
                         style={
                             width < 400 ? { padding: '5px', margin: "20px 0 0 0" } :
                                 width < 550 ? { padding: '10px', margin: "20px 10px 0 10px" } :

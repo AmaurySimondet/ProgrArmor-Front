@@ -53,4 +53,36 @@ const fetchSeancesData = async (users, page = 1, limit = 3) => {
     }
 };
 
-export { fetchSeancesData };
+/**
+ * Fetches a single seance's data from the API and transforms it
+ * @param {string} seanceId - The ID of the seance to fetch
+ * @returns {Promise} A promise that resolves with the transformed seance
+ */
+const fetchSeanceData = async (seanceId) => {
+    try {
+        console.log("fetching seance data for seanceId:", seanceId);
+        const response = await API.getSeance({ id: seanceId });
+        console.log("response:", response);
+        const seance = response.data.seanceData;
+        console.log("seance:", seance);
+
+        // Fetch seance sets
+        const seanceSetsResponse = await API.getSeanceSets({ seanceId: seance._id });
+        seance.seanceSets = seanceSetsResponse.data.sets;
+
+        // Fetch user data
+        const userResponse = await getUserById(seance.user);
+        seance.user = userResponse;
+
+        // Transform seanceSets to exercices
+        const transformedSeance = await setsToSeance(seance.seanceSets);
+        seance.exercices = transformedSeance.exercices;
+
+        return seance;
+    } catch (error) {
+        console.error("Error fetching seance data:", error);
+        throw error;
+    }
+};
+
+export { fetchSeancesData, fetchSeanceData };

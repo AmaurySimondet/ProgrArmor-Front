@@ -14,6 +14,7 @@ import Compte from "./pages/compte/Compte.jsx";
 import InstallApp from "./pages/aide/InstallApp.jsx";
 import Aide from "./pages/aide/Aide.jsx";
 import Notifications from "./pages/notifications/Notifications.jsx";
+import SingleSeanceView from "./pages/seance/SingleSeanceView.jsx";
 
 // import eruda from "eruda";
 
@@ -68,6 +69,8 @@ function App() {
             <Route path="/session/*" element={<PrivateRoute />}>
                 <Route exact path='/session/*' element={<Session />} />
             </Route>
+
+            <Route path="/seance" element={<SingleSeanceView />} />
         </Routes>
     );
 };
