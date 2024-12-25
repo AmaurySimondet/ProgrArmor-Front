@@ -43,6 +43,7 @@ const DisplaySeancesPost = (props) => {
                 const followings = currentUser?.following?.length > 0 ? currentUser?.following?.join(',') + ',' + currentUser?._id : currentUser?._id;
                 const response = await fetchSeancesData(props.userId || followings, page);
                 setSeances(prev => [...prev, ...(response.seances || [])]);
+                console.log(response.seances)
                 setHasMore(response.hasMore);
             } catch (error) {
                 console.error('Error fetching seances:', error);
@@ -57,7 +58,7 @@ const DisplaySeancesPost = (props) => {
         }
     }, [currentUser, page]);
 
-    if (loading) return <Loader />;
+    if (loading && page === 1) return <Loader />;
 
     return (
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
@@ -75,7 +76,7 @@ const DisplaySeancesPost = (props) => {
                         key={seance._id}
                     >
                         <SessionPostChild
-                            id={seance._id}
+                            seanceId={seance._id}
                             user={seance.user}
                             postTitle={seance.title ? seance.title : "N/A"}
                             postDescription={seance.description}

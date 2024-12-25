@@ -390,7 +390,7 @@ const Session = () => {
           )}
           {step === 7 && (
             <SessionPost
-              seanceId={selectedSession._id}
+              seanceId={searchParams.get('id')}
               onBack={() => { setStep(4); scrollToElement() }}
               selectedName={selectedName}
               selectedDate={selectedDate}

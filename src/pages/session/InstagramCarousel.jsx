@@ -4,6 +4,7 @@ import { renderSets } from '../../utils/sets';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import API from '../../utils/API';
 import { resizeImage, validateFileSize, MAX_FILE_SIZE } from '../../utils/mediaUtils';
+import { uploadToS3 } from '../../utils/s3Upload';
 
 
 function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgroundColors, editable, selectedDate, seancePhotos }) {
@@ -54,11 +55,15 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
     React.useEffect(() => {
         if (editable) {  // Only fetch if we don't have seancePhotos
             const fetchPhotos = async () => {
-                let updatedPhotos = await API.getPhotos(localStorage.getItem('id'), selectedDate, selectedName).then((response) => {
-                    return response.data.images;
-                });
+                let updatedPhotos = [];
                 if (seanceId) {
                     const seancePhotos = await API.getPhotosBySeanceId(seanceId).then((response) => {
+                        return response.data.images;
+                    });
+                    updatedPhotos = updatedPhotos.concat(seancePhotos);
+                }
+                else {
+                    let seancePhotos = await API.getPhotos(localStorage.getItem('id'), selectedDate, selectedName).then((response) => {
                         return response.data.images;
                     });
                     updatedPhotos = updatedPhotos.concat(seancePhotos);
@@ -98,13 +103,16 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
                         throw new Error('Format de fichier non supporté');
                     }
 
-                    const formData = new FormData();
-                    formData.append('image', processedFile);
-                    formData.append('seanceDate', selectedDate);
-                    formData.append('seanceName', selectedName);
-                    formData.append('userId', localStorage.getItem('id'));
+                    // Upload directly to S3
+                    const uploadResult = await uploadToS3(processedFile, localStorage.getItem('id'));
 
-                    await API.uploadSeancePhoto(formData);
+                    // Record in MongoDB
+                    await API.uploadSeancePhoto(
+                        uploadResult,
+                        selectedDate,
+                        selectedName,
+                        localStorage.getItem('id')
+                    );
                 } catch (error) {
                     console.error('Error processing file:', error);
                     alert(error.message);
@@ -122,6 +130,10 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
                 updatedPhotos = updatedPhotos.concat(seancePhotos);
             }
             setPhotos(updatedPhotos);
+
+            // Reset the file input value
+            event.target.value = '';
+
         } catch (error) {
             console.error("Error uploading images:", error);
             alert("Erreur lors du téléchargement des images");

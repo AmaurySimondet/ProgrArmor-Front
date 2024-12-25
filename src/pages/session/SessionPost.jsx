@@ -6,7 +6,6 @@ import { seanceToSets } from "../../utils/sets";
 import Alert from '../../components/Alert';
 import SessionPostChild from './SessionPostChild';
 import API from '../../utils/API';
-import { useSearchParams } from 'react-router-dom';
 
 const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, onBack, title, description, seancePhotos }) => {
     const [postTitle, setPostTitle] = useState(title);
@@ -18,7 +17,6 @@ const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, 
     const [stats, setStats] = useState({});
     const [alert, setAlert] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [searchParams] = useSearchParams();
     const showAlert = (message, type) => {
         setAlert({ message, type });
     };
@@ -100,7 +98,6 @@ const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, 
             recordSummary: recordSummary,
         };
 
-        const seanceId = searchParams.get('id');
         let updatedPhotos = await API.getPhotos(localStorage.getItem('id'), selectedDate, selectedName).then((response) => {
             return response.data.images;
         });
@@ -184,7 +181,7 @@ const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, 
             <div className="session-post" style={width < 400 ? { padding: '5px', margin: "80px 0 0 0" } : width < 550 ? { padding: '10px', margin: "80px 10px 0 10px" } : { padding: '20px' }}>
 
                 <SessionPostChild
-                    id={seanceId}
+                    seanceId={seanceId}
                     user={user}
                     postTitle={postTitle}
                     setPostTitle={setPostTitle}

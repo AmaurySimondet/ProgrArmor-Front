@@ -161,13 +161,11 @@ function Compte() {
     try {
       setImageUploading(true);
 
-      // Create FormData object
-      const formData = new FormData();
-      formData.append('image', file);
-      formData.append('userId', localStorage.getItem('id'));
+      // First upload to S3 directly
+      const uploadResult = await uploadToS3(file, localStorage.getItem('id'));
 
-      // Update the API call to send FormData
-      await API.uploadPP(formData);  // Send formData directly instead of an object
+      // Then record in MongoDB
+      await API.uploadPP(uploadResult, localStorage.getItem('id'));
 
       await getUser(); // Refresh user data to show new image
     } catch (error) {

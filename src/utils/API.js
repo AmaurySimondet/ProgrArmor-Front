@@ -83,23 +83,19 @@ export default {
 
 
   // AWS
-  uploadPP: (formData) => {
-    return axios.post(`${burl}/user/aws/upload-pp`, formData, {
-      headers: {
-        ...headers,
-        'Content-Type': 'multipart/form-data'
-      }
-    });
+  uploadPP: (uploadResult, userId) => {
+    return axios.post(`${burl}/user/aws/record-pp`, {
+      uploadResult,
+      userId
+    }, { headers: headers });
   },
-  uploadSeancePhoto: (formData) => {
-    return axios.post(`${burl}/user/aws/upload-seance-photo`, formData, {
-      headers: {
-        ...headers,
-        'Content-Type': 'multipart/form-data'
-      },
-      maxContentLength: Infinity,
-      maxBodyLength: Infinity
-    });
+  uploadSeancePhoto: (uploadResult, seanceDate, seanceName, userId) => {
+    return axios.post(`${burl}/user/aws/record-seance-photo`, {
+      uploadResult,
+      seanceDate,
+      seanceName,
+      userId
+    }, { headers: headers });
   },
   getPhotos: function (userId, seanceDate, seanceName) {
     return axios.get(`${burl}/user/aws/get-seance-photos`, {

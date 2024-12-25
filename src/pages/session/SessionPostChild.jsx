@@ -6,7 +6,7 @@ import InstagramCarousel from './InstagramCarousel';
 import API from '../../utils/API';
 import { getDetailedDate } from '../../utils/dates';
 
-function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, setPostDescription, selectedName, selectedExercices, recordSummary, selectedDate, stats, backgroundColors, editable, seancePhotos }) {
+function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescription, setPostDescription, selectedName, selectedExercices, recordSummary, selectedDate, stats, backgroundColors, editable, seancePhotos }) {
     const { width } = useWindowDimensions();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
@@ -64,12 +64,12 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                             zIndex: 1,
                             right: 0
                         }}>
-                            <p style={{ color: 'gray', fontSize: '8px', margin: "5px" }}><i>{id}</i></p>
-                            <a href={id ? `/session?id=${id}` : `/session`}
+                            <p style={{ color: 'gray', fontSize: '8px', margin: "5px" }}><i>{seanceId}</i></p>
+                            <a href={seanceId ? `/session?id=${seanceId}` : `/session`}
                                 className="dropdown-item"
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    window.location.href = id ? `/session?id=${id}` : `/session`;
+                                    window.location.href = seanceId ? `/session?id=${seanceId}` : `/session`;
                                 }}
                                 style={{
                                     color: 'black',
@@ -117,7 +117,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                             zIndex: 1,
                             right: 0
                         }}>
-                            <p style={{ color: 'gray', fontSize: '8px', margin: "5px" }}><i>{id}</i></p>
+                            <p style={{ color: 'gray', fontSize: '8px', margin: "5px" }}><i>{seanceId}</i></p>
                             <a href="#"
                                 // className="dropdown-item" 
                                 style={{
@@ -209,7 +209,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
                         marginTop: "10px",
                         cursor: 'pointer'
                     }}
-                    onClick={() => window.location.href = `/seance?id=${id}`}
+                    onClick={() => window.location.href = `/seance?id=${seanceId}`}
                 >
                     {postTitle}
                 </h1>
@@ -240,7 +240,7 @@ function SessionPostChild({ id, user, postTitle, setPostTitle, postDescription, 
             <PostStats recordSummary={recordSummary} stats={stats} width={width} />
 
             {/* Session Summary */}
-            <InstagramCarousel seanceId={id} selectedName={selectedName} selectedExercices={selectedExercices} backgroundColors={backgroundColors} editable={editable} selectedDate={selectedDate} seancePhotos={seancePhotos} />
+            <InstagramCarousel seanceId={seanceId} selectedName={selectedName} selectedExercices={selectedExercices} backgroundColors={backgroundColors} editable={editable} selectedDate={selectedDate} seancePhotos={seancePhotos} />
         </div >
     );
 }

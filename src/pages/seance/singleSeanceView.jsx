@@ -40,7 +40,7 @@ const SingleSeanceView = () => {
                                 <div>404 - Cette séance s'est évaporée comme mes bonnes résolutions de janvier ! 🏃‍♂️💨</div>
                             ) : (
                                 <SessionPostChild
-                                    id={seance._id}
+                                    seanceId={seance._id}
                                     user={seance.user}
                                     postTitle={seance.title}
                                     postDescription={seance.description}
