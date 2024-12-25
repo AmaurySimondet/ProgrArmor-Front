@@ -5,8 +5,7 @@ import { useWindowDimensions } from "../utils/useEffect";
 import { fetchSeancesData } from "../utils/seance";
 import Loader from "./Loader";
 import { getUserById } from "../utils/user";
-
-const backgroundColors = ["#9C005D", "#9C1B00", "#9B0000", "#8B009C", "#9C3600"];
+import { COLORS } from "../utils/colors";
 
 const DisplaySeancesPost = (props) => {
     const { width } = useWindowDimensions();
@@ -84,7 +83,7 @@ const DisplaySeancesPost = (props) => {
                             selectedDate={stringToDate(seance.date)}
                             selectedExercices={seance.exercices}
                             stats={seance.stats ? seance.stats : { nSets: "N/A", nReps: "N/A", intervalReps: "N/A", totalWeight: "N/A", intervalWeight: "N/A" }}
-                            backgroundColors={backgroundColors}
+                            backgroundColors={COLORS.backgroundColors}
                             recordSummary={seance.recordSummary ? seance.recordSummary : []}
                             editable={false}
                             seancePhotos={seance.seancePhotos ? seance.seancePhotos : []}
