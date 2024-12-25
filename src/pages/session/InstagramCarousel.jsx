@@ -3,7 +3,7 @@ import { useWindowDimensions } from '../../utils/useEffect';
 import { renderSets } from '../../utils/sets';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import API from '../../utils/API';
-import { resizeImage, validateFileSize } from '../../utils/mediaUtils';
+import { resizeImage, validateFileSize, MAX_FILE_SIZE } from '../../utils/mediaUtils';
 
 
 function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgroundColors, editable, selectedDate, seancePhotos }) {
@@ -85,8 +85,18 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
                     // Validate file size
                     validateFileSize(file);
 
-                    // Resize if it's an image
-                    const processedFile = await resizeImage(file);
+                    // Process file based on type
+                    let processedFile;
+                    if (file.type.startsWith('image/')) {
+                        processedFile = await resizeImage(file);
+                    } else if (file.type.startsWith('video/')) {
+                        if (file.size > MAX_FILE_SIZE) {
+                            throw new Error('La vidéo est trop volumineuse. Veuillez la compresser avant de la télécharger.');
+                        }
+                        processedFile = file;
+                    } else {
+                        throw new Error('Format de fichier non supporté');
+                    }
 
                     const formData = new FormData();
                     formData.append('image', processedFile);
@@ -96,19 +106,19 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
 
                     await API.uploadSeancePhoto(formData);
                 } catch (error) {
+                    console.error('Error processing file:', error);
                     alert(error.message);
                     continue;
                 }
             }
 
             // Get updated photos after all uploads
-            let updatedPhotos = await API.getPhotos(localStorage.getItem('id'), selectedDate, selectedName).then((response) => {
-                return response.data.images;
-            });
+            let updatedPhotos = await API.getPhotos(localStorage.getItem('id'), selectedDate, selectedName)
+                .then((response) => response.data.images);
+
             if (seanceId) {
-                const seancePhotos = await API.getPhotosBySeanceId(seanceId).then((response) => {
-                    return response.data.images;
-                });
+                const seancePhotos = await API.getPhotosBySeanceId(seanceId)
+                    .then((response) => response.data.images);
                 updatedPhotos = updatedPhotos.concat(seancePhotos);
             }
             setPhotos(updatedPhotos);

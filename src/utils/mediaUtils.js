@@ -1,12 +1,12 @@
-// Client-side image resize before upload
-export const resizeImage = async (file, maxWidth = 1920, maxHeight = 1080) => {
-    return new Promise((resolve) => {
-        // If it's not an image, return original file
-        if (!file.type.startsWith('image/')) {
-            resolve(file);
-            return;
-        }
+export const MAX_FILE_SIZE = 200 * 1024 * 1024; // 5MB
 
+// Client-side image resize before upload
+export const resizeImage = async (file) => {
+    if (!file.type.startsWith('image/')) {
+        return file; // Return original file if not an image
+    }
+
+    return new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onload = (event) => {
@@ -17,11 +17,20 @@ export const resizeImage = async (file, maxWidth = 1920, maxHeight = 1080) => {
                 let width = img.width;
                 let height = img.height;
 
-                // Calculate new dimensions
-                if (width > maxWidth || height > maxHeight) {
-                    const ratio = Math.min(maxWidth / width, maxHeight / height);
-                    width *= ratio;
-                    height *= ratio;
+                // Calculate new dimensions while maintaining aspect ratio
+                const MAX_WIDTH = 1200;
+                const MAX_HEIGHT = 1200;
+
+                if (width > height) {
+                    if (width > MAX_WIDTH) {
+                        height = Math.round((height * MAX_WIDTH) / width);
+                        width = MAX_WIDTH;
+                    }
+                } else {
+                    if (height > MAX_HEIGHT) {
+                        width = Math.round((width * MAX_HEIGHT) / height);
+                        height = MAX_HEIGHT;
+                    }
                 }
 
                 canvas.width = width;
@@ -30,23 +39,26 @@ export const resizeImage = async (file, maxWidth = 1920, maxHeight = 1080) => {
                 const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, width, height);
 
-                // Convert to blob
-                canvas.toBlob((blob) => {
-                    resolve(new File([blob], file.name, {
-                        type: 'image/jpeg',
-                        lastModified: Date.now()
-                    }));
-                }, 'image/jpeg', 0.8); // 80% quality
+                // Convert to blob with reduced quality
+                canvas.toBlob(
+                    (blob) => {
+                        const resizedFile = new File([blob], file.name, {
+                            type: 'image/jpeg',
+                            lastModified: Date.now(),
+                        });
+                        resolve(resizedFile);
+                    },
+                    'image/jpeg',
+                    0.7 // Reduce quality to 70%
+                );
             };
         };
+        reader.onerror = (error) => reject(error);
     });
 };
 
-// Validate file size
-export const validateFileSize = (file, maxSizeMB = 100) => {
-    const maxSize = maxSizeMB * 1024 * 1024; // Convert to bytes
-    if (file.size > maxSize) {
-        throw new Error(`File size must be less than ${maxSizeMB}MB`);
+export const validateFileSize = (file) => {
+    if (file.size > MAX_FILE_SIZE) {
+        throw new Error(`Le fichier est trop volumineux. La taille maximum est de ${MAX_FILE_SIZE / (1024 * 1024)}MB`);
     }
-    return true;
-}; 
+};
