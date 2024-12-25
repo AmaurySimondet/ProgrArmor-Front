@@ -50,4 +50,5 @@ const SingleSeanceView = () => {
     );
 };
 
+
 export default SingleSeanceView;

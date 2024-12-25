@@ -14,7 +14,7 @@ import Compte from "./pages/compte/Compte.jsx";
 import InstallApp from "./pages/aide/InstallApp.jsx";
 import Aide from "./pages/aide/Aide.jsx";
 import Notifications from "./pages/notifications/Notifications.jsx";
-import SingleSeanceView from "./pages/seance/SingleSeanceView.jsx";
+import SingleSeanceView from "./pages/seance/singleSeanceView.jsx";
 
 // import eruda from "eruda";
 
