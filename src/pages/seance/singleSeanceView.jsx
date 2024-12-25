@@ -5,6 +5,7 @@ import Loader from '../../components/Loader';
 import NavigBar from '../../components/NavigBar';
 import Footer from '../../components/Footer';
 import { fetchSeanceData } from '../../utils/seance';
+
 const SingleSeanceView = () => {
     const [searchParams] = useSearchParams();
     const [seance, setSeance] = useState(null);
