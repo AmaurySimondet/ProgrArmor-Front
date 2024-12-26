@@ -274,14 +274,6 @@ export default {
     return axios.post(`${burl}/user/resetPassword`, send, { headers: headers });
 
   },
-  reguScore: function (send) {
-    return axios.post(`${burl}/user/reguScore`, send, { headers: headers });
-
-  },
-
-
-
-
 
 
 

@@ -14,6 +14,8 @@ import apiCalls from "../../utils/apiCalls";
 import { useWindowDimensions } from "../../utils/useEffect";
 import Followers from "./Followers.jsx";
 import { getUserById } from "../../utils/user";
+import ModifyProfile from './ModifyProfile.jsx';
+import { uploadToS3 } from "../../utils/s3Upload.js";
 
 function Compte() {
   const [searchParams] = useSearchParams();
@@ -26,6 +28,7 @@ function Compte() {
   const [animationClass, setAnimationClass] = useState("");
   const [imageUploading, setImageUploading] = useState(false);
   const [userImages, setUserImages] = useState(null);
+  const [showModifyProfile, setShowModifyProfile] = useState(false);
 
   useEffect(() => {
     // Trigger animation when the value changes
@@ -167,7 +170,7 @@ function Compte() {
       // Then record in MongoDB
       await API.uploadPP(uploadResult, localStorage.getItem('id'));
 
-      await getUser(); // Refresh user data to show new image
+      await getUserById(localStorage.getItem('id')).then(setUser); // Refresh user data to show new image
     } catch (error) {
       console.error("Error uploading image:", error);
       alert("Erreur lors du téléchargement de l'image");
@@ -304,7 +307,11 @@ function Compte() {
             </button>
           }
           {searchParams.get('id') === localStorage.getItem('id') &&
-            <button className="btn btn-black" style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+            <button
+              className="btn btn-black"
+              style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
+              onClick={() => setShowModifyProfile(true)}
+            >
               <>
                 <img
                   src={require('../../images/icons/write.webp')}
@@ -486,6 +493,12 @@ function Compte() {
 
         <Footer />
       </div>
+      {showModifyProfile && (
+        <ModifyProfile
+          user={user}
+          onClose={() => setShowModifyProfile(false)}
+        />
+      )}
     </div >
   );
 };
