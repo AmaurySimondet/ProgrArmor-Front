@@ -85,8 +85,9 @@ const FollowSuggestions = ({ userId }) => {
     return (
         <div>
             <div className='basic-flex popInElement' style={{ flexDirection: 'column', alignItems: 'center', padding: width < 400 ? "5px" : width < 550 ? "10px" : "20px" }}>
-                <h1 style={{ marginTop: '20px', marginBottom: '20px', textAlign: "-webkit-center" }}>
-                    Tu connais ces gens?</h1>
+                <h3 style={{ textAlign: "-webkit-center" }}>
+                    Suggestions de profils à stalker
+                </h3>
                 <div className='basic-flex' style={{
                     flexDirection: 'column', gap: '20px', display: 'flex',
                     height: '70px',

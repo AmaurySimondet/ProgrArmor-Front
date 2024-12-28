@@ -18,6 +18,39 @@ function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescrip
         window.location.href = `/dashboard`;
     };
 
+    const handleShare = async () => {
+        try {
+            const baseText = `Découvrez la séance "${postTitle}" de ${user?.fName} ${user?.lName} sur ProgArmor ! 💪\n`
+            if (window.navigator.share) {
+                // Use native share on mobile devices that support it (including iOS)
+                await window.navigator.share({
+                    title: `${baseText}`,
+                    url: `${window.location.origin}/seance?id=${seanceId}`
+                });
+            } else {
+                // Fallback for desktop or devices without share API
+                const textArea = document.createElement('textarea');
+                textArea.value = `${baseText}\n${window.location.origin}/seance?id=${seanceId}`;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+
+                const button = document.querySelector('.share-btn');
+                const currentButton = button.cloneNode(true);
+                button.style.backgroundColor = '#4CAF50';  // Green color
+                button.innerHTML = width > 700 ? 'Copié !' : '✓';
+
+                // Reset button after 2 seconds
+                setTimeout(() => {
+                    button.style.backgroundColor = '';
+                    button.innerHTML = currentButton.innerHTML;
+                }, 2000);
+            }
+        } catch (error) {
+            console.error('Error sharing:', error);
+        }
+    };
 
     return (
         <div>
@@ -40,96 +73,114 @@ function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescrip
                         <i>{selectedName} - {getDetailedDate(selectedDate)}</i>
                     </div>
                 </div>
-                {user?._id === localStorage.getItem('id') && !editable ? (
-                    <div className="dropdown">
+                <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                    <button
+                        className="btn btn-white share-btn"
+                        onClick={handleShare}
+                        style={{ display: 'flex', alignItems: 'center', gap: '5px', padding: '5px 10px' }}
+                    >
                         <img
-                            src={require('../../images/icons/three-dots.webp')}
-                            alt="options"
+                            src={require('../../images/icons/share.webp')}
+                            alt="share"
                             style={{
                                 width: '20px',
                                 height: '20px',
-                                cursor: 'pointer'
-                            }}
-                            onClick={(e) => {
-                                const dropdown = e.currentTarget.nextElementSibling;
-                                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+                                transition: 'filter 0.2s'
                             }}
                         />
-                        <div style={{
-                            display: 'none',
-                            position: 'absolute',
-                            backgroundColor: '#f9f9f9',
-                            minWidth: '160px',
-                            boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-                            zIndex: 1,
-                            right: 0
-                        }}>
-                            <p style={{ color: 'gray', fontSize: '8px', margin: "5px" }}><i>{seanceId}</i></p>
-                            <a href={seanceId ? `/session?id=${seanceId}` : `/session`}
-                                className="dropdown-item"
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    window.location.href = seanceId ? `/session?id=${seanceId}` : `/session`;
+                        {width > 700 ? 'Partager' : null}
+                    </button>
+                    {user?._id === localStorage.getItem('id') && !editable ? (
+                        <div className="dropdown">
+                            <img
+                                src={require('../../images/icons/three-dots.webp')}
+                                alt="options"
+                                style={{
+                                    width: '20px',
+                                    height: '20px',
+                                    cursor: 'pointer'
                                 }}
-                                style={{
-                                    color: 'black',
-                                    padding: '12px 16px',
-                                    textDecoration: 'none',
-                                    display: 'block',
-                                    transition: 'all 0.5s ease'
-                                }}>Modifier</a>
-                            <a href="#"
-                                className="dropdown-item delete"
                                 onClick={(e) => {
-                                    e.preventDefault();
-                                    setShowDeleteConfirm(true);
+                                    const dropdown = e.currentTarget.nextElementSibling;
+                                    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
                                 }}
-                                style={{
-                                    color: 'red',
-                                    padding: '12px 16px',
-                                    textDecoration: 'none',
-                                    display: 'block',
-                                    transition: 'all 0.5s ease'
-                                }}>Supprimer</a>
+                            />
+                            <div style={{
+                                display: 'none',
+                                position: 'absolute',
+                                backgroundColor: '#f9f9f9',
+                                minWidth: '160px',
+                                boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+                                zIndex: 1,
+                                right: 0
+                            }}>
+                                <p style={{ color: 'gray', fontSize: '8px', margin: "5px" }}><i>{seanceId}</i></p>
+                                <a href={seanceId ? `/session?id=${seanceId}` : `/session`}
+                                    className="dropdown-item"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        window.location.href = seanceId ? `/session?id=${seanceId}` : `/session`;
+                                    }}
+                                    style={{
+                                        color: 'black',
+                                        padding: '12px 16px',
+                                        textDecoration: 'none',
+                                        display: 'block',
+                                        transition: 'all 0.5s ease'
+                                    }}>Modifier</a>
+                                <a href="#"
+                                    className="dropdown-item delete"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        setShowDeleteConfirm(true);
+                                    }}
+                                    style={{
+                                        color: 'red',
+                                        padding: '12px 16px',
+                                        textDecoration: 'none',
+                                        display: 'block',
+                                        transition: 'all 0.5s ease'
+                                    }}>Supprimer</a>
+                            </div>
                         </div>
-                    </div>
-                ) : !editable ? (
-                    <div className="dropdown">
-                        <img
-                            src={require('../../images/icons/three-dots.webp')}
-                            alt="options"
-                            style={{
-                                width: '20px',
-                                height: '20px',
-                                cursor: 'pointer'
-                            }}
-                            onClick={(e) => {
-                                const dropdown = e.currentTarget.nextElementSibling;
-                                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
-                            }}
-                        />
-                        <div style={{
-                            display: 'none',
-                            position: 'absolute',
-                            backgroundColor: '#f9f9f9',
-                            minWidth: '200px',
-                            boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
-                            zIndex: 1,
-                            right: 0
-                        }}>
-                            <p style={{ color: 'gray', fontSize: '8px', margin: "5px" }}><i>{seanceId}</i></p>
-                            <a href="#"
-                                // className="dropdown-item" 
+                    ) : !editable ? (
+                        <div className="dropdown">
+                            <img
+                                src={require('../../images/icons/three-dots.webp')}
+                                alt="options"
                                 style={{
-                                    color: 'black',
-                                    padding: '12px 16px',
-                                    textDecoration: 'none',
-                                    display: 'block',
-                                    transition: 'all 0.5s ease'
-                                }}>Pas d'options pour le moment</a>
+                                    width: '20px',
+                                    height: '20px',
+                                    cursor: 'pointer'
+                                }}
+                                onClick={(e) => {
+                                    const dropdown = e.currentTarget.nextElementSibling;
+                                    dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+                                }}
+                            />
+                            <div style={{
+                                display: 'none',
+                                position: 'absolute',
+                                backgroundColor: '#f9f9f9',
+                                minWidth: '200px',
+                                boxShadow: '0px 8px 16px 0px rgba(0,0,0,0.2)',
+                                zIndex: 1,
+                                right: 0
+                            }}>
+                                <p style={{ color: 'gray', fontSize: '8px', margin: "5px" }}><i>{seanceId}</i></p>
+                                <a href="#"
+                                    // className="dropdown-item" 
+                                    style={{
+                                        color: 'black',
+                                        padding: '12px 16px',
+                                        textDecoration: 'none',
+                                        display: 'block',
+                                        transition: 'all 0.5s ease'
+                                    }}>Pas d'options pour le moment</a>
+                            </div>
                         </div>
-                    </div>
-                ) : null}
+                    ) : null}
+                </div>
             </div>
 
             {/* Delete Confirmation Dialog */}

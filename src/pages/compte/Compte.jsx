@@ -125,17 +125,17 @@ function Compte() {
 
   const handleShare = async () => {
     try {
+      const baseText = `Découvrez le profil de ${user?.fName} ${user?.lName} sur ProgArmor ! 💪\n`
       if (window.navigator.share) {
         // Use native share on mobile devices that support it (including iOS)
         await window.navigator.share({
-          title: `Profil de ${user?.fName} ${user?.lName}`,
-          text: `Découvrez le profil de ${user?.fName} ${user?.lName} sur ProgArmor: le meilleur site pour progresser en musculation !`,
+          title: `${baseText}`,
           url: window.location.href
         });
       } else {
         // Fallback for desktop or devices without share API
         const textArea = document.createElement('textarea');
-        textArea.value = window.location.href;
+        textArea.value = `${baseText}\n${window.location.href}`;
         document.body.appendChild(textArea);
         textArea.select();
         document.execCommand('copy');
