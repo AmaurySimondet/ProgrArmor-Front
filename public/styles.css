@@ -1,3 +1,9 @@
+body {
+    overflow-x: hidden;
+    font-family: 'Montserrat', sans-serif;
+    /* weight 200 500 800*/
+}
+
 a:hover {
     color: #9a9a9a;
     text-decoration: none;
@@ -1297,6 +1303,29 @@ table.profile-table {
 
 /* DASHBOARD */
 
+.dashboard-banner {
+    width: 315px;
+    height: 160px;
+    border-radius: 16px;
+    overflow: hidden;
+    margin: 20px auto;
+    transition: 0.5s;
+    cursor: pointer;
+}
+
+.dashboard-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: 0.5s;
+}
+
+.dashboard-banner:hover img {
+    transform: scale(1.05);
+}
+
+
+
 .table1 {
     width: 80%;
     margin: auto;
@@ -1710,12 +1739,6 @@ table.profile-table {
     object-fit: cover;
     /* box-shadow: 0px -1000px 25px rgb(10 10 10 / 50%), 0px 10px 10px rgb(0 0 0 / 70%); */
     /* margin-left: 10px; */
-}
-
-body {
-    overflow-x: hidden;
-    font-family: 'Montserrat', sans-serif;
-    /* weight 200 500 800*/
 }
 
 .p-cgu {

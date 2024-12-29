@@ -18,8 +18,8 @@ import ModifyProfile from './ModifyProfile.jsx';
 import { uploadToS3 } from "../../utils/s3Upload.js";
 
 function Compte() {
-  const [searchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState('seances');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get('activeTab') || 'seances');
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
@@ -39,9 +39,26 @@ function Compte() {
     return () => clearTimeout(timeout);
   }, [user?.followers?.length]); // Run the effect whenever the value changes
 
-  // Tab change handler
+  // Add useEffect to handle initial scroll
+  useEffect(() => {
+    if (searchParams.get('activeTab')) {
+      // Small delay to ensure content is rendered
+      setTimeout(() => {
+        document.querySelector('.tab-container')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+    }
+  }, []); // Run only on initial mount
+
+  // Modified tab change handler
   const handleTabChange = (tab) => {
     setActiveTab(tab);
+    setSearchParams(params => {
+      params.set('activeTab', tab);
+      return params;
+    });
   };
 
   useEffect(() => {
@@ -363,7 +380,7 @@ function Compte() {
 
   const Tabs = () => {
     return (
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'center' }} className="tab-container" >
         <ul className="tabs" role="navigation" style={{ listStyle: 'none', padding: 0, display: 'flex', justifyContent: 'center' }}>
           <li className={activeTab === 'seances' ? 'selected' : ''}>
             <a className="tab" onClick={() => handleTabChange('seances')}>

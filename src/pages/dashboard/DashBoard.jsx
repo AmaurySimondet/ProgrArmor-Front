@@ -4,6 +4,7 @@ import Footer from '../../components/Footer';
 import { COLORS } from '../../utils/colors';
 import DisplaySeancesPost from '../../components/DisplaySeancesPost';
 import FollowSuggestions from '../../components/FollowSuggestions';
+import AllBanners from '../../components/Bannieres';
 
 const DashBoard = () => {
 
@@ -17,6 +18,9 @@ const DashBoard = () => {
 
                 {/* PAGE CONTENT */}
                 <div className="content-wrap">
+
+                    {/* BANNERS */}
+                    <AllBanners userId={localStorage.getItem('id')} />
 
                     {/* USERS */}
                     <FollowSuggestions userId={localStorage.getItem('id')} />
