@@ -1,9 +1,41 @@
 import React, { useState, useEffect } from 'react';
+import API from '../utils/API';
+import Loader from './Loader';
 
 const Bannieres = ({ imageUrl, alt, url }) => {
     return (
         <div className="popInElement dashboard-banner">
             <img src={imageUrl} alt={alt} onClick={() => window.location.href = url} />
+        </div>
+    );
+};
+
+const WeatherBanner = ({ weather }) => {
+    return (
+        <div className="popInElement dashboard-banner weather-banner" style={{ width: "400px" }}>
+            <div className="weather-content">
+                <div className="weather-city">Prévois ta séance à {weather.city} 👀</div>
+                <div className="weather-day">
+                    <div className="weather-label">Aujourd'hui</div>
+                    <img src={weather.current.icon} alt={weather.current.label} />
+                    <div className="weather-temp">{weather.current.temp}°C</div>
+                    <div className="weather-desc">{weather.current.description_fr}</div>
+                </div>
+                <div className="weather-divider" />
+                <div className="weather-day">
+                    <div className="weather-label">Demain</div>
+                    <img src={weather.tomorrow.icon} alt={weather.tomorrow.label} />
+                    <div className="weather-temp">{weather.tomorrow.temp}°C</div>
+                    <div className="weather-desc">{weather.tomorrow.description_fr}</div>
+                </div>
+                <div className="weather-divider" />
+                <div className="weather-day">
+                    <div className="weather-label">Après-demain</div>
+                    <img src={weather.dayAfter.icon} alt={weather.dayAfter.label} />
+                    <div className="weather-temp">{weather.dayAfter.temp}°C</div>
+                    <div className="weather-desc">{weather.dayAfter.description_fr}</div>
+                </div>
+            </div>
         </div>
     );
 };
@@ -15,41 +47,49 @@ const AllBanners = ({ userId }) => {
         dayAfter: { temp: null, description: '' },
         city: 'Paris'
     });
-
-    useEffect(() => {
-        const PARIS_LAT = 48.8566;
-        const PARIS_LON = 2.3522;
-        const API_KEY = '1fd2e564c5a3d8ab439cf9553bb56277'; // Replace with your OpenWeather API key
-
-        fetch(`https://api.openweathermap.org/data/3.0/onecall?lat=${PARIS_LAT}&lon=${PARIS_LON}&exclude=minutely,hourly&units=metric&appid=${API_KEY}`)
-            .then(response => response.json())
-            .then(data => {
-                setWeather({
-                    current: {
-                        temp: Math.round(data.current.temp),
-                        description: data.current.weather[0].description
-                    },
-                    tomorrow: {
-                        temp: Math.round(data.daily[1].temp.day),
-                        description: data.daily[1].weather[0].description
-                    },
-                    dayAfter: {
-                        temp: Math.round(data.daily[2].temp.day),
-                        description: data.daily[2].weather[0].description
-                    },
-                    city: 'Paris'
-                });
-            })
-            .catch(error => console.error('Error fetching weather:', error));
-    }, []);
-
+    const [loading, setLoading] = useState(true);
+    const PARIS_LAT = 48.8566;
+    const PARIS_LON = 2.3522;
+    const [location, setLocation] = useState(null);
     const bannerImages = [
         { src: require('../images/bannieres/christmas.webp'), alt: 'Christmas', url: window.location.href },
         { src: require('../images/bannieres/Bannieres-Stats.webp'), alt: 'Stats', url: window.location.origin + '/compte?id=' + userId + '&activeTab=statistiques' },
     ];
 
+    useEffect(() => {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                setLocation({
+                    lat: position.coords.latitude,
+                    lon: position.coords.longitude
+                });
+            },
+            // On error or denied permission, fall back to Paris
+            () => {
+                setLocation({ lat: PARIS_LAT, lon: PARIS_LON });
+            }
+        );
+        setLoading(true);
+    }, []);
+
+    useEffect(() => {
+        // Only fetch weather when we have a location
+        if (location) {
+            API.getWeather({ lat: location.lat, lon: location.lon, userId: userId })
+                .then(response => {
+                    setWeather(response.data);
+                })
+                .catch(error => console.error('Error fetching weather:', error))
+                .finally(() => setLoading(false));
+        }
+    }, [location]);
+
+    if (loading) {
+        return <Loader />
+    }
+
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <div className="popInElement" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <div style={{
                 display: 'flex',
                 gap: '20px',
@@ -71,26 +111,8 @@ const AllBanners = ({ userId }) => {
                         />
                     </div>
                 ))}
+                <WeatherBanner weather={weather} />
             </div>
-            {/* <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-                <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.8em', opacity: 0.9 }}>Today</div>
-                    <div style={{ fontSize: '2em', fontWeight: 'bold' }}>{weather.current.temp}°C</div>
-                    <div style={{ fontSize: '0.9em', textTransform: 'capitalize' }}>{weather.current.description}</div>
-                </div>
-                <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.3)' }} />
-                <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.8em', opacity: 0.9 }}>Tomorrow</div>
-                    <div style={{ fontSize: '2em', fontWeight: 'bold' }}>{weather.tomorrow.temp}°C</div>
-                    <div style={{ fontSize: '0.9em', textTransform: 'capitalize' }}>{weather.tomorrow.description}</div>
-                </div>
-                <div style={{ width: '1px', height: '50px', background: 'rgba(255,255,255,0.3)' }} />
-                <div style={{ textAlign: 'center' }}>
-                    <div style={{ fontSize: '0.8em', opacity: 0.9 }}>Day After</div>
-                    <div style={{ fontSize: '2em', fontWeight: 'bold' }}>{weather.dayAfter.temp}°C</div>
-                    <div style={{ fontSize: '0.9em', textTransform: 'capitalize' }}>{weather.dayAfter.description}</div>
-                </div>
-            </div> */}
         </div>
     );
 };

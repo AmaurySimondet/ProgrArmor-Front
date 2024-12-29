@@ -3,7 +3,6 @@ import NavigBar from "../../components/NavigBar";
 import Footer from "../../components/Footer";
 import { COLORS } from "../../utils/colors";
 import API from "../../utils/API";
-import { use } from "react";
 
 function Admin() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -73,15 +72,17 @@ function Admin() {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {Object.entries(routeStats).map(([route, stats]) => (
-                                        <tr key={route}>
-                                            <td>{route}</td>
-                                            <td>{stats.count}</td>
-                                            <td>{Number(stats.avg).toFixed(2)}</td>
-                                            <td>{Number(stats.min).toFixed(2)}</td>
-                                            <td>{Number(stats.max).toFixed(2)}</td>
-                                        </tr>
-                                    ))}
+                                    {Object.entries(routeStats)
+                                        .sort(([, a], [, b]) => b.avg - a.avg)
+                                        .map(([route, stats]) => (
+                                            <tr key={route}>
+                                                <td title={route}>{route.length > 30 ? route.slice(0, 30) + '...' : route}</td>
+                                                <td>{stats.count}</td>
+                                                <td>{Number(stats.avg).toFixed(2)}</td>
+                                                <td>{Number(stats.min).toFixed(2)}</td>
+                                                <td>{Number(stats.max).toFixed(2)}</td>
+                                            </tr>
+                                        ))}
                                 </tbody>
                             </table>
                         </div>

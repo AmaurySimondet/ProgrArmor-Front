@@ -276,6 +276,10 @@ export default {
   },
 
 
+  // WEATHER
+  getWeather: function (send) {
+    return axios.get(`${burl}/user/weather`, { headers: headers, params: send });
+  },
 
   // ADMIN
   getRouteStats: function (send) {

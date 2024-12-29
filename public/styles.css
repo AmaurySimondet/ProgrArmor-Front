@@ -1305,17 +1305,22 @@ table.profile-table {
 
 .dashboard-banner {
     width: 315px;
-    height: 160px;
+    min-height: 160px;
     border-radius: 16px;
-    overflow: hidden;
+    overflow: visible;
     margin: 20px auto;
     transition: 0.5s;
     cursor: pointer;
+    /* background: white; */
+    /* padding: 20px; */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 .dashboard-banner img {
     width: 100%;
     height: 100%;
+    border-radius: 10px;
     object-fit: cover;
     transition: 0.5s;
 }
@@ -1324,6 +1329,60 @@ table.profile-table {
     transform: scale(1.05);
 }
 
+.weather-banner {
+    background: white;
+    padding: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+}
+
+.weather-city {
+    font-weight: 800;
+    font-size: 0.8em;
+}
+
+.weather-content {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.weather-day {
+    text-align: center;
+    color: #333;
+    transition: 0.5s;
+}
+
+.weather-day:hover {
+    transform: scale(1.05);
+}
+
+.weather-label {
+    font-size: 0.7em;
+    opacity: 0.7;
+}
+
+.weather-day img {
+    width: 50px;
+    height: 50px;
+}
+
+.weather-temp {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+.weather-desc {
+    font-size: 0.7em;
+    text-transform: capitalize;
+    color: #666;
+}
+
+.weather-divider {
+    width: 1px;
+    height: 50px;
+    background: rgba(0, 0, 0, 0.1);
+}
 
 
 .table1 {
