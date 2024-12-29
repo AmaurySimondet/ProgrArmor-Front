@@ -15,6 +15,7 @@ import InstallApp from "./pages/aide/InstallApp.jsx";
 import Aide from "./pages/aide/Aide.jsx";
 import Notifications from "./pages/notifications/Notifications.jsx";
 import SingleSeanceView from "./pages/seance/singleSeanceView.jsx";
+import Admin from "./pages/admin/Admin.jsx";
 
 // import eruda from "eruda";
 
@@ -72,6 +73,10 @@ function App() {
 
             <Route path="/seance" element={<PrivateRoute />}>
                 <Route exact path='' element={<SingleSeanceView />} />
+            </Route>
+
+            <Route path="/admin" element={<PrivateRoute />}>
+                <Route exact path='' element={<Admin />} />
             </Route>
         </Routes>
     );

@@ -277,72 +277,8 @@ export default {
 
 
 
-  //PROGRAMMES
-  createProgramme: function (send) {
-    return axios.post(`${burl}/user/createProgramme`, send, { headers: headers });
-  },
-
-  getProgrammes: function (send) {
-    send.id = localStorage.getItem("id")
-    return axios.post(`${burl}/user/getProgrammes`, send, { headers: headers });
-  },
-
-  deleteProgramme: function (send) {
-    return axios.post(`${burl}/user/deleteProgramme`, send, { headers: headers });
-  },
-
-  getProgrammesByUser: function (send) {
-    return axios.post(`${burl}/user/getProgrammesByUser`, send, { headers: headers });
-
-  },
-
-  getProgramme: function (send) {
-    return axios.post(`${burl}/user/getProgramme`, send, { headers: headers });
-
-  },
-
-  likeProgramme: function (send) {
-    return axios.post(`${burl}/user/likeProgramme`, send, { headers: headers });
-
-  },
-
-  getProgrammeLikes: function (send) {
-    return axios.post(`${burl}/user/getProgrammeLikes`, send, { headers: headers });
-
-  },
-
-  isProgrammeLiked: function (send) {
-    return axios.post(`${burl}/user/isProgrammeLiked`, send, { headers: headers });
-
-  },
-
-  isProgrammeCommented: function (send) {
-    return axios.post(`${burl}/user/isProgrammeCommented`, send, { headers: headers });
-
-  },
-
-  whoLiked: function (send) {
-    return axios.post(`${burl}/user/whoLiked`, send, { headers: headers });
-
-  },
-
-  getProgrammeCreator: function (send) {
-    return axios.post(`${burl}/user/getProgrammeCreator`, send, { headers: headers });
-
-  },
-
-  whoCommented: function (send) {
-    return axios.post(`${burl}/user/whoCommented`, send, { headers: headers });
-
-  },
-
-  sendComment: function (send) {
-    return axios.post(`${burl}/user/sendComment`, send, { headers: headers });
-
-  },
-
-  getComments: function (send) {
-    return axios.post(`${burl}/user/getComments`, send, { headers: headers });
-
-  },
+  // ADMIN
+  getRouteStats: function (send) {
+    return axios.get(`${burl}/user/admin/route-stats`, { headers: headers, params: send });
+  }
 };

@@ -92,6 +92,7 @@ function NavigBar(props) {
                             <hr style={{ borderColor: "black" }} />
                             <a className="nav-link" href={`/compte?id=${localStorage.getItem('id')}`}> <img className="icon-navbar" src={user?.profilePic ? user?.profilePic : require('../images/profilepic.webp')} alt='compte' style={{ borderRadius: "50%", border: "1px solid black" }} />{user?.fName} {user?.lName}</a>
                             <a className="nav-link" href="/aide"> <img className="icon-navbar" src={require('../images/icons/icons8-question-mark-96.webp')} alt='aide' style={{ filter: "invert(1)" }} /> Aide </a>
+                            <a className="nav-link" href="/admin"><img className="icon-navbar" src={require('../images/icons/lock.webp')} alt='admin' /> Admin</a>
                             <hr style={{ borderColor: "black" }} />
                             <a className="nav-link" href="/a_propos"> A propos </a>
                             <a className="nav-link" href="/CGU"> CGU </a>
