@@ -64,8 +64,8 @@ export default {
 
 
   //USER
-  getUser: function (id) {
-    return axios.post(`${burl}/user/getUser`, id, { headers: headers });
+  getUser: function (params) {
+    return axios.get(`${burl}/user/getUser`, { headers: headers, params: params });
   },
   getUsers: function (params) {
     return axios.get(`${burl}/user/getUsers`, {

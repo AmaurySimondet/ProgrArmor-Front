@@ -74,10 +74,6 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
         }
     }, []);
 
-    React.useEffect(() => {
-        console.log(photos);
-    }, [photos]);
-
     const handleImageUpload = async (event) => {
         const files = Array.from(event.target.files);
         if (files.length === 0) return;
