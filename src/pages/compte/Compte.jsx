@@ -39,19 +39,6 @@ function Compte() {
     return () => clearTimeout(timeout);
   }, [user?.followers?.length]); // Run the effect whenever the value changes
 
-  // Add useEffect to handle initial scroll
-  useEffect(() => {
-    if (searchParams.get('activeTab')) {
-      // Small delay to ensure content is rendered
-      setTimeout(() => {
-        document.querySelector('.tab-container')?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }, 100);
-    }
-  }, []); // Run only on initial mount
-
   // Modified tab change handler
   const handleTabChange = (tab) => {
     setActiveTab(tab);
@@ -96,6 +83,19 @@ function Compte() {
 
     fetchData();
   }, []);
+
+  // Add useEffect to handle initial scroll
+  useEffect(() => {
+    if (searchParams.get('activeTab')) {
+      // Small delay to ensure content is rendered
+      setTimeout(() => {
+        document.querySelector('.tab-container')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }, 100);
+    }
+  }, []); // Run only on initial mount
 
   const handleFollowToggle = async () => {
     const isCurrentlyFollowing = currentUser.following.includes(searchParams.get('id'));

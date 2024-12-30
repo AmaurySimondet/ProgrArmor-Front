@@ -1,17 +1,66 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useWindowDimensions } from "../utils/useEffect";
 import Loader from "./Loader";
 import API from "../utils/API";
 
+const USERS_PER_PAGE = 10;
+
 const FollowSuggestions = ({ userId }) => {
     const { width } = useWindowDimensions();
     const [currentUser, setCurrentUser] = useState(null);
-    const [users, setUsers] = useState(null);
+    const [users, setUsers] = useState([]);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [loading, setLoading] = useState(true);
     const [followingInProgress, setFollowingInProgress] = useState([]);
+    const observer = useRef();
+
+    // Last element callback for intersection observer
+    const lastUserElementRef = useCallback(node => {
+        if (isLoading) return;
+
+        if (observer.current) observer.current.disconnect();
+
+        observer.current = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting && hasMore) {
+                setPage(prevPage => prevPage + 1);
+            }
+        });
+
+        if (node) observer.current.observe(node);
+    }, [isLoading, hasMore]);
+
+    // Update the useEffect to handle pagination
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                setIsLoading(true);
+                const response = await API.getUsers({
+                    page: page,
+                    limit: USERS_PER_PAGE
+                });
+
+                setUsers(prev => {
+                    const newUsers = response.data.users.filter(newUser =>
+                        !prev.some(existingUser => existingUser._id === newUser._id)
+                    );
+                    return [...prev, ...newUsers];
+                });
+                setHasMore(response.data.pagination.hasMore);
+            } catch (error) {
+                console.error("Error fetching users data:", error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        if (!loading && currentUser) {
+            fetchUsers();
+        }
+    }, [currentUser, page]);
 
     useEffect(() => {
-        // get user
         const fetchUserData = async () => {
             try {
                 const response = await API.getUser({ id: userId });
@@ -21,19 +70,9 @@ const FollowSuggestions = ({ userId }) => {
             }
         };
 
-        // USERS
-        const fetchUsersData = async () => {
-            try {
-                const response = await API.getUsers();
-                setUsers(response.data.users);
-            } catch (error) {
-                console.error("Error fetching users data:", error);
-            }
-        };
+        // Initial load
         fetchUserData().then(() => {
-            fetchUsersData().then(() => {
-                setLoading(false);
-            });
+            setLoading(false);
         });
     }, []);
 
@@ -92,17 +131,23 @@ const FollowSuggestions = ({ userId }) => {
                     flexDirection: 'column', gap: '20px', display: 'flex',
                     height: '70px',
                     overflowX: 'auto',
-                    overflowY: 'hidden',
+                    overflowY: 'auto',
                     scrollSnapType: 'x mandatory',
                     paddingBottom: '20px',
                     scrollbarWidth: 'none',
                     position: 'relative', // Required for the index positioning
                     maxWidth: '700px',
                     minWidth: '350px',
-                }}>
+                }}
+                >
                     {users && users.length > 0 ? (
                         users.map((user, index) => (
-                            <div key={user._id} className='basic-flex' style={{ gap: '20px', alignItems: 'center' }}>
+                            <div
+                                ref={index === users.length - 1 ? lastUserElementRef : null}
+                                key={user._id}
+                                className='basic-flex'
+                                style={{ gap: '20px', alignItems: 'center' }}
+                            >
                                 <img
                                     className="icon-navbar"
                                     src={user?.profilePic ? user?.profilePic : require('../images/profilepic.webp')}
@@ -129,9 +174,10 @@ const FollowSuggestions = ({ userId }) => {
                     ) : (
                         <div>Aucune suggestion pour le moment</div>
                     )}
+                    {isLoading && <Loader />}
                 </div>
             </div>
-        </div >
+        </div>
     )
 }
 

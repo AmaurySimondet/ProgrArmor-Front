@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import NavigBar from '../../components/NavigBar';
 import Footer from '../../components/Footer';
 import { COLORS } from '../../utils/colors';
