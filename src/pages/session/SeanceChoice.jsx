@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Loader from '../../components/Loader';
+import { Loader } from '../../components/Loader';
 import { useWindowDimensions } from '../../utils/useEffect';
 import API from '../../utils/API';
 import { stringToDate } from '../../utils/dates';

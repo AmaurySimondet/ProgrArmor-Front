@@ -33,7 +33,7 @@ const Loader = () => {
 
     return (
         <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'column', gap: '2rem', justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.PAGE_BACKGROUND }}>
-            <div className="loader"></div>
+            <div className="loader" style={{ width: '120px', height: '120px' }}></div>
             <p style={{ color: COLORS.TEXT, textAlign: 'center', maxWidth: '80%', fontStyle: 'italic' }}>
                 {randomFact}
             </p>
@@ -41,4 +41,12 @@ const Loader = () => {
     );
 };
 
-export default Loader;
+const MiniLoader = () => {
+    return (
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60px' }}>
+            <div className="loader"></div>
+        </div>
+    );
+};
+
+export { Loader, MiniLoader };

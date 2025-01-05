@@ -7,7 +7,7 @@ import DisplaySeancesPost from "../../components/DisplaySeancesPost.jsx";
 import PrSearch from "./PrSearch.jsx";
 import PrTable from "./PrTable.jsx";
 import API from "../../utils/API.js";
-import Loader from "../../components/Loader.jsx";
+import { Loader } from "../../components/Loader.jsx";
 import CompteStats from "./CompteStats.jsx";
 import Stats from "../../components/Stats.jsx";
 import apiCalls from "../../utils/apiCalls";

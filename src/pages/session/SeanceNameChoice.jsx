@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import Loader from '../../components/Loader';
+import { Loader } from '../../components/Loader';
 import { useWindowDimensions } from '../../utils/useEffect';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import API from '../../utils/API';

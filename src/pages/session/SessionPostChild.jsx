@@ -1,15 +1,20 @@
-import { React, useState } from 'react';
+import { React, useState, useEffect } from 'react';
 import { InlineEditable } from '../../components/InlineEditable';
 import { useWindowDimensions } from '../../utils/useEffect';
 import PostStats from './PostStats';
 import InstagramCarousel from './InstagramCarousel';
 import API from '../../utils/API';
 import { getDetailedDate } from '../../utils/dates';
+import ReactionsAndComments from './ReactionsAndComments';
+import Comments from './Comments';
+import DisplayReactions from '../../components/DisplayReactions';
 
-function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescription, setPostDescription, selectedName, selectedExercices, recordSummary, selectedDate, stats, backgroundColors, editable, seancePhotos }) {
+function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescription, setPostDescription, selectedName, selectedExercices, recordSummary, selectedDate, stats, backgroundColors, editable, seancePhotos, displayComments }) {
     const { width } = useWindowDimensions();
     const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
+    const [showReactions, setShowReactions] = useState(false);
+    const [reactions, setReactions] = useState([]);
 
     const handleDelete = async () => {
         setIsDeleting(true);
@@ -70,7 +75,7 @@ function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescrip
                     <div>
                         {user ? <strong><a href={`/compte?id=${user._id}`}>{user.fName} {user.lName}</a></strong> : <strong>Prénom Nom</strong>}
                         <br />
-                        <i>{selectedName} - {getDetailedDate(selectedDate)}</i>
+                        <i style={{ fontSize: '12px' }}>{selectedName} - {getDetailedDate(selectedDate)}</i>
                     </div>
                 </div>
                 <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
@@ -292,6 +297,15 @@ function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescrip
 
             {/* Session Summary */}
             <InstagramCarousel seanceId={seanceId} selectedName={selectedName} selectedExercices={selectedExercices} backgroundColors={backgroundColors} editable={editable} selectedDate={selectedDate} seancePhotos={seancePhotos} />
+
+            {/* Reactions / Comments  */}
+            {!editable && <ReactionsAndComments seanceUser={user} seanceId={seanceId} displayComments={displayComments} setShowReactions={setShowReactions} setReactions={setReactions} />}
+
+            {/* Comments */}
+            {displayComments && <Comments seanceUser={user} seanceId={seanceId} setShowReactions={setShowReactions} setReactions={setReactions} />}
+
+            {/* Display Reactions */}
+            {showReactions && <DisplayReactions showReactions={showReactions} currentUser={user} reactions={reactions} setShowReactions={setShowReactions} />}
         </div >
     );
 }

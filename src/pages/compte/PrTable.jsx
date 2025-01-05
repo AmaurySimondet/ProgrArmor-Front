@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import Fuse from 'fuse.js';
 import API from "../../utils/API.js";
-import Loader from "../../components/Loader.jsx";
+import { Loader } from "../../components/Loader.jsx";
 
 function PrTable() {
     // PR Table states

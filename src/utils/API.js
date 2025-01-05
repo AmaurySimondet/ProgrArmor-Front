@@ -178,6 +178,23 @@ export default {
       headers: headers
     });
   },
+  bulkMarkNotificationAsRead: function (send) {
+    return axios.put(`${burl}/user/notifications/bulk-read`, send, {
+      headers: headers
+    });
+  },
+  deleteNotification: function (send) {
+    return axios.delete(`${burl}/user/notifications/delete`, {
+      data: send,
+      headers: headers,
+    });
+  },
+  bulkDeleteNotifications: function (send) {
+    return axios.delete(`${burl}/user/notifications/bulk-delete`, {
+      data: send,  // Send the payload here
+      headers: headers
+    });
+  },
 
 
 
@@ -289,5 +306,41 @@ export default {
   // ADMIN
   getRouteStats: function (send) {
     return axios.get(`${burl}/user/admin/route-stats`, { headers: headers, params: send });
-  }
+  },
+
+  // REACTIONS & COMMENTS
+  getSeanceReactions: function (seanceId) {
+    return axios.get(`${burl}/user/seance/${seanceId}/reactions`, {
+      headers: headers,
+      params: {
+        userId: localStorage.getItem('id') // Assuming you store userId in localStorage
+      }
+    });
+  },
+
+  updateSeanceReaction: function (seanceId, reactionType, commentId, seanceUser) {
+    return axios.post(`${burl}/user/seance/${seanceId}/reactions`, {
+      userId: localStorage.getItem('id'),
+      reaction: reactionType,
+      commentId: commentId,
+      seanceUser: seanceUser
+    }, { headers: headers });
+  },
+
+  getSeanceComments: function (seanceId) {
+    return axios.get(`${burl}/user/seance/${seanceId}/comments`, {
+      headers: headers,
+      params: {
+        userId: localStorage.getItem('id')
+      }
+    });
+  },
+
+  postSeanceComment: function (seanceId, text, seanceUser) {
+    return axios.post(`${burl}/user/seance/${seanceId}/comments`, {
+      userId: localStorage.getItem('id'),
+      text,
+      seanceUser: seanceUser
+    }, { headers: headers });
+  },
 };

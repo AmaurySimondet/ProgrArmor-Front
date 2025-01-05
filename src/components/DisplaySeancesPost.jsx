@@ -3,7 +3,7 @@ import SessionPostChild from "../pages/session/SessionPostChild";
 import { stringToDate } from "../utils/dates";
 import { useWindowDimensions } from "../utils/useEffect";
 import { fetchSeancesData } from "../utils/seance";
-import Loader from "./Loader";
+import { Loader } from "./Loader";
 import { getUserById } from "../utils/user";
 import { COLORS } from "../utils/colors";
 
@@ -88,6 +88,7 @@ const DisplaySeancesPost = (props) => {
                             recordSummary={seance.recordSummary ? seance.recordSummary : []}
                             editable={false}
                             seancePhotos={seance.seancePhotos ? seance.seancePhotos : []}
+                            displayComments={false}
                         />
                     </div>
                 ))

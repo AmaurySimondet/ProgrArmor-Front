@@ -11,7 +11,7 @@ import SessionSummary from "./SessionSummary";
 import SessionProgressBar from "./SessionProgressBar";
 import API from "../../utils/API";
 import { setsToSeance, addPrToSets } from "../../utils/sets";
-import Loader from "../../components/Loader";
+import { Loader } from "../../components/Loader";
 import SessionPost from "./SessionPost";
 import { COLORS } from "../../utils/colors";
 import Alert from "../../components/Alert";

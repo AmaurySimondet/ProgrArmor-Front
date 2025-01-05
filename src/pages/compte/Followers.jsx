@@ -1,6 +1,6 @@
 import { React, useState, useEffect } from "react";
 import API from "../../utils/API";
-import Loader from "../../components/Loader";
+import { Loader } from "../../components/Loader";
 
 const Followers = ({ user, title, dataKey }) => {
     const [followers, setFollowers] = useState([]);

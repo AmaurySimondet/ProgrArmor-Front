@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API from '../utils/API';
-import Loader from './Loader';
+import { Loader } from './Loader';
 
 const Bannieres = ({ imageUrl, alt, url }) => {
     return (
@@ -100,7 +100,9 @@ const AllBanners = ({ userId }) => {
                 scrollSnapType: 'x mandatory',
                 scrollbarWidth: 'none',
                 position: 'relative',
-                flexWrap: 'nowrap'
+                flexWrap: 'nowrap',
+                paddingLeft: '20px',
+                paddingRight: '20px'
             }}>
                 {bannerImages.map((banner, index) => (
                     <div key={index} style={{ flex: '0 0 auto' }}>

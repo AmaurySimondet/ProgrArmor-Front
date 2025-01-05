@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import { isPersonalRecord } from "../../utils/pr.js";
 import Fuse from 'fuse.js';
 import API from "../../utils/API.js";
-import Loader from "../../components/Loader.jsx";
+import { Loader } from "../../components/Loader.jsx";
 
 function PrSearch() {
     // PR Search states

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useWindowDimensions } from "../utils/useEffect";
-import Loader from "./Loader";
+import { Loader } from "./Loader";
 import API from "../utils/API";
 
 const USERS_PER_PAGE = 10;
@@ -131,7 +131,7 @@ const FollowSuggestions = ({ userId }) => {
                     flexDirection: 'column', gap: '20px', display: 'flex',
                     height: '70px',
                     overflowX: 'auto',
-                    overflowY: 'auto',
+                    overflowY: 'hidden',
                     scrollSnapType: 'x mandatory',
                     paddingBottom: '20px',
                     scrollbarWidth: 'none',

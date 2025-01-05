@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import { XAxis, Tooltip, CartesianGrid, Line, ResponsiveContainer, Bar, ComposedChart, Legend } from 'recharts';
 import API from "../utils/API.js";
-import Loader from "./Loader.jsx";
+import { Loader } from "./Loader.jsx";
 import { dateBasedOnTimeframe } from "../utils/dates.js";
 import { useWindowDimensions } from "../utils/useEffect.js";
 

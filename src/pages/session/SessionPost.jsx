@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import { getUserById } from '../../utils/user';
-import Loader from '../../components/Loader';
+import { Loader } from '../../components/Loader';
 import { seanceToSets } from "../../utils/sets";
 import Alert from '../../components/Alert';
 import SessionPostChild from './SessionPostChild';
@@ -195,6 +195,7 @@ const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, 
                     backgroundColors={backgroundColors}
                     editable={true}
                     seancePhotos={seancePhotos}
+                    displayComments={false}
                 />
 
                 {/* Updated Submit Button */}

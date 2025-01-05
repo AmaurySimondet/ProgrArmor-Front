@@ -6,13 +6,16 @@ const PostStats = ({ recordSummary, stats, width }) => {
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        padding: '8px',
+        padding: '7px',
     };
 
     const containerStyle = {
         display: 'flex',
-        flexDirection: 'column',
-        marginBottom: '10px'
+        flexDirection: 'row',
+        marginBottom: '10px',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: '20px'
     };
 
     const statsRowStyle = {
@@ -28,7 +31,7 @@ const PostStats = ({ recordSummary, stats, width }) => {
     };
 
     const h3Style = {
-        margin: '5px 0',
+        margin: '0px 0',
         fontSize: width < 500 ? '0.8rem' : '1.1rem'
     };
 
@@ -39,26 +42,29 @@ const PostStats = ({ recordSummary, stats, width }) => {
                     <span style={spanStyle}>Sets</span>
                     <h3 style={h3Style}>{stats.nSets}</h3>
                 </div>
-                <div style={statStyle}>
+                {/* <div style={statStyle}>
                     <span style={spanStyle}>Reps/Secs</span>
                     <h3 style={h3Style}>{stats.nReps}</h3>
-                </div>
+                </div> */}
                 <div style={statStyle}>
-                    <span style={spanStyle}>Interval</span>
+                    <span style={spanStyle}>Reps/Secs</span>
                     <h3 style={h3Style}>{stats.intervalReps}</h3>
                 </div>
-                <div style={statStyle}>
+                {/* <div style={statStyle}>
                     <span style={spanStyle}>Charge</span>
                     <h3 style={h3Style}>{stats.totalWeight}kg</h3>
-                </div>
+                </div> */}
                 <div style={statStyle}>
-                    <span style={spanStyle}>Interval</span>
+                    <span style={spanStyle}>Charge</span>
                     <h3 style={h3Style}>{stats.intervalWeight}kg</h3>
                 </div>
             </div>
 
             {recordSummary && recordSummary.length > 0 && (
-                <div style={{ textAlign: 'center' }}>
+                <div style={{
+                    textAlign: 'center',
+                    minWidth: 'fit-content'
+                }}>
                     <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
                         {recordSummary.map((record, idx) => (
                             <li key={record.PR}

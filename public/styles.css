@@ -853,8 +853,6 @@ table.profile-table {
     border-top: 16px solid #9b0000;
     /* Red */
     border-radius: 50%;
-    width: 120px;
-    height: 120px;
     animation: spin 2s linear infinite;
 }
 
@@ -1179,11 +1177,6 @@ table.profile-table {
     scroll-snap-align: center;
     transition: 0.5s;
     padding: 20px;
-}
-
-.poubelle {
-    /* margin-top: 5px; */
-
 }
 
 .poubelleDark {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
-import Loader from '../../components/Loader';
+import { Loader } from '../../components/Loader';
 import API from '../../utils/API';
 import Fuse from 'fuse.js';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
