@@ -13,11 +13,10 @@ const CustomTooltip = ({ active, payload, label }) => {
             {label && <p className="chart-desc">Date: {label}</p>}
             {payload.map((item, index) => (
                 <p key={index} className="chart-desc">
-                    {item.name === 'value' ? 'Reps / Secs' :
-                        item.name === 'weightLoad' ? 'Charge (kg)' :
-                            item.name === 'tension' ? 'Tension (kg)' :
-                                item.name === 'date' ? 'Date' :
-                                    item.name}: {item.value}
+                    {item.name === 'date' ? 'Date' :
+                        item.name === 'Reps / Secs' ?
+                            (payload[0].payload.unit === 'repetitions' ? 'Repetitions' : 'Secondes') :
+                            item.name}: {item.value}
                 </p>
             ))}
             {/* Add elastic use information if it exists in the payload */}

@@ -1678,6 +1678,87 @@ table.profile-table {
 
 /* INSCRIPTION */
 
+.page-wrapper {
+    background-color: var(--page-background);
+}
+
+/* Add or update these styles */
+.feature-section {
+    display: flex;
+    align-items: stretch;
+    /* This ensures both sides stretch to match heights */
+    min-height: 500px;
+    /* Optional: sets minimum height for sections */
+}
+
+.feature-image {
+    flex: 1;
+    position: relative;
+    /* Added for absolute positioning of img */
+}
+
+.feature-image img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* This makes the image cover the entire container */
+    top: 0;
+    left: 0;
+}
+
+.feature-content {
+    flex: 1;
+    padding: 2rem;
+    /* Add padding as needed */
+}
+
+.feature-section.reverse {
+    flex-direction: row-reverse;
+}
+
+.testimonials-section,
+.stats-section {
+    text-align: center;
+    padding: 2rem;
+    /* margin: 2rem auto; */
+    max-width: 1200px;
+}
+
+.stats-section {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+}
+
+.scroll-top-button {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 1000;
+    padding: 10px 15px;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+@media (max-width: 900px) {
+    .feature-section {
+        flex-direction: column;
+        padding: 1rem;
+    }
+
+    .feature-section.reverse {
+        flex-direction: column;
+    }
+
+    .stats-section {
+        grid-template-columns: 1fr;
+    }
+}
+
 .basic-flex {
     display: flex;
     /* flex-direction: row; */

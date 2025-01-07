@@ -307,6 +307,9 @@ export default {
   getRouteStats: function (send) {
     return axios.get(`${burl}/user/admin/route-stats`, { headers: headers, params: send });
   },
+  getInscriptionStats: function (send) {
+    return axios.get(`${burl}/user/admin/inscription`, { headers: headers, params: send });
+  },
 
   // REACTIONS & COMMENTS
   getSeanceReactions: function (seanceId) {

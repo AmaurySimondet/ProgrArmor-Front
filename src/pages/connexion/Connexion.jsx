@@ -8,7 +8,6 @@ import emailjs from 'emailjs-com';
 import { v4 as uuidv4 } from 'uuid';
 import { COLORS } from "../../utils/colors.js";
 import createTokenAndId from "../../utils/token.js";
-import GoogleAd from "../../components/GoogleAd.jsx";
 
 function Connexion() {
     const [mdpClicked, setMdpClicked] = useState(false);
@@ -24,6 +23,11 @@ function Connexion() {
         height: window.innerHeight,
         width: window.innerWidth
     })
+
+    if (localStorage.getItem("token")) {
+        createTokenAndId();
+    }
+
     useEffect(() => {
         function handleResize() {
             setDimensions({
@@ -147,10 +151,6 @@ function Connexion() {
         }
     }
 
-    if (localStorage.getItem("token")) {
-        createTokenAndId();
-    }
-
     return (
         <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
             <div className="page-container">
@@ -162,8 +162,6 @@ function Connexion() {
 
                 {/* PAGE CONTENT */}
                 <div className="content-wrap popInElement" style={{ marginBottom: 0 }}>
-
-                    <GoogleAd />
 
                     <div className="tr-connexion">
                         {dimensions.width > 900 ?

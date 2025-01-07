@@ -10,7 +10,7 @@ function BoutonsSociaux(props) {
         {props.inscription ? "Inscription via Google" : "Connexion via Google"}
       </a>
 
-      <a className="btn btn btn-social btn-facebook" href={url + "/user/auth/facebook"} role="button">
+      <a className="btn btn btn-social btn-facebook" href={url + "/user/auth/facebook"} role="button" style={{ pointerEvents: "none", opacity: 0.5 }}>
         <img className="icon-facebook" style={{ boxShadow: "none" }} src={require('../images/icons/icons8-facebook-circled-48.webp')} alt="facebook" />
         {props.inscription ? "Inscription via Facebook" : "Connexion via Facebook"}
       </a>

@@ -23,88 +23,45 @@ function Inscription() {
     const [classdiv3, setClassdiv3] = useState("not-visible");
     const [classdiv4, setClassdiv4] = useState("not-visible");
     const [classdiv5, setClassdiv5] = useState("not-visible");
+    const [stats, setStats] = useState([]);
 
     useEffect(() => {
-        window.addEventListener("scroll", () => {
-            if (window.pageYOffset > 300) {
-                setShowButton(true);
-            } else {
-                setShowButton(false);
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    const divNumber = entry.target.dataset.section;
+                    if (entry.isIntersecting) {
+                        switch (divNumber) {
+                            case '1': setClassdiv1("visible"); break;
+                            case '2': setClassdiv2("visible"); break;
+                            case '3': setClassdiv3("visible"); break;
+                            case '4': setClassdiv4("visible"); break;
+                            case '5': setClassdiv5("visible"); break;
+                        }
+                    } else {
+                        switch (divNumber) {
+                            case '1': setClassdiv1("not-visible"); break;
+                            case '2': setClassdiv2("not-visible"); break;
+                            case '3': setClassdiv3("not-visible"); break;
+                            case '4': setClassdiv4("not-visible"); break;
+                            case '5': setClassdiv5("not-visible"); break;
+                        }
+                    }
+                });
+            },
+            { threshold: 0.2 }
+        );
+
+        // Observer chaque div
+        [div1, div2, div3, div4, div5].forEach((ref, index) => {
+            if (ref.current) {
+                ref.current.dataset.section = index + 1;
+                observer.observe(ref.current);
             }
         });
-    }, []);
 
-    useEffect(() => {
-        setTimeout(() => {
-            const y1 = div1.current.offsetTop;
-            const y2 = div2.current.offsetTop;
-            const y3 = div3.current.offsetTop;
-            const y4 = div4.current.offsetTop;
-            const y5 = div5.current.offsetTop;
-            const yMargin = 300;
-
-            window.addEventListener("scroll", () => {
-                if (window.pageYOffset > y1 - yMargin) {
-                    setClassdiv1("visible");
-                }
-                if (window.pageYOffset < y1 - yMargin) {
-                    setClassdiv1("not-visible");
-                }
-
-                if (window.pageYOffset > y2 - yMargin) {
-                    setClassdiv2("visible");
-                }
-                if (window.pageYOffset < y2 - yMargin) {
-                    setClassdiv2("not-visible");
-                }
-
-                if (dimensions.width > 900) {
-                    if (window.pageYOffset > y3 - yMargin) {
-                        setClassdiv3("visible");
-                    }
-                    if (window.pageYOffset < y3 - yMargin) {
-                        setClassdiv3("not-visible");
-                    }
-
-                    if (window.pageYOffset > y4 - yMargin) {
-                        setClassdiv4("visible");
-                    }
-                    if (window.pageYOffset < y4 - yMargin) {
-                        setClassdiv4("not-visible");
-                    }
-
-                    if (window.pageYOffset > y5 - yMargin) {
-                        setClassdiv5("visible");
-                    }
-                    if (window.pageYOffset < y5 - yMargin) {
-                        setClassdiv5("not-visible");
-                    }
-                }
-                if (dimensions.width <= 900) {
-                    if (window.pageYOffset > y3 - yMargin) {
-                        setClassdiv3("visible");
-                    }
-                    if (window.pageYOffset < y3 - yMargin) {
-                        setClassdiv3("not-visible");
-                    }
-
-                    if (window.pageYOffset > y4 - yMargin) {
-                        setClassdiv4("visible");
-                    }
-                    if (window.pageYOffset < y4 - yMargin) {
-                        setClassdiv4("not-visible");
-                    }
-
-                    if (window.pageYOffset > y5 - yMargin) {
-                        setClassdiv5("visible");
-                    }
-                    if (window.pageYOffset < y5 - yMargin) {
-                        setClassdiv5("not-visible");
-                    }
-                }
-            });
-        }, 100);
-    }, []);
+        return () => observer.disconnect();
+    }, [dimensions.width]);
 
     // This function will scroll the window to the top 
     const scrollToTop = () => {
@@ -119,15 +76,43 @@ function Inscription() {
             setDimensions({
                 height: window.innerHeight,
                 width: window.innerWidth
-            })
+            });
         }
 
-        var timeout = false;
-        window.addEventListener('resize', function () {
-            clearTimeout(timeout);;
+        let timeout = null;
+        const debouncedHandleResize = () => {
+            clearTimeout(timeout);
             timeout = setTimeout(handleResize, 200);
+        };
+
+        window.addEventListener('resize', debouncedHandleResize);
+
+        // Cleanup function to remove event listener
+        return () => {
+            window.removeEventListener('resize', debouncedHandleResize);
+            clearTimeout(timeout);
+        };
+    }, []); // Empty dependency array since we only want to set this up once
+
+    useEffect(() => {
+        const handleScroll = () => {
+            if (window.scrollY > 300) {
+                setShowButton(true);
+            } else {
+                setShowButton(false);
+            }
+        };
+
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
+    useEffect(() => {
+        API.getInscriptionStats().then(res => {
+            console.log(res);
+            setStats(res.data);
         });
-    })
+    }, []);
 
     if (localStorage.getItem("token")) {
         createTokenAndId();
@@ -139,225 +124,137 @@ function Inscription() {
                 <HomeHeader />
 
 
-
-
-                {/* PAGE CONTENT */}
-                <div className="content-wrap popInElement">
-
-                    {/* DIV 1 */}
-                    <div
-                        className={
-                            dimensions.width > 900 ? "basic-flex"
-                                :
-                                "basic-flex"}
-                        ref={dimensions.width > 900 ? div1 : null}>
-
-                        <div className={dimensions.width > 900 ? "basic-flexed"
-                            :
-                            dimensions.width < 500 ? "basic-noflexed500"
-                                :
-                                "basic-noflexed"}
-                            style={{ textAlign: "center", height: "650px" }}>
-
-                            <div style={{ width: "90%", margin: "auto" }}>
-                                <h1 className="h1-inscription">Inscris toi !</h1>
-                                <h2 className="h2-inscription">Armes toi avec les meilleurs outils pour ta progression</h2>
-
-                                <BoutonsSociaux inscription={true} />
-
-                                <InscriptionForm />
-
-                            </div>
+                <main className="content-wrap popInElement" style={{ margin: "0 auto" }}>
+                    {/* Section 1: Sign Up */}
+                    <section className="feature-section">
+                        <div className="feature-content">
+                            <h1 className="h1-inscription">Inscris toi !</h1>
+                            <h2 className="h2-inscription" style={{ fontWeight: "normal" }}>Armes toi avec les meilleurs outils pour ta progression</h2>
+                            <BoutonsSociaux inscription={true} />
+                            <InscriptionForm />
                         </div>
-
-
-                        <div className={
-                            dimensions.width > 900 ? "basic-flexed"
-                                :
-                                "basic-noflexed500" + " " + classdiv1}
-                            style={dimensions.width < 900 ? { height: "400px" } : null}
-                            ref={dimensions.width < 900 ? div1 : null}>
-                            <img src={require('../../images/inscription.webp')} alt="ad" />
+                        <div className="feature-image" ref={div1}>
+                            <img src={require('../../images/inscription.webp')} alt="Inscription" />
                         </div>
-                    </div>
+                    </section>
 
                     <hr className="hr-inscription" />
 
-
-                    {/* DIV 2 */}
-                    <div
-                        className={
-                            dimensions.width > 900 ? "basic-flex" + " " + classdiv2
-                                :
-                                "basic-flex"}
-                        ref={dimensions.width > 900 ? div2 : null}>
-
-                        <div className={
-                            dimensions.width > 900 ? "basic-flexed"
-                                :
-                                "basic-noflexed500" + " " + classdiv2}
-                            ref={dimensions.width < 900 ? div2 : null}>
-                            <img src={require('../../images/other/historique.webp')} alt="ad" />
+                    {/* Section: Testimonials */}
+                    <section className={`testimonials-section ${classdiv1}`} ref={div1}>
+                        <h2>Ils utilisent déjà ProgArmor !</h2>
+                        <p>Bon enfin on va dire que la communauté s'aggrandit quoi...</p>
+                        <div className="testimonials-grid">
+                            {/* Testimonials content */}
                         </div>
+                    </section>
 
-                        <div className={dimensions.width > 900 ? "basic-flexed"
-                            :
-                            "basic-noflexed500 large-margin-updown"}
-                            style={{ textAlign: "center", width: "90%", margin: "auto", display: "grid", alignContent: "center" }}>
-
-
-                            <div style={{ width: "90%", margin: "auto" }}>
-                                <h1 className="h1-inscription">Tu peux jeter ton cahier d'entraînement !</h1>
-                                <h2 className="h2-inscription">
-                                    Ton historique d'entraînement te suivras partout. Tu pourras le consulter à tout moment. <br />
-                                    <br />
-                                    Avec les nombreuses options de filtrage, tu pourras retrouver tes séances en un clin d'oeil. <br />
-                                    <br />
-                                    Tu pourras aussi consulter tes statistiques et les comparer à celles de tes amis. <br />
-                                </h2>
-
-                            </div>
+                    {/* Section: Stats */}
+                    <section className="stats-section">
+                        <div className="stat-item">
+                            <h3>{stats.totalUsers}</h3>
+                            <p>Athlètes actifs</p>
                         </div>
-                    </div>
+                        <div className="stat-item">
+                            <h3>{stats.totalSeances}</h3>
+                            <p>Séances enregistrées</p>
+                        </div>
+                        <div className="stat-item">
+                            <h3>∞</h3>
+                            <p>Possibilités de progression</p>
+                        </div>
+                    </section>
 
                     <hr className="hr-inscription" />
 
-                    {/* DIV 3 */}
-                    <div
-                        className={
-                            dimensions.width > 900 ? "basic-flex" + " " + classdiv3
-                                :
-                                "basic-flex"}
-                        ref={dimensions.width > 900 ? div3 : null}>
-
-                        <div className={dimensions.width > 900 ? "basic-flexed"
-                            :
-                            "basic-noflexed500 large-margin-updown" + " " + classdiv3}
-                            ref={dimensions.width < 900 ? div3 : null}
-                            style={{ textAlign: "center", width: "90%", margin: "auto", display: "grid", alignContent: "center" }}>
-
-
-                            <div style={{ width: "90%", margin: "auto" }}>
-                                <h1 className="h1-inscription"> Une prise de note facilitée </h1>
-                                <h2 className="h2-inscription">
-                                    Ne perds pas ton temps à écrire tes séances, nous le faisons pour toi ! <br />
-                                    <br />
-                                    ProgArmor te propose de charger une séance précédente, tu n'auras plus qu'a modifier les changements ! <br />
-                                    <br />
-                                    Tu peux aussi créer tes propres séances avec le mode prise de note rapide ! <br />
-                                </h2>
-                            </div>
-
-
-
+                    {/* Section 2: Training History */}
+                    <section className={`feature-section reverse ${classdiv2}`} ref={div2}>
+                        <div className="feature-image">
+                            <img src={require('../../images/other/historique.webp')} alt="Historique" />
                         </div>
-
-                        <div className={
-                            dimensions.width > 900 ? "basic-flexed"
-                                :
-                                "basic-noflexed500"}>
-                            <img src={require('../../images/other/prise-note.webp')} alt="ad" />
+                        <div className="feature-content">
+                            <h1 className="h1-inscription">Ton historique, partout avec toi</h1>
+                            <h2 className="h2-inscription" style={{ fontWeight: "normal" }}>
+                                Synchronise tes séances automatiquement et analyse ta progression en détail.
+                                <br /><br />
+                                Retrouve instantanément tes performances grâce aux filtres avancés.
+                                <br /><br />
+                                Compare tes stats avec celles de tes amis et défie-les !
+                                (Oui, on encourage la compétition amicale 😉)
+                            </h2>
                         </div>
-                    </div>
+                    </section>
 
                     <hr className="hr-inscription" />
 
-                    {/* DIV 4 */}
-                    <div
-                        className={
-                            dimensions.width > 900 ? "basic-flex" + " " + classdiv4
-                                :
-                                "basic-flex"}
-                        ref={dimensions.width > 900 ? div4 : null}>
-
-                        <div className={
-                            dimensions.width > 900 ? "basic-flexed"
-                                :
-                                "basic-noflexed500" + " " + classdiv4}
-                            ref={dimensions.width < 900 ? div4 : null}>
-                            <img src={require('../../images/other/plus.webp')} alt="ad" />
+                    {/* Section 3: Note Taking */}
+                    <section className={`feature-section ${classdiv3}`} ref={div3}>
+                        <div className="feature-image">
+                            <img src={require('../../images/other/prise-note.webp')} alt="Prise de notes" />
                         </div>
-
-                        <div className={dimensions.width > 900 ? "basic-flexed"
-                            :
-                            "basic-noflexed500 large-margin-updown"}
-                            style={{ textAlign: "center", width: "90%", margin: "auto", display: "grid", alignContent: "center" }}>
-
-
-                            <div style={{ width: "90%", margin: "auto" }}>
-                                <h1 className="h1-inscription"> Et bien plus encore ! </h1>
-                                <h2 className="h2-inscription">
-                                    Enregistre même tes séances les plus farfelues avec le mode expert ! <br />
-                                    <br />
-                                    Trouves le programme parfait parmis ceux de la communauté, ou créer le tiens et obtiens des commentaires pertinents ! <br />
-                                    <br />
-                                    Suis tes amis et charies les s'ils ne progressent pas ! <br />
-                                    <br />
-                                </h2>
-                            </div>
-
-
+                        <div className="feature-content">
+                            <h1 className="h1-inscription">Enregistre tes séances en un clin d'œil</h1>
+                            <h2 className="h2-inscription" style={{ fontWeight: "normal" }}>
+                                Concentre-toi sur ton entraînement, on s'occupe du reste.
+                                <br /><br />
+                                Charge tes séances précédentes en un clic et adapte-les à ta forme du jour.
+                                <br /><br />
+                                Mode prise de note rapide pour capturer l'essentiel sans perdre le rythme !
+                            </h2>
                         </div>
-                    </div>
+                    </section>
 
                     <hr className="hr-inscription" />
 
-                    {/* DIV 5 */}
-                    <div
-                        className={
-                            dimensions.width > 900 ? "basic-flex" + " " + classdiv5
-                                :
-                                "basic-flex"}
-                        ref={dimensions.width > 900 ? div5 : null}>
-
-                        <div className={dimensions.width > 900 ? "basic-flexed"
-                            :
-                            "basic-noflexed500 large-margin-updown" + " " + classdiv5}
-                            ref={dimensions.width < 900 ? div5 : null}
-                            style={{ textAlign: "center", width: "90%", margin: "auto", display: "grid", alignContent: "center" }}>
-
-                            <div style={{ width: "90%", margin: "auto" }}>
-                                <h1 className="h1-inscription"> Ta progression doit être ta priorité. </h1>
-                                <h2 className="h2-inscription">
-                                    Utilises ProgArmor dès maintenant et améliore ta pratique sportive, c'est gratuit. <br />
-                                    <br />
-                                    <button className="btn btn-lg btn-dark" onClick={scrollToTop}>
-                                        Je suis prêt !
-                                    </button>
-                                </h2>
-                            </div>
-
+                    {/* Section 4: Additional Features */}
+                    <section className={`feature-section reverse ${classdiv4}`} ref={div4}>
+                        <div className="feature-image">
+                            <img src={require('../../images/other/plus.webp')} alt="Plus de fonctionnalités" />
                         </div>
-
-                        <div className={
-                            dimensions.width > 900 ? "basic-flexed"
-                                :
-                                "basic-noflexed500"}>
-                            <img src={require('../../images/inscription.webp')} alt="ad" />
+                        <div className="feature-content">
+                            <h1 className="h1-inscription">Des outils conçus pour ta réussite</h1>
+                            <h2 className="h2-inscription" style={{ fontWeight: "normal" }}>
+                                Mode expert pour personnaliser chaque détail de tes séances.
+                                <br /><br />
+                                Découvre des programmes créés par la communauté ou partage les tiens.
+                                <br /><br />
+                                Challenge tes amis et motive-les à se dépasser !
+                                (ou chambre-les gentiment quand ils sèchent l'entraînement 😏)
+                            </h2>
                         </div>
-                    </div>
+                    </section>
 
+                    <hr className="hr-inscription" />
 
-                    {/* C'est gratuit et tout le monde l'utilise */}
-
-
-                    {/* BOUTON GO TO TOP */}
-                    {showButton && (
-                        <button onClick={scrollToTop} className="btn btn-dark btn-to-top">
-                            <img src={require("../../images/icons/arrow-up.webp")}
-                                style={{ width: "100%", height: "100%" }} />
-                        </button>
-                    )}
-
-
-
-                </div>
-
+                    {/* Section 5: Call to Action */}
+                    <section className={`feature-section ${classdiv5}`} ref={div5}>
+                        <div className="feature-image">
+                            <img src={require('../../images/inscription.webp')} alt="Inscription finale" />
+                        </div>
+                        <div className="feature-content">
+                            <h1 className="h1-inscription">Commence ton voyage vers le progrès</h1>
+                            <h2 className="h2-inscription" style={{ fontWeight: "normal" }}>
+                                Rejoins des milliers d'athlètes qui ont déjà fait le choix de la progression.
+                                C'est gratuit, c'est puissant, c'est ProgArmor.
+                                <br /><br />
+                                <button className="btn btn-lg btn-dark" onClick={scrollToTop}>
+                                    C'est parti !
+                                </button>
+                            </h2>
+                        </div>
+                    </section>
+                </main>
 
                 <Footer />
+
+                {showButton && (
+                    <button onClick={scrollToTop} className="scroll-top-button btn-dark">
+                        ↑
+                    </button>
+                )}
             </div>
         </div>
-    )
+    );
 }
 
 export default Inscription;
