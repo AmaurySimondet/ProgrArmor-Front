@@ -8,6 +8,7 @@ import emailjs from 'emailjs-com';
 import { v4 as uuidv4 } from 'uuid';
 import { COLORS } from "../../utils/colors.js";
 import createTokenAndId from "../../utils/token.js";
+import GoogleAd from "../../components/GoogleAd.jsx";
 
 function Connexion() {
     const [mdpClicked, setMdpClicked] = useState(false);
@@ -162,6 +163,7 @@ function Connexion() {
                 {/* PAGE CONTENT */}
                 <div className="content-wrap popInElement" style={{ marginBottom: 0 }}>
 
+                    <GoogleAd />
 
                     <div className="tr-connexion">
                         {dimensions.width > 900 ?

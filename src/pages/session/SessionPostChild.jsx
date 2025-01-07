@@ -265,6 +265,7 @@ function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescrip
                         marginTop: "10px",
                         cursor: 'pointer'
                     }}
+                    className="clickable"
                     onClick={() => window.location.href = `/seance?id=${seanceId}`}
                 >
                     {postTitle}

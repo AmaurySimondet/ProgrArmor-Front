@@ -67,11 +67,11 @@ const DisplaySeancesPost = (props) => {
                 seances.map((seance, index) => (
                     <div
                         ref={index === seances.length - 1 ? lastSeanceElementRef : null}
-                        className="session-post clickable"
+                        className="session-post"
                         style={
                             width < 400 ? { padding: '5px', margin: "20px 0 0 0" } :
                                 width < 550 ? { padding: '10px', margin: "20px 10px 0 10px" } :
-                                    { padding: '20px', margin: "20px 20px 0 20px" }
+                                    { padding: '10px', margin: "20px 20px 0 20px" }
                         }
                         key={seance._id}
                     >
