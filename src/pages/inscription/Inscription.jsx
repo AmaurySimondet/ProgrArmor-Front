@@ -109,7 +109,6 @@ function Inscription() {
 
     useEffect(() => {
         API.getInscriptionStats().then(res => {
-            console.log(res);
             setStats(res.data);
         });
     }, []);

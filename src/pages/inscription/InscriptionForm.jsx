@@ -17,6 +17,8 @@ function InscriptionForm() {
   };
 
   const [state, setState] = useState(stateNull);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   async function handleClick(event) {
     event.preventDefault();
@@ -95,27 +97,49 @@ function InscriptionForm() {
       <div className="form-group row">
         <label htmlFor="inputPassword" className="col-sm-2 col-form-label">Mot de passe</label>
         <div className="col-sm-10">
-          <input
-            type="password"
-            className="form-control"
-            id="password"
-            placeholder="Naturel_?_Oui"
-            value={state.password}
-            onChange={handleChange}
-          />
+          <div className="input-group">
+            <input
+              type={showPassword ? "text" : "password"}
+              className="form-control"
+              id="password"
+              placeholder="Naturel_?_Oui"
+              value={state.password}
+              onChange={handleChange}
+            />
+            <div className="input-group-append">
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? "Cacher" : "Voir"}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <div className="form-group row">
         <label className="col-sm-2 col-form-label">Confirmation mot de passe</label>
         <div className="col-sm-10">
-          <input
-            type="password"
-            className="form-control"
-            id="cpassword"
-            placeholder="Naturel_?_Oui"
-            value={state.cpassword}
-            onChange={handleChange}
-          />
+          <div className="input-group">
+            <input
+              type={showConfirmPassword ? "text" : "password"}
+              className="form-control"
+              id="cpassword"
+              placeholder="Naturel_?_Oui"
+              value={state.cpassword}
+              onChange={handleChange}
+            />
+            <div className="input-group-append">
+              <button
+                className="btn btn-outline-secondary"
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? "Cacher" : "Voir"}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <p className="p-cgu">En cliquant sur le bouton "Inscription" ci dessous,  vous certifiez avoir pris connaissance et approuvé nos CGU</p>

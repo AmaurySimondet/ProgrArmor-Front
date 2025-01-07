@@ -23,6 +23,8 @@ function Connexion() {
         height: window.innerHeight,
         width: window.innerWidth
     })
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     if (localStorage.getItem("token")) {
         createTokenAndId();
@@ -50,11 +52,9 @@ function Connexion() {
 
     //RECUPERATION EMAIL
     async function sendRecuperationEmail(req, res) {
-        // res.json({ success: true, message: "Email envoyé !" })
-
-        const service_id = "service_crf18d7"
-        const template_id = "template_mg1f8tg"
-        const publicKey = "oLFuFSUDmzcbeaA1W"
+        const serviceId = process.env.REACT_APP_EMAILJS_SERVICEID;
+        const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
+        const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
         const code = uuidv4().slice(0, 8);
         setCode(code);
 
@@ -67,15 +67,10 @@ function Connexion() {
         };
 
         try {
-            emailjs.send(service_id, template_id, templateParams, publicKey)
-                .then(function (response) {
-                    console.log('SUCCESS!', response.status, response.text);
-                }, function (err) {
-                    console.log('FAILED...', err);
-                });
+            emailjs.send(serviceId, templateId, templateParams, publicKey)
         }
         catch (e) {
-            console.log(e);
+            alert("Erreur lors de l'envoi de l'email", e);
         }
 
     }
@@ -173,7 +168,7 @@ function Connexion() {
                         <div style={{ flexGrow: "1", alignContent: "center" }} className="huge-margin-bottom">
 
                             {mdpClicked ?
-                                <div className="basic-div">
+                                <div className="basic-div popInElement">
 
                                     <h1 className="h1-inscription"> J'y penses et puis j'oublie </h1>
                                     <h2 className="h2-inscription"> Je t'envoies un mail de récupération chef </h2>
@@ -191,7 +186,7 @@ function Connexion() {
 
                                     {sentClicked ?
                                         <div>
-                                            <p className="basic-margin-top">
+                                            <p className="basic-margin-top popInElement">
                                                 Un mail de récupération a été envoyé à l'adresse
                                                 <br />
                                                 {" " + email + " "}
@@ -219,19 +214,37 @@ function Connexion() {
                                         onChange={e => setCodeEmail(e.target.value)}
                                     ></input>
 
-                                    <input
-                                        className="form-control mini-margin-bottom"
-                                        placeholder="Nouveau mot de passe"
-                                        type="password"
-                                        onChange={e => setNewMDP(e.target.value)}
-                                    ></input>
+                                    <div className="input-group mb-2">
+                                        <input
+                                            className="form-control"
+                                            placeholder="Nouveau mot de passe"
+                                            type={showNewPassword ? "text" : "password"}
+                                            onChange={e => setNewMDP(e.target.value)}
+                                        />
+                                        <button
+                                            className="btn btn-outline-secondary"
+                                            type="button"
+                                            onClick={() => setShowNewPassword(!showNewPassword)}
+                                        >
+                                            {showNewPassword ? "Masquer" : "Voir"}
+                                        </button>
+                                    </div>
 
-                                    <input
-                                        className="form-control mini-margin-bottom"
-                                        placeholder="Confirme ton mot de passe"
-                                        type="password"
-                                        onChange={e => setConfirmMDP(e.target.value)}
-                                    ></input>
+                                    <div className="input-group mb-2">
+                                        <input
+                                            className="form-control"
+                                            placeholder="Confirme ton mot de passe"
+                                            type={showConfirmPassword ? "text" : "password"}
+                                            onChange={e => setConfirmMDP(e.target.value)}
+                                        />
+                                        <button
+                                            className="btn btn-outline-secondary"
+                                            type="button"
+                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        >
+                                            {showConfirmPassword ? "Masquer" : "Voir"}
+                                        </button>
+                                    </div>
 
                                     <button
                                         onClick={handleApplyNewMDP}
@@ -244,7 +257,6 @@ function Connexion() {
                                 <div className="basic-div">
                                     <div>
                                         <h1 className="h1-inscription">{"On s'connait non ?"}</h1>
-                                        <h2 className="h2-inscription">Connexion</h2>
                                     </div>
 
                                     <BoutonsSociaux inscription={false} />
