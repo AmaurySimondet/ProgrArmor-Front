@@ -120,7 +120,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
                     <span onClick={onSkip} style={{ cursor: 'pointer' }} className="clickable"> Passer &gt; </span>
                 </h1>
             </div>
-            <h1>{index !== null ? "Modifier les catégories" : "On ajoute du détail ?"}</h1>
+            <h1 style={{ margin: '0' }}>{index !== null ? "Modifier les catégories" : "On ajoute du détail ?"}</h1>
 
             <RenderExercice exercice={exercice} />
 

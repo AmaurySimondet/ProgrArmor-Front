@@ -192,9 +192,14 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     }, [granularity]);
 
     useEffect(() => {
-        console.log("sets changed");
-        console.log(sets);
-    }, [sets]);
+        setSets(editingSets || [{
+            unit: 'repetitions',
+            value: 0,
+            weightLoad: 0,
+            elastic: null,
+            PR: null
+        }]);
+    }, [editingSets]);
 
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
@@ -202,7 +207,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
             <h1 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h1>
-            <h1 style={{ marginTop: '0' }}>
+            <h1 style={{ margin: '0' }}>
                 {index !== null ? "Modifier" : "Ajouter"} les séries
             </h1>
 

@@ -10,7 +10,7 @@ const RenderExercice = ({ exercice, sets }) => {
     return <div
         className="sessionSummaryExercice popInElement"
     >
-        <h2 style={{ marginBottom: '20px' }}>
+        <h2 style={{ marginBottom: '20px', fontWeight: '500' }}>
             {exercice.exercice.name.fr && exercice.exercice.name.fr}{exercice.categories.length > 0 && " - " + exercice.categories.map((category) => category.name.fr).join(', ')}
         </h2>
         {setsToRender && setsToRender.length > 0 && (

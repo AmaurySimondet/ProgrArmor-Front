@@ -140,7 +140,7 @@ function Inscription() {
                     <hr className="hr-inscription" />
 
                     {/* Section: Testimonials */}
-                    <section className={`testimonials-section ${classdiv1}`} ref={div1}>
+                    <section className={`testimonials-section ${classdiv1}`} ref={div1} style={{ justifySelf: "center" }}>
                         <h2>Ils utilisent déjà ProgArmor !</h2>
                         <p>Bon enfin on va dire que la communauté s'aggrandit quoi...</p>
                         <div className="testimonials-grid">
@@ -149,7 +149,7 @@ function Inscription() {
                     </section>
 
                     {/* Section: Stats */}
-                    <section className="stats-section">
+                    <section className="stats-section" style={{ justifySelf: "center" }}>
                         <div className="stat-item">
                             <h3>{stats.totalUsers}</h3>
                             <p>Athlètes actifs</p>

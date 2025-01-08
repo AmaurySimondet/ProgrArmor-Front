@@ -380,7 +380,7 @@ const Session = () => {
               onAddSet={handleAddSet}
               onBack={() => { setStep(5); scrollToElement() }}
               onNext={handleNextExercice}
-              editingSets={selectedExercices ? selectedExercices[editingExerciceIndex] ? selectedExercices[editingExerciceIndex].sets : null : null}
+              editingSets={selectedExercice?.sets || (selectedExercices?.[editingExerciceIndex]?.sets || null)}
               index={editingExerciceIndex}
               exercice={selectedExercice}
               onDelete={(index) => handleOnDeleteExercice(index)}
