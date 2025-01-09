@@ -154,14 +154,14 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
     // New function to estimate exercise height
     const estimateExerciseHeight = (exercise) => {
         const BASE_HEIGHT = 70; // Base height for exercise name and emoji
-        const SET_HEIGHT = 25; // Height per set
+        const SET_HEIGHT = 45; // Height per set
         const setsCount = exercise.sets?.length || 0;
         return BASE_HEIGHT + (setsCount * SET_HEIGHT);
     };
 
     // New function to group exercises
     const groupExercises = (exercises) => {
-        const MAX_HEIGHT = 400; // Maximum height for a slide
+        const MAX_HEIGHT = 400;
         const groups = [];
         let currentGroup = [];
         let currentHeight = 0;
@@ -169,8 +169,45 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
         exercises.forEach((exercise) => {
             const exerciseHeight = estimateExerciseHeight(exercise);
 
+            // If a single exercise is too tall, split it across multiple slides
+            if (exerciseHeight > MAX_HEIGHT) {
+                // If there are any exercises in the current group, push them first
+                if (currentGroup.length > 0) {
+                    groups.push(currentGroup);
+                    currentGroup = [];
+                    currentHeight = 0;
+                }
+
+                // Calculate how many sets can fit per slide
+                const BASE_HEIGHT = 70; // Height for exercise name and emoji
+                const SET_HEIGHT = 25; // Height per set
+                const setsPerSlide = Math.floor((MAX_HEIGHT - BASE_HEIGHT) / SET_HEIGHT);
+
+                // Split the exercise into multiple slides
+                const sets = [...exercise.sets];
+                while (sets.length > 0) {
+                    const splitExercise = {
+                        ...exercise,
+                        sets: sets.splice(0, setsPerSlide)
+                    };
+                    groups.push([splitExercise]);
+                }
+                return;
+            }
+
             if (currentHeight + exerciseHeight > MAX_HEIGHT) {
-                // Start new group if current one would exceed max height
+                // Before starting a new group, check if this exercise could fit in the previous group
+                if (groups.length > 0) {
+                    const lastGroup = groups[groups.length - 1];
+                    const lastGroupHeight = lastGroup.reduce((total, ex) => total + estimateExerciseHeight(ex), 0);
+
+                    if (lastGroupHeight + exerciseHeight <= MAX_HEIGHT) {
+                        // If it fits in the previous group, add it there
+                        groups[groups.length - 1].push(exercise);
+                        return;
+                    }
+                }
+
                 groups.push(currentGroup);
                 currentGroup = [exercise];
                 currentHeight = exerciseHeight;
@@ -180,7 +217,6 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
             }
         });
 
-        // Add remaining exercises
         if (currentGroup.length > 0) {
             groups.push(currentGroup);
         }
