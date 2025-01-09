@@ -177,6 +177,10 @@ function Notifications() {
                                                     borderRadius: '50%',
                                                     marginRight: '15px'
                                                 }}
+                                                onError={(e) => {
+                                                    e.target.onerror = null; // Prevent infinite loop
+                                                    e.target.src = require('../../images/profilepic.webp');
+                                                }}
                                             />
                                             <div style={{ flex: 1 }}>
                                                 <div style={{ fontWeight: notification.read ? 'normal' : 'bold' }}>

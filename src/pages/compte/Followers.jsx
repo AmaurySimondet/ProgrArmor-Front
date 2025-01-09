@@ -43,6 +43,10 @@ const Followers = ({ user, title, dataKey }) => {
                                 width: "100px",
                                 height: "100px"
                             }}
+                            onError={(e) => {
+                                e.target.onerror = null; // Prevent infinite loop
+                                e.target.src = require('../../images/profilepic.webp');
+                            }}
                             onClick={() => window.location.href = `/compte?id=${follower._id}`}
                         />
                         <h2 className="clickable" style={{ cursor: 'pointer' }} onClick={() => window.location.href = `/compte?id=${follower._id}`}>{follower?.fName} {follower?.lName}</h2>

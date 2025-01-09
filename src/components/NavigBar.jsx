@@ -90,7 +90,10 @@ function NavigBar(props) {
                             <a className="nav-link" href="/session"><img className="icon-navbar" src={require('../images/icons/write.webp')} alt='session' /> Nouvelle séance</a>
                             <a className="nav-link" href="/programme"><img className="icon-navbar" src={require('../images/icons/plus.webp')} alt='programme' /> Programmes</a>
                             <hr style={{ borderColor: "black" }} />
-                            <a className="nav-link" href={`/compte?id=${localStorage.getItem('id')}`}> <img className="icon-navbar" src={user?.profilePic ? user?.profilePic : require('../images/profilepic.webp')} alt='compte' style={{ borderRadius: "50%", border: "1px solid black" }} />{user?.fName} {user?.lName}</a>
+                            <a className="nav-link" href={`/compte?id=${localStorage.getItem('id')}`}> <img onError={(e) => {
+                                e.target.onerror = null; // Prevent infinite loop
+                                e.target.src = require('../images/profilepic.webp');
+                            }} className="icon-navbar" src={user?.profilePic ? user?.profilePic : require('../images/profilepic.webp')} alt='compte' style={{ borderRadius: "50%", border: "1px solid black" }} />{user?.fName} {user?.lName}</a>
                             <a className="nav-link" href="/aide"> <img className="icon-navbar" src={require('../images/icons/icons8-question-mark-96.webp')} alt='aide' style={{ filter: "invert(1)" }} /> Aide </a>
                             <a className="nav-link" href="/admin"><img className="icon-navbar" src={require('../images/icons/lock.webp')} alt='admin' /> Admin</a>
                             <hr style={{ borderColor: "black" }} />

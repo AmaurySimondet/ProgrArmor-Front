@@ -155,6 +155,10 @@ const DisplayReactions = ({ showReactions, setShowReactions, reactions, currentU
                                         width: '40px',
                                         height: '40px'
                                     }}
+                                    onError={(e) => {
+                                        e.target.onerror = null; // Prevent infinite loop
+                                        e.target.src = require('../images/profilepic.webp');
+                                    }}
                                     onClick={() => window.location.href = `/compte?id=${reaction.user._id}`}
                                 />
                                 <div style={{ flex: 1 }}>

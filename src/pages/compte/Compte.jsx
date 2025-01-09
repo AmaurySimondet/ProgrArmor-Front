@@ -55,7 +55,7 @@ function Compte() {
 
         // Get stats
         const statsRes = await API.getStats(searchParams.get('id'));
-        const favoriteExercices = await apiCalls.buildFavoriteExercices(statsRes.data.stats.topExercices);
+        const favoriteExercices = await apiCalls.buildFavoriteExercices(statsRes.data.stats.topExercices.topExercices);
         const formattedStats = {
           seances: statsRes.data.stats.seances || 0,
           topExercices: favoriteExercices ? favoriteExercices.map(ex => ({
@@ -216,6 +216,10 @@ function Compte() {
               className="icon-navbar"
               src={user?.profilePic ? user?.profilePic : require('../../images/profilepic.webp')}
               alt='compte'
+              onError={(e) => {
+                e.target.onerror = null; // Prevent infinite loop
+                e.target.src = require('../../images/profilepic.webp');
+              }}
               style={{
                 borderRadius: "50%",
                 border: "1px solid white",

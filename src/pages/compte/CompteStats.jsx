@@ -12,22 +12,24 @@ const CompteStats = ({ stats }) => {
             </div>
             <div>
                 <h3> Top exercices </h3>
-                <ul>
+                <div>
                     {Array.isArray(stats?.topExercices) ?
                         stats.topExercices.slice(0, 3).map((exercise, index) => (
-                            <li key={exercise._id}>{exercise.fullName}</li>
+                            <div key={exercise._id} style={{ color: index % 2 === 0 ? 'black' : 'grey' }}>
+                                {exercise.fullName}
+                            </div>
                         ))
                         : null
                     }
-                </ul>
-            </div>
-            <div>
-                <h3> PRs </h3>
-                <div> {stats?.prs} </div>
+                </div>
             </div>
             <div>
                 <h3> Jour préféré </h3>
                 <div> {stats?.favoriteDay} </div>
+            </div>
+            <div>
+                <h3> PRs </h3>
+                <div> {stats?.prs} </div>
             </div>
         </div>
 

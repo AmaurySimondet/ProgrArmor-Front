@@ -98,6 +98,10 @@ function Comments({ seanceUser, seanceId, setShowReactions, setReactions }) {
                                         window.location.href = `/compte?id=${comment.comment.user._id}`;
                                     }}>
                                     <img
+                                        onError={(e) => {
+                                            e.target.onerror = null; // Prevent infinite loop
+                                            e.target.src = require('../../images/profilepic.webp');
+                                        }}
                                         src={comment.comment.user.profilePic ? comment.comment.user.profilePic : require('../../images/profilepic.webp')}
                                         alt=""
                                         style={{

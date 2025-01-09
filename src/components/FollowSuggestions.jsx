@@ -152,6 +152,10 @@ const FollowSuggestions = ({ userId }) => {
                                     className="icon-navbar"
                                     src={user?.profilePic ? user?.profilePic : require('../images/profilepic.webp')}
                                     alt='compte'
+                                    onError={(e) => {
+                                        e.target.onerror = null; // Prevent infinite loop
+                                        e.target.src = require('../images/profilepic.webp');
+                                    }}
                                     style={{
                                         borderRadius: "50%",
                                         border: "1px solid white",

@@ -71,6 +71,10 @@ function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescrip
                             border: "1px solid white",
                         }}
                         onClick={() => window.location.href = `/compte?id=${user._id}`}
+                        onError={(e) => {
+                            e.target.onerror = null; // Prevent infinite loop
+                            e.target.src = require('../../images/profilepic.webp');
+                        }}
                     />
                     <div>
                         {user ? <strong><a href={`/compte?id=${user._id}`}>{user.fName} {user.lName}</a></strong> : <strong>Prénom Nom</strong>}

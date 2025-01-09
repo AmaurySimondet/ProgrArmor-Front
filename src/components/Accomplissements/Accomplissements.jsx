@@ -159,6 +159,10 @@ function Accomplissements() {
                                         :
                                         { width: "100px", height: "100px", padding: "2%" }}
                                 src={user.profilePic}
+                                onError={(e) => {
+                                    e.target.onerror = null; // Prevent infinite loop
+                                    e.target.src = require('../../images/profilepic.webp');
+                                }}
                                 alt="profile-pic"
                             />
 
