@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API from '../../utils/API';
-
-const REACTIONS = ['👍', '❤️', '💪', '👏', '😂'];
+import { REACTIONS } from '../../utils/constants';
 
 function Comments({ seanceUser, seanceId, setShowReactions, setReactions }) {
     const [comments, setComments] = useState([]);

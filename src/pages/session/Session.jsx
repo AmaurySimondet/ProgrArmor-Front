@@ -13,9 +13,10 @@ import API from "../../utils/API";
 import { setsToSeance, addPrToSets } from "../../utils/sets";
 import { Loader } from "../../components/Loader";
 import SessionPost from "./SessionPost";
-import { COLORS } from "../../utils/colors";
+import { COLORS } from "../../utils/constants";
 import Alert from "../../components/Alert";
 import { useSearchParams } from 'react-router-dom';
+import { verifySession } from "../../utils/seance";
 
 const Session = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -183,12 +184,11 @@ const Session = () => {
   };
 
   const handleFinish = () => {
-    console.log(`Séance terminée: ${JSON.stringify({
-      selectedSession,
-      selectedName,
-      selectedDate,
-      selectedExercices
-    })}`);
+    const alert = verifySession(selectedSession, selectedName, selectedDate, selectedExercices);
+    if (alert) {
+      showAlert(alert.message, alert.type);
+      return;
+    }
     setStep(7);
   };
 

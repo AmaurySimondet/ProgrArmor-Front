@@ -2,7 +2,7 @@ import { React, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import NavigBar from "../../components/NavigBar.jsx";
 import Footer from "../../components/Footer.jsx";
-import { COLORS } from "../../utils/colors.js";
+import { COLORS } from "../../utils/constants.js";
 import DisplaySeancesPost from "../../components/DisplaySeancesPost.jsx";
 import PrSearch from "./PrSearch.jsx";
 import PrTable from "./PrTable.jsx";

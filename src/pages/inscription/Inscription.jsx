@@ -4,7 +4,7 @@ import BoutonsSociaux from "../../components/BoutonsSociaux.jsx";
 import InscriptionForm from "./InscriptionForm.jsx";
 import Footer from "../../components/Footer.jsx";
 import API from "../../utils/API.js";
-import { COLORS } from "../../utils/colors.js";
+import { COLORS } from "../../utils/constants.js";
 import createTokenAndId from "../../utils/token.js";
 
 function Inscription() {

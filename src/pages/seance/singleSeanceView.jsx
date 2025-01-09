@@ -5,7 +5,7 @@ import { Loader } from '../../components/Loader';
 import NavigBar from '../../components/NavigBar';
 import Footer from '../../components/Footer';
 import { fetchSeanceData } from '../../utils/seance';
-import { COLORS } from '../../utils/colors';
+import { COLORS } from '../../utils/constants';
 import { useWindowDimensions } from '../../utils/useEffect';
 
 const SingleSeanceView = () => {

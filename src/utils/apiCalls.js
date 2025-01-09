@@ -44,39 +44,24 @@ async function buildFavoriteExercices(favoriteExercices) {
 }
 
 /**
- * Fetch top exercises for a given user with full details
- * [
- *    {
- *      "exercice": {
- *          "name": {"en": "Bench Press", "fr": "Développé couché"},
- *          "_id": "5f4f5b5c0b4a6b0017b3d5c5",
- *          "type": "5f4f5b5c0b4a6b0017b3d5c4"
- *      },
- *      "categories": [
- *          {
- *              "category": {
- *              "name": {"en": "Chest", "fr": "Pectoraux"},
- *              "_id": "5f4f5b5c0b4a6b0017b3d5c6",
- *              "type": "5f4f5b5c0b4a6b0017b3d5c4"
- *          },
- *          categoryType: "5f4f5b5c0b4a6b0017b3d5c4"
- *      ]
- *   }
- * ...
- * ]
+ * Fetch favorite exercices with pagination
  * @param {string} userId 
- * @returns {Promise} A promise that resolves to an array of top exercises with full details
+ * @param {number} page 
+ * @param {number} limit 
+ * @returns {Promise} A promise that resolves to { favoriteExercices, pagination }
  */
-async function fetchFavoriteExercices(userId) {
+async function fetchFavoriteExercices(userId, page = 1, limit = 5) {
     try {
-        // Fetch the top exercises for the user
-        const response = await API.getTopExercices({ userId });
+        // Fetch the top exercises for the user with pagination
+        const response = await API.getTopExercices({ userId, page, limit });
         let favoriteExercices = response.data.topExercices;
 
         favoriteExercices = await buildFavoriteExercices(favoriteExercices);
 
-        // Return the final processed exercises
-        return favoriteExercices;
+        return {
+            favoriteExercices,
+            pagination: response.data.pagination
+        };
     } catch (error) {
         console.error("Error fetching favorite exercices:", error);
         throw error;

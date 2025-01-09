@@ -5,7 +5,7 @@ import { useWindowDimensions } from "../utils/useEffect";
 import { fetchSeancesData } from "../utils/seance";
 import { Loader } from "./Loader";
 import { getUserById } from "../utils/user";
-import { COLORS } from "../utils/colors";
+import { COLORS } from "../utils/constants";
 
 const DisplaySeancesPost = (props) => {
     const { width } = useWindowDimensions();

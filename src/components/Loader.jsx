@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { COLORS } from '../utils/colors';
+import { COLORS } from '../utils/constants';
 
 const tips = [
     "Pour ajouter un minimum de poids sur vos barres, vous pouvez ajouter des sécurités (en général 200-400g).",

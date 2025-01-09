@@ -3,7 +3,7 @@ import NavigBar from "../../components/NavigBar";
 import { React, useState } from "react"
 import InstallApp from "./InstallApp";
 import ConversionBerger from "./ConversionBerger";
-import { COLORS } from "../../utils/colors";
+import { COLORS } from "../../utils/constants";
 
 function Aide() {
     const [clickInstallApp, setClickInstallApp] = useState(false);

@@ -5,7 +5,7 @@ import { randomBodybuildingEmojis } from '../../utils/emojis';
 import API from '../../utils/API';
 import { resizeImage, validateFileSize, MAX_FILE_SIZE } from '../../utils/mediaUtils';
 import { uploadToS3 } from '../../utils/s3Upload';
-
+import { VIDEO_FORMATS } from '../../utils/constants';
 
 function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgroundColors, editable, selectedDate, seancePhotos }) {
     const emojis = randomBodybuildingEmojis(selectedExercices.length);
@@ -256,7 +256,7 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
                 {photos.length > 0 && (
                     photos.map((photo, idx) => (
                         <div className="instagramPost popInElement" style={{ padding: '0', position: 'relative' }}>
-                            {photo.cloudfrontUrl.toLowerCase().endsWith('.mp4') ? (
+                            {VIDEO_FORMATS.includes(photo.cloudfrontUrl.toLowerCase().split('.').pop()) ? (
                                 <video
                                     controls
                                     style={{

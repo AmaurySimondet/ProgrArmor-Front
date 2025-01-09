@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import API from '../../utils/API';
 import { MiniLoader } from '../../components/Loader';
-import { COLORS } from '../../utils/colors';
-
-const REACTIONS = ['👍', '❤️', '💪', '👏', '😂'];
+import { COLORS, REACTIONS } from '../../utils/constants';
 
 function ReactionsAndComments({ seanceUser, seanceId, displayComments, setShowReactions, setReactions }) {
     const [showReactionPicker, setShowReactionPicker] = useState(false);

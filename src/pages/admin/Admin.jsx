@@ -1,7 +1,7 @@
 import { React, useEffect, useState } from "react";
 import NavigBar from "../../components/NavigBar";
 import Footer from "../../components/Footer";
-import { COLORS } from "../../utils/colors";
+import { COLORS } from "../../utils/constants";
 import API from "../../utils/API";
 
 function Admin() {

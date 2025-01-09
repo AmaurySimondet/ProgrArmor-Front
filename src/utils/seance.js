@@ -85,4 +85,31 @@ const fetchSeanceData = async (seanceId) => {
     }
 };
 
-export { fetchSeancesData, fetchSeanceData };
+/**
+ * Verifies if the session is valid
+ * @param {Object} session - The session to verify
+ * @param {string} name - The name of the session
+ * @param {string} date - The date of the session
+ * @param {Array} exercices - The exercices of the session
+ * @returns {Object} The alert object if the session is invalid, null otherwise
+ */
+const verifySession = (session, name, date, exercices) => {
+    if (!session) {
+        return { message: "Tu n'as pas choisi de séance", type: "danger" };
+    }
+    if (!name) {
+        return { message: "Tu n'as pas choisi de nom", type: "danger" };
+    }
+    if (!date) {
+        return { message: "Tu n'as pas choisi de date", type: "danger" };
+    }
+    if (!exercices) {
+        return { message: "Tu n'as pas choisi d'exercices", type: "danger" };
+    }
+    if (exercices.length === 0) {
+        return { message: "Tu n'as pas choisi d'exercices", type: "danger" };
+    }
+    return null;
+};
+
+export { fetchSeancesData, fetchSeanceData, verifySession };

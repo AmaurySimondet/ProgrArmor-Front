@@ -1,7 +1,7 @@
 import { React } from "react";
 import Footer from "../components/Footer.jsx";
 import NavigBar from "../components/NavigBar.jsx"
-import { COLORS } from "../utils/colors.js";
+import { COLORS } from "../utils/constants.js";
 
 function Travaux() {
 

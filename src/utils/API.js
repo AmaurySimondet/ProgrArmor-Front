@@ -205,7 +205,14 @@ export default {
     return axios.get(`${burl}/user/sets`, { headers: headers, params: send });
   },
   getTopExercices: function (send) {
-    return axios.get(`${burl}/user/topExercices`, { headers: headers, params: send });
+    return axios.get(`${burl}/user/topExercices`, {
+      headers: headers,
+      params: {
+        userId: send.userId,
+        page: send.page || 1,
+        limit: send.limit || 5
+      }
+    });
   },
   createSet: function (send) {
     return axios.post(`${burl}/user/createSet`, send, { headers: headers, params: send });

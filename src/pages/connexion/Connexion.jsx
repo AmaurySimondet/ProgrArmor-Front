@@ -6,7 +6,7 @@ import Footer from "../../components/Footer.jsx";
 import API from "../../utils/API.js";
 import emailjs from 'emailjs-com';
 import { v4 as uuidv4 } from 'uuid';
-import { COLORS } from "../../utils/colors.js";
+import { COLORS } from "../../utils/constants.js";
 import createTokenAndId from "../../utils/token.js";
 
 function Connexion() {

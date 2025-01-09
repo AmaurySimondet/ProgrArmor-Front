@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Loader } from '../../components/Loader';
+import { Loader, MiniLoader } from '../../components/Loader';
 import API from '../../utils/API';
 import apiCalls from '../../utils/apiCalls';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
@@ -18,6 +18,9 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
     const [searchQuery, setSearchQuery] = useState(''); // Track the search input
     const { width } = useWindowDimensions();
     const [favoriteExercices, setFavoriteExercices] = useState(null);
+    const [favoriteExercicesPage, setFavoriteExercicesPage] = useState(1);
+    const [hasMoreFavorites, setHasMoreFavorites] = useState(true);
+    const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
 
     useEffect(() => {
         // Fetch exercise types from the API
@@ -56,9 +59,14 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 const combinationsResponse = await API.getCombinations();
                 setAllCombinations(combinationsResponse.data.combinations);
 
-                // Fetch favorite exercises
-                const favoriteExercices = await apiCalls.fetchFavoriteExercices(localStorage.getItem('id'));
+                // Fetch favorite exercises with pagination
+                const { favoriteExercices, pagination } = await apiCalls.fetchFavoriteExercices(
+                    localStorage.getItem('id'),
+                    1,
+                    5
+                );
                 setFavoriteExercices(favoriteExercices);
+                setHasMoreFavorites(pagination.hasMore);
 
                 setLoading(false);
             } catch (error) {
@@ -92,7 +100,27 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
         setCombinations(results.map(result => result.item));
     };
 
+    const loadMoreFavorites = async () => {
+        if (loadingMoreFavorites || !hasMoreFavorites) return;
 
+        try {
+            setLoadingMoreFavorites(true);
+            const nextPage = favoriteExercicesPage + 1;
+            const { favoriteExercices: newFavorites, pagination } = await apiCalls.fetchFavoriteExercices(
+                localStorage.getItem('id'),
+                nextPage,
+                5
+            );
+
+            setFavoriteExercices(prev => [...prev, ...newFavorites]);
+            setHasMoreFavorites(pagination.hasMore);
+            setFavoriteExercicesPage(nextPage);
+        } catch (error) {
+            console.error("Error loading more favorites:", error);
+        } finally {
+            setLoadingMoreFavorites(false);
+        }
+    };
 
     if (loading) {
         return <Loader />;
@@ -145,6 +173,27 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                                 </div>
                             </div>
                         ))}
+                        {hasMoreFavorites && (
+                            <div
+                                onClick={loadMoreFavorites}
+                                className='sessionChoiceSmall'
+                                style={{
+                                    display: 'inline-block',
+                                    textAlign: 'center',
+                                    minWidth: '200px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {loadingMoreFavorites ? (
+                                    <MiniLoader />
+                                ) : (
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                                        <div style={{ fontSize: width < 500 ? '18px' : '36px', filter: "invert(1)" }}>➕</div>
+                                        <div>Voir plus</div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             }

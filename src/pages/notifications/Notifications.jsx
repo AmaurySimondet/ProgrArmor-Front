@@ -1,7 +1,7 @@
 import { React, useState, useEffect } from "react";
 import NavigBar from "../../components/NavigBar";
 import Footer from "../../components/Footer";
-import { COLORS } from "../../utils/colors";
+import { COLORS } from "../../utils/constants";
 import { Loader } from "../../components/Loader";
 import { useWindowDimensions } from "../../utils/useEffect";
 import { formatDate } from "../../utils/dates";
