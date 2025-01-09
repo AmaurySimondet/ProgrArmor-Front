@@ -8,12 +8,10 @@ import Fuse from 'fuse.js';
 import RenderExercice from './RenderExercice';
 
 const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavorite }) => {
-    const [combinations, setCombinations] = useState(null);
     const [exerciceTypes, setExerciceTypes] = useState(null);
     const [allExerciceTypes, setAllExerciceTypes] = useState(null);
     const [allCombinations, setAllCombinations] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [moreTypesUnclicked, setMoreTypesUnclicked] = useState(true); // Track whether to show more types
     const [emojis, setEmojis] = useState(null);
     const [searchQuery, setSearchQuery] = useState(''); // Track the search input
     const { width } = useWindowDimensions();
@@ -21,6 +19,12 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
     const [favoriteExercicesPage, setFavoriteExercicesPage] = useState(1);
     const [hasMoreFavorites, setHasMoreFavorites] = useState(true);
     const [loadingMoreFavorites, setLoadingMoreFavorites] = useState(false);
+    const [combinationsPage, setCombinationsPage] = useState(1);
+    const [hasMoreCombinations, setHasMoreCombinations] = useState(true);
+    const [loadingMoreCombinations, setLoadingMoreCombinations] = useState(false);
+    const [exerciceTypesPage, setExerciceTypesPage] = useState(1);
+    const [hasMoreTypes, setHasMoreTypes] = useState(true);
+    const [loadingMoreTypes, setLoadingMoreTypes] = useState(false);
 
     useEffect(() => {
         // Fetch exercise types from the API
@@ -29,9 +33,10 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
         // Fetch all data (exercise types, combinations, favorite exercices)
         const fetchAllData = async () => {
             try {
-                // Fetch and process exercise types
-                const response = await API.getExerciceTypes();
+                // Fetch and process exercise types with pagination
+                const response = await API.getExerciceTypes({ page: 1, limit: 7 });
                 const fetchedTypes = response.data.exerciceTypes || [];
+                setHasMoreTypes(response.data.pagination.hasMore);
 
                 // Fetch exercises for each type
                 const typesWithExercises = await Promise.all(
@@ -53,11 +58,12 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 );
 
                 setAllExerciceTypes(typesWithExercises);
-                setExerciceTypes(typesWithExercises.slice(0, 7));
+                setExerciceTypes(typesWithExercises);
 
-                // Fetch combinations
-                const combinationsResponse = await API.getCombinations();
+                // Fetch combinations with pagination
+                const combinationsResponse = await API.getCombinations({ page: 1, limit: 7 });
                 setAllCombinations(combinationsResponse.data.combinations);
+                setHasMoreCombinations(combinationsResponse.data.pagination.hasMore);
 
                 // Fetch favorite exercises with pagination
                 const { favoriteExercices, pagination } = await apiCalls.fetchFavoriteExercices(
@@ -84,20 +90,65 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
         }
     }, [allExerciceTypes]);
 
-    const handleMoreTypes = () => {
-        setExerciceTypes(allExerciceTypes); // Show all exercise types
-        setMoreTypesUnclicked(false); // Hide the "More Types" button
+    const loadMoreTypes = async () => {
+        if (loadingMoreTypes || !hasMoreTypes) return;
+
+        try {
+            setLoadingMoreTypes(true);
+            const nextPage = exerciceTypesPage + 1;
+
+            // Fetch next page of exercise types
+            const response = await API.getExerciceTypes({ page: nextPage, limit: 7 });
+            const newTypes = response.data.exerciceTypes || [];
+
+            // Fetch exercises for new types
+            const newTypesWithExercises = await Promise.all(
+                newTypes.map(async type => {
+                    try {
+                        const exercisesResponse = await API.getExercices({ exerciceType: type._id });
+                        return {
+                            ...type,
+                            exercises: exercisesResponse.data.exercices.sort((a, b) => a.name.fr.localeCompare(b.name.fr)) || []
+                        };
+                    } catch (error) {
+                        console.error(`Error fetching exercises for type ${type.name.fr}:`, error);
+                        return {
+                            ...type,
+                            exercises: []
+                        };
+                    }
+                })
+            );
+
+            setAllExerciceTypes(prev => [...prev, ...newTypesWithExercises]);
+            setExerciceTypes(prev => [...prev, ...newTypesWithExercises]);
+            setHasMoreTypes(response.data.pagination.hasMore);
+            setExerciceTypesPage(nextPage);
+        } catch (error) {
+            console.error("Error loading more types:", error);
+        } finally {
+            setLoadingMoreTypes(false);
+        }
     };
 
-    const handleSearch = (event) => {
+    const handleSearch = async (event) => {
         setSearchQuery(event.target.value);
+        setCombinationsPage(1); // Reset page when searching
+
         if (event.target.value === '') {
-            setCombinations(allCombinations.slice(0, 7));
+            const response = await API.getCombinations({ page: 1, limit: 7 });
+            setAllCombinations(response.data.combinations);
+            setHasMoreCombinations(response.data.pagination.hasMore);
             return;
         }
-        const fuse = new Fuse(allCombinations, { keys: ['combinationName.fr'] });
-        const results = fuse.search(event.target.value);
-        setCombinations(results.map(result => result.item));
+
+        const response = await API.getCombinations({
+            page: 1,
+            limit: 7,
+            search: event.target.value
+        });
+        setAllCombinations(response.data.combinations);
+        setHasMoreCombinations(response.data.pagination.hasMore);
     };
 
     const loadMoreFavorites = async () => {
@@ -119,6 +170,28 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
             console.error("Error loading more favorites:", error);
         } finally {
             setLoadingMoreFavorites(false);
+        }
+    };
+
+    const loadMoreCombinations = async () => {
+        if (loadingMoreCombinations || !hasMoreCombinations) return;
+
+        try {
+            setLoadingMoreCombinations(true);
+            const nextPage = combinationsPage + 1;
+            const response = await API.getCombinations({
+                page: nextPage,
+                limit: 7,
+                search: searchQuery
+            });
+
+            setAllCombinations(prev => [...prev, ...response.data.combinations]);
+            setHasMoreCombinations(response.data.pagination.hasMore);
+            setCombinationsPage(nextPage);
+        } catch (error) {
+            console.error("Error loading more combinations:", error);
+        } finally {
+            setLoadingMoreCombinations(false);
         }
     };
 
@@ -219,16 +292,31 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
             {/* Search Results */}
             {searchQuery && (
                 <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
-                    {combinations.length ? (
-                        combinations.map((combination, index) => (
-                            <div
-                                key={index}
-                                onClick={() => onSearch(combination)}
-                                className="inputClickable"
-                            >
-                                {combination.combinationName.fr}
-                            </div>
-                        ))
+                    {allCombinations.length ? (
+                        <>
+                            {allCombinations.map((combination, index) => (
+                                <div
+                                    key={index}
+                                    onClick={() => onSearch(combination)}
+                                    className="inputClickable"
+                                >
+                                    {combination.combinationName.fr}
+                                </div>
+                            ))}
+                            {hasMoreCombinations && (
+                                <div
+                                    onClick={loadMoreCombinations}
+                                    className="inputClickable"
+                                    style={{ textAlign: 'center', cursor: 'pointer' }}
+                                >
+                                    {loadingMoreCombinations ? (
+                                        <MiniLoader />
+                                    ) : (
+                                        "Voir plus..."
+                                    )}
+                                </div>
+                            )}
+                        </>
                     ) : (
                         <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
                     )}
@@ -260,12 +348,17 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                         </select>
                     </div>
                 ))}
-                {moreTypesUnclicked && (
+                {hasMoreTypes && (
                     <div
-                        onClick={handleMoreTypes}
+                        onClick={loadMoreTypes}
                         className='sessionChoicePlus'
+                        style={{ cursor: 'pointer' }}
                     >
-                        <div style={width < 500 ? { fontSize: '18px' } : { fontSize: '36px' }}>➕</div>
+                        {loadingMoreTypes ? (
+                            <MiniLoader />
+                        ) : (
+                            <div style={width < 500 ? { fontSize: '18px' } : { fontSize: '36px' }}>➕</div>
+                        )}
                     </div>
                 )}
             </div>

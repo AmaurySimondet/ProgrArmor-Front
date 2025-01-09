@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
-import { Loader } from '../../components/Loader';
+import { Loader, MiniLoader } from '../../components/Loader';
 import API from '../../utils/API';
 import Fuse from 'fuse.js';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
@@ -9,15 +9,20 @@ import Alert from '../../components/Alert';
 
 const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteCategories, onDeleteLastCategorie }) => {
     const [categoryTypes, setCategoryTypes] = useState([]);
-    const [allCategoryTypes, setAllCategoryTypes] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [moreTypesUnclicked, setMoreTypesUnclicked] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [allCategories, setAllCategories] = useState([]);
     const { width } = useWindowDimensions();
     const [emojis, setEmojis] = useState([]);
     const [alert, setAlert] = useState(null);
     const [filteredCategories, setFilteredCategories] = useState([]);
+    const [allCategoryTypes, setAllCategoryTypes] = useState([]);
+    const [categoryTypesPage, setCategoryTypesPage] = useState(1);
+    const [hasMoreTypes, setHasMoreTypes] = useState(true);
+    const [loadingMoreTypes, setLoadingMoreTypes] = useState(false);
+    const [categoriesPage, setCategoriesPage] = useState(1);
+    const [hasMoreCategories, setHasMoreCategories] = useState(true);
+    const [loadingMoreCategories, setLoadingMoreCategories] = useState(false);
 
     const showAlert = (message, type) => {
         setAlert({ message, type });
@@ -29,9 +34,10 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
 
     useEffect(() => {
         // Fetch category types from the API
-        API.getCategoryTypes()
+        API.getCategoryTypes({ page: 1, limit: 7 })
             .then(async response => {
                 const fetchedTypes = response.data.categorieTypes || [];
+                setHasMoreTypes(response.data.pagination.hasMore);
 
                 // Fetch categories for each type
                 const typesWithCategories = await Promise.all(
@@ -53,7 +59,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
                 );
 
                 setAllCategoryTypes(typesWithCategories);
-                setCategoryTypes(typesWithCategories.slice(0, 7));
+                setCategoryTypes(typesWithCategories);
                 setLoading(false);
             })
             .catch(error => {
@@ -61,35 +67,105 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
                 setLoading(false);
             });
 
-        API.getCategories()
+        API.getCategories({ page: 1, limit: 7 })
             .then(response => {
                 const categories = response.data.categories || [];
                 setAllCategories(categories);
+                setFilteredCategories(categories);
+                setHasMoreCategories(response.data.pagination.hasMore);
             })
             .catch(error => {
-                console.error("Error fetching exercise names:", error);
+                console.error("Error fetching categories:", error);
             });
     }, []);
 
-    const handleMoreTypes = () => {
-        setCategoryTypes(allCategoryTypes); // Show all category types
-        setMoreTypesUnclicked(false); // Hide the "More Types" button
+    const loadMoreTypes = async () => {
+        if (loadingMoreTypes || !hasMoreTypes) return;
+
+        try {
+            setLoadingMoreTypes(true);
+            const nextPage = categoryTypesPage + 1;
+
+            // Fetch next page of category types
+            const response = await API.getCategoryTypes({ page: nextPage, limit: 7 });
+            const newTypes = response.data.categorieTypes || [];
+
+            // Fetch categories for new types
+            const newTypesWithCategories = await Promise.all(
+                newTypes.map(async type => {
+                    try {
+                        const categoriesResponse = await API.getCategories({ categorieType: type._id });
+                        return {
+                            ...type,
+                            categories: categoriesResponse.data.categories || []
+                        };
+                    } catch (error) {
+                        console.error(`Error fetching categories for type ${type.name.fr}:`, error);
+                        return {
+                            ...type,
+                            categories: []
+                        };
+                    }
+                })
+            );
+
+            setAllCategoryTypes(prev => [...prev, ...newTypesWithCategories]);
+            setCategoryTypes(prev => [...prev, ...newTypesWithCategories]);
+            // Update emojis for new length
+            setEmojis(prev => [...prev, ...randomBodybuildingEmojis(newTypes.length)]);
+            setHasMoreTypes(response.data.pagination.hasMore);
+            setCategoryTypesPage(nextPage);
+        } catch (error) {
+            console.error("Error loading more types:", error);
+        } finally {
+            setLoadingMoreTypes(false);
+        }
     };
 
-    const handleSearch = (event) => {
+    const handleSearch = async (event) => {
         setSearchQuery(event.target.value);
-        if (event.target.value === '') {
-            setFilteredCategories(allCategories.slice(0, 7));
-            return;
+        setCategoriesPage(1); // Reset page when searching
+
+        try {
+            const response = await API.getCategories({
+                page: 1,
+                limit: 7,
+                search: event.target.value
+            });
+            setFilteredCategories(response.data.categories);
+            setHasMoreCategories(response.data.pagination.hasMore);
+        } catch (error) {
+            console.error("Error searching categories:", error);
         }
-        const fuse = new Fuse(allCategories, { keys: ['name.fr'] });
-        const results = fuse.search(event.target.value);
-        setFilteredCategories(results.map(result => result.item));
+    };
+
+    const loadMoreCategories = async () => {
+        if (loadingMoreCategories || !hasMoreCategories) return;
+
+        try {
+            setLoadingMoreCategories(true);
+            const nextPage = categoriesPage + 1;
+
+            const response = await API.getCategories({
+                page: nextPage,
+                limit: 7,
+                search: searchQuery
+            });
+
+            setFilteredCategories(prev => [...prev, ...response.data.categories]);
+            setHasMoreCategories(response.data.pagination.hasMore);
+            setCategoriesPage(nextPage);
+        } catch (error) {
+            console.error("Error loading more categories:", error);
+        } finally {
+            setLoadingMoreCategories(false);
+        }
     };
 
     useEffect(() => {
-        setEmojis(randomBodybuildingEmojis(allCategories.length));
-    }, [allCategories]);
+        // Update emojis whenever categoryTypes changes
+        setEmojis(randomBodybuildingEmojis(categoryTypes.length));
+    }, [categoryTypes]);
 
     // Handle category click with animation
     const handleCategoryClick = (categorie) => {
@@ -120,7 +196,7 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
                     <span onClick={onSkip} style={{ cursor: 'pointer' }} className="clickable"> Passer &gt; </span>
                 </h1>
             </div>
-            <h1 style={{ margin: '0' }}>{index !== null ? "Modifier les catégories" : "On ajoute du détail ?"}</h1>
+            <h1 style={{ margin: '0' }}>{index !== null ? "Modifier les détails" : "On ajoute du détail ?"}</h1>
 
             <RenderExercice exercice={exercice} />
 
@@ -152,15 +228,30 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
                 searchQuery && (
                     <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
                         {filteredCategories.length > 0 ? (
-                            filteredCategories.map((categorie, index) => (
-                                <div
-                                    key={index}
-                                    onClick={() => handleCategoryClick(categorie)}
-                                    className="inputClickable"
-                                >
-                                    {categorie.name.fr}
-                                </div>
-                            ))
+                            <>
+                                {filteredCategories.map((categorie, index) => (
+                                    <div
+                                        key={index}
+                                        onClick={() => handleCategoryClick(categorie)}
+                                        className="inputClickable"
+                                    >
+                                        {categorie.name.fr}
+                                    </div>
+                                ))}
+                                {hasMoreCategories && (
+                                    <div
+                                        onClick={loadMoreCategories}
+                                        className="inputClickable"
+                                        style={{ textAlign: 'center', cursor: 'pointer' }}
+                                    >
+                                        {loadingMoreCategories ? (
+                                            <MiniLoader />
+                                        ) : (
+                                            "Voir plus..."
+                                        )}
+                                    </div>
+                                )}
+                            </>
                         ) : (
                             <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
                         )}
@@ -195,13 +286,17 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
                         </select>
                     </div>
                 ))}
-                {moreTypesUnclicked && (
+                {hasMoreTypes && (
                     <div
-                        onClick={handleMoreTypes}
+                        onClick={loadMoreTypes}
                         className='sessionChoicePlus'
                         style={{ cursor: 'pointer', color: '#007bff' }}
                     >
-                        <div style={width < 500 ? { fontSize: '18px' } : { fontSize: '36px' }}>➕</div>
+                        {loadingMoreTypes ? (
+                            <MiniLoader />
+                        ) : (
+                            <div style={width < 500 ? { fontSize: '18px' } : { fontSize: '36px' }}>➕</div>
+                        )}
                     </div>
                 )}
             </div>

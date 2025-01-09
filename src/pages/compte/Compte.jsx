@@ -4,8 +4,6 @@ import NavigBar from "../../components/NavigBar.jsx";
 import Footer from "../../components/Footer.jsx";
 import { COLORS } from "../../utils/constants.js";
 import DisplaySeancesPost from "../../components/DisplaySeancesPost.jsx";
-import PrSearch from "./PrSearch.jsx";
-import PrTable from "./PrTable.jsx";
 import API from "../../utils/API.js";
 import { Loader } from "../../components/Loader.jsx";
 import CompteStats from "./CompteStats.jsx";
@@ -394,20 +392,6 @@ function Compte() {
               {width > 700 ? ' Statistiques' : null}
             </a>
           </li>
-          <li className={activeTab === 'other' ? 'selected' : ''}>
-            <a className="tab" onClick={() => handleTabChange('other')}>
-              <img src={require('../../images/icons/three-dots.webp')} alt="other" style={{ width: '20px', height: '20px' }} />
-              {width > 700 ? ' Autre' : null}
-            </a>
-            <ul style={{ display: activeTab === 'other' ? 'block' : 'none', position: 'absolute', backgroundColor: 'white', boxShadow: '0 2px 5px rgba(0,0,0,0.2)', borderRadius: '4px', padding: '8px 0' }}>
-              <div style={{ padding: '8px 16px', cursor: 'pointer' }} onClick={() => handleTabChange('prSearch')}>
-                Est-ce un PR ?
-              </div>
-              <div style={{ padding: '8px 16px', cursor: 'pointer' }} onClick={() => handleTabChange('prTable')}>
-                Tableau PR
-              </div>
-            </ul>
-          </li>
         </ul>
       </div>
     )
@@ -500,8 +484,6 @@ function Compte() {
 
                 {/* Render active tab component */}
                 {activeTab === 'statistiques' && <Stats stats={stats} userId={searchParams.get('id')} />}
-                {activeTab === 'prSearch' && <PrSearch />}
-                {activeTab === 'prTable' && <PrTable />}
                 {activeTab === 'seances' && <DisplaySeancesPost userId={searchParams.get('id')} />}
               </div>
             </div>

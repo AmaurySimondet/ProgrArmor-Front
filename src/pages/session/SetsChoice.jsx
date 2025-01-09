@@ -4,6 +4,7 @@ import { Tooltip } from 'react-tooltip';
 import RenderExercice from './RenderExercice';
 import Alert from '../../components/Alert';
 import API from '../../utils/API';
+import { MiniLoader } from '../../components/Loader';
 
 const GranularitySelector = ({ granularity, onChange }) => {
     return <div className="dropdown">
@@ -67,6 +68,9 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     });
     const [tensionOptions, setTensionOptions] = useState([]);
     const [weightLoadOptions, setWeightLoadOptions] = useState([]);
+    const [topFormatsPage, setTopFormatsPage] = useState(1);
+    const [hasMoreFormats, setHasMoreFormats] = useState(true);
+    const [loadingMoreFormats, setLoadingMoreFormats] = useState(false);
 
     useEffect(() => {
         API.getTopFormat({ userId: localStorage.getItem('id') }).then(response => {
@@ -74,11 +78,12 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
             res = res.map(doc => {
                 return {
                     ...doc,
-                    sets: doc.format.length,           // Count of items in format.format array
-                    reps: [...new Set(doc.format)][0],  // Get the unique value in format.format array
+                    sets: doc.format.length,
+                    reps: [...new Set(doc.format)][0],
                 }
             });
             setTopFormats(res);
+            setHasMoreFormats(response.data.pagination.hasMore);
         }).catch(error => {
             console.error("Error fetching top formats:", error);
         });
@@ -201,6 +206,36 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
         }]);
     }, [editingSets]);
 
+    const loadMoreFormats = async () => {
+        if (loadingMoreFormats || !hasMoreFormats) return;
+
+        try {
+            setLoadingMoreFormats(true);
+            const nextPage = topFormatsPage + 1;
+
+            const response = await API.getTopFormat({
+                userId: localStorage.getItem('id'),
+                page: nextPage,
+                limit: 5
+            });
+
+            let newFormats = response.data.topFormat || [];
+            newFormats = newFormats.map(doc => ({
+                ...doc,
+                sets: doc.format.length,
+                reps: [...new Set(doc.format)][0],
+            }));
+
+            setTopFormats(prev => [...prev, ...newFormats]);
+            setHasMoreFormats(response.data.pagination.hasMore);
+            setTopFormatsPage(nextPage);
+        } catch (error) {
+            console.error("Error loading more formats:", error);
+        } finally {
+            setLoadingMoreFormats(false);
+        }
+    };
+
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <Tooltip id="my-tooltip" />
@@ -224,7 +259,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                         Modifier l'exercice
                     </button>
                     <button onClick={() => onGoToCategories()} className='btn btn-black m-2'>
-                        Modifier les catégories
+                        Modifier les détails
                     </button>
                     <button onClick={() => onDelete(index)} className='btn btn-white m-2'>
                         Supprimer l'exercice
@@ -289,6 +324,27 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                 </div>
                             </div>
                         ))}
+                        {hasMoreFormats && (
+                            <div
+                                onClick={loadMoreFormats}
+                                className='sessionChoiceSmall'
+                                style={{
+                                    display: 'inline-block',
+                                    textAlign: 'center',
+                                    minWidth: '200px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {loadingMoreFormats ? (
+                                    <MiniLoader />
+                                ) : (
+                                    <>
+                                        <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>➕</div>
+                                        <div>Voir plus</div>
+                                    </>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             }

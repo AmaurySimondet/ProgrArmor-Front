@@ -221,7 +221,14 @@ export default {
     return axios.get(`${burl}/user/pr`, { headers: headers, params: send });
   },
   getTopFormat: function (send) {
-    return axios.get(`${burl}/user/topFormat`, { headers: headers, params: send });
+    return axios.get(`${burl}/user/topFormat`, {
+      headers: headers,
+      params: {
+        userId: send.userId,
+        page: send?.page || 1,
+        limit: send?.limit || 5
+      }
+    });
   },
   deleteSeanceSets: function (send) {
     return axios.delete(`${burl}/user/deleteSets`, {
@@ -236,7 +243,11 @@ export default {
   // EXERCICE TYPES
   getExerciceTypes: function (send) {
     return axios.get(`${burl}/user/exerciceTypes`, {
-      headers: headers, params: send
+      headers: headers,
+      params: {
+        page: send?.page || 1,
+        limit: send?.limit || 7
+      }
     });
   },
   getExerciceType: function (send) {
@@ -262,7 +273,12 @@ export default {
 
   getCombinations: function (send) {
     return axios.get(`${burl}/user/combinations`, {
-      headers: headers, params: send
+      headers: headers,
+      params: {
+        page: send?.page || 1,
+        limit: send?.limit || 7,
+        search: send?.search
+      }
     });
   },
 
@@ -271,7 +287,11 @@ export default {
   // CATEGORIES TYPES
   getCategoryTypes: function (send) {
     return axios.get(`${burl}/user/categorietypes`, {
-      headers: headers, params: send
+      headers: headers,
+      params: {
+        page: send?.page || 1,
+        limit: send?.limit || 7
+      }
     });
   },
   getCategorieType: function (send) {
@@ -284,7 +304,13 @@ export default {
   // CATEGORIES
   getCategories: function (send) {
     return axios.get(`${burl}/user/categories`, {
-      headers: headers, params: send
+      headers: headers,
+      params: {
+        categorieType: send?.categorieType,
+        page: send?.page || 1,
+        limit: send?.limit || 7,
+        search: send?.search
+      }
     });
   },
   getCategory: function (send) {
