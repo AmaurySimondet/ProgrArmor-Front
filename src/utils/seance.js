@@ -19,6 +19,10 @@ const fetchSeancesData = async (users, page = 1, limit = 3) => {
         const seancesFetched = response.data.seances.seances;
         const hasMore = response.data.seances.hasMore;
 
+        if (seancesFetched.length === 0) {
+            return { seances: [], hasMore: false };
+        }
+
         // Fetch seance sets for all seances
         const seanceSetsPromises = seancesFetched.map(async (seance) => {
             const seanceSetsResponse = await API.getSeanceSets({ seanceId: seance._id });
