@@ -146,9 +146,9 @@ const Chrono = () => {
 
             <div className="basicFlex">
                 {!isRunning ? (
-                    <button onClick={handleStart} className="btn btn-dark" disabled={time === 0}>Start</button>
+                    <button onClick={handleStart} className="btn btn-dark mr-2" disabled={time === 0}>Start</button>
                 ) : (
-                    <button onClick={handleStop} className="btn btn-black">Stop</button>
+                    <button onClick={handleStop} className="btn btn-black mr-2">Stop</button>
                 )}
                 <button onClick={handleReset} className="btn btn-white">Reset</button>
             </div>

@@ -1996,12 +1996,13 @@ table.hometable td.inscription-img-td {
     justify-content: center;
     gap: 20px;
     background-color: lightgray;
-    padding: 10px;
+    padding: 20px;
 }
 
 .time-display {
     cursor: pointer;
     user-select: none;
+    margin: 0;
     /* Prevent text selection on click */
 }
 
