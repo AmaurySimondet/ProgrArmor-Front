@@ -84,26 +84,10 @@ const Chrono = () => {
         setIsRunning(true);
     };
 
-    // logs
-    useEffect(() => {
-        console.log(time);
-    }, [time]);
-
-    // Add console log to debug
-    useEffect(() => {
-        console.log('showPicker:', showPicker);
-    }, [showPicker]);
-
     return (
         <div className="chrono-container">
             <h2
                 className="time-display"
-                onClick={() => {
-                    console.log('time display clicked');
-                    if (!isRunning) {
-                        setShowPicker(true);
-                    }
-                }}
             >
                 {formatTime(time)}
             </h2>
