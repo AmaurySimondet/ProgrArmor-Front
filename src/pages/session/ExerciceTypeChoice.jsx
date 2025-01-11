@@ -4,7 +4,6 @@ import API from '../../utils/API';
 import apiCalls from '../../utils/apiCalls';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import { useWindowDimensions } from '../../utils/useEffect';
-import Fuse from 'fuse.js';
 import RenderExercice from './RenderExercice';
 
 const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavorite }) => {

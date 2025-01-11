@@ -36,7 +36,7 @@ const GranularitySelector = ({ granularity, onChange }) => {
 }
 
 const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, onGoToExerciceType, onGoToCategories }) => {
-    const [sets, setSets] = useState(editingSets || [{
+    const [sets, setSets] = useState([{
         unit: 'repetitions',
         value: 0,
         weightLoad: 0,
@@ -71,6 +71,11 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     const [topFormatsPage, setTopFormatsPage] = useState(1);
     const [hasMoreFormats, setHasMoreFormats] = useState(true);
     const [loadingMoreFormats, setLoadingMoreFormats] = useState(false);
+
+    useEffect(() => {
+        console.log("sets", sets);
+        console.log("editingSets", editingSets);
+    }, [editingSets, sets]);
 
     useEffect(() => {
         API.getTopFormat({ userId: localStorage.getItem('id') }).then(response => {
@@ -197,7 +202,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     }, [granularity]);
 
     useEffect(() => {
-        setSets(editingSets || [{
+        setSets(editingSets.length > 0 ? editingSets : [{
             unit: 'repetitions',
             value: 0,
             weightLoad: 0,

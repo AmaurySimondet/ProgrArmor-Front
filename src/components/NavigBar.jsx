@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { getUserById } from "../utils/user";
 import API from "../utils/API";
+import Chrono from "./Chrono";
 function NavigBar(props) {
     const [toggled, setToggled] = useState(false);
     const [user, setUser] = useState(null);
@@ -104,6 +105,7 @@ function NavigBar(props) {
 
                 </div>
             </nav >
+            <Chrono />
         </div >
     )
 }

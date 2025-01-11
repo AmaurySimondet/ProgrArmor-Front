@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useWindowDimensions } from '../../utils/useEffect';
 import { Loader, MiniLoader } from '../../components/Loader';
 import API from '../../utils/API';
-import Fuse from 'fuse.js';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import RenderExercice from './RenderExercice';
 import Alert from '../../components/Alert';
