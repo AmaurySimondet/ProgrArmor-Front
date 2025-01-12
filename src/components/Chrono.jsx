@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { formatTime } from '../utils/dates';
 import Picker from 'react-mobile-picker';
 
-const DEFAULT_MINUTES = 2;
+const DEFAULT_MINUTES = 0;
 const DEFAULT_SECONDS = 0;
 
 // Add time selection options
@@ -27,6 +27,12 @@ const Chrono = () => {
     });
     const [isRunning, setIsRunning] = useState(() => {
         const saved = localStorage.getItem('chronoIsRunning');
+        return JSON.parse(saved) || false;
+    });
+
+    // Add state for fold/unfold
+    const [isFolded, setIsFolded] = useState(() => {
+        const saved = localStorage.getItem('foldChrono');
         return JSON.parse(saved) || false;
     });
 
@@ -63,6 +69,8 @@ const Chrono = () => {
     const handleStart = () => {
         if (time > 0) {
             setIsRunning(true);
+            setIsFolded(true);
+            localStorage.setItem('foldChrono', JSON.stringify(true));
         }
     };
 
@@ -82,60 +90,92 @@ const Chrono = () => {
         setShowPicker(false);
         localStorage.setItem('chronoTime', JSON.stringify(newTime));
         setIsRunning(true);
+        setIsFolded(true);
+        localStorage.setItem('foldChrono', JSON.stringify(true));
+    };
+
+    // Function to toggle fold state
+    const toggleFold = () => {
+        const newFoldState = !isFolded;
+        setIsFolded(newFoldState);
+        localStorage.setItem('foldChrono', JSON.stringify(newFoldState));
+
+        // Scroll to top when unfolding
+        if (!newFoldState) {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
     };
 
     return (
-        <div className="chrono-container">
-            <h2
-                className="time-display"
-            >
-                {formatTime(time)}
-            </h2>
-
-            {showPicker && !isRunning && (
-                <div className="picker-container">
-                    <Picker
-                        value={pickerValue}
-                        onChange={setPickerValue}
-                        height={200}
-                        wheelMode="natural"
-                        style={{
-                            backgroundColor: 'white',
-                            borderRadius: '10px',
-                            padding: '10px',
-                            boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
-                            width: '100%'
-                        }}
+        <div>
+            {isFolded ? (
+                <button
+                    onClick={toggleFold}
+                    className="fold-button popInElement"
+                >
+                    {isRunning ? formatTime(time) : '⏱️'} &gt;
+                </button>
+            ) : (
+                <div className="chrono-container">
+                    <button
+                        onClick={toggleFold}
+                        className="unfold-button"
                     >
-                        <h2>Minutes</h2>
-                        <Picker.Column name="minutes">
-                            {timeSelections.minutes.map(value => (
-                                <Picker.Item key={value} value={value}>
-                                    {value}
-                                </Picker.Item>
-                            ))}
-                        </Picker.Column>
-                        <h2>Secondes</h2>
-                        <Picker.Column name="seconds">
-                            {timeSelections.seconds.map(value => (
-                                <Picker.Item key={value} value={value}>
-                                    {value}
-                                </Picker.Item>
-                            ))}
-                        </Picker.Column>
-                    </Picker>
-                    <button className="btn btn-dark" onClick={handleTimeSelect}>Start</button>
+                        &lt; ⏱️
+                    </button>
+                    <h2 className="time-display">
+                        {formatTime(time)}
+                    </h2>
+
+                    {showPicker && !isRunning && (
+                        <div className="picker-container">
+                            <Picker
+                                value={pickerValue}
+                                onChange={setPickerValue}
+                                height={200}
+                                wheelMode="natural"
+                                style={{
+                                    backgroundColor: 'white',
+                                    borderRadius: '10px',
+                                    padding: '10px',
+                                    boxShadow: '0 0 10px rgba(0, 0, 0, 0.1)',
+                                    width: '100%'
+                                }}
+                            >
+                                <h2>Minutes</h2>
+                                <Picker.Column name="minutes">
+                                    {timeSelections.minutes.map(value => (
+                                        <Picker.Item key={value} value={value}>
+                                            {value}
+                                        </Picker.Item>
+                                    ))}
+                                </Picker.Column>
+                                <h2>Secondes</h2>
+                                <Picker.Column name="seconds">
+                                    {timeSelections.seconds.map(value => (
+                                        <Picker.Item key={value} value={value}>
+                                            {value}
+                                        </Picker.Item>
+                                    ))}
+                                </Picker.Column>
+                            </Picker>
+                            <button className="btn btn-dark" onClick={handleTimeSelect}>Start</button>
+                        </div>
+                    )}
+
+                    <div className="basicFlex">
+                        {!isRunning ? (
+                            <button onClick={handleStart} className="btn btn-dark mr-2" disabled={time === 0}>Start</button>
+                        ) : (
+                            <button onClick={handleStop} className="btn btn-black mr-2">Stop</button>
+                        )}
+                        <button onClick={handleReset} className="btn btn-white">Reset</button>
+                    </div>
                 </div>
             )}
-
-            <div className="basicFlex">
-                {!isRunning ? (
-                    <button onClick={handleStart} className="btn btn-dark mr-2" disabled={time === 0}>Start</button>
-                ) : (
-                    <button onClick={handleStop} className="btn btn-black mr-2">Stop</button>
-                )}
-                <button onClick={handleReset} className="btn btn-white">Reset</button>
-            </div>
         </div>
     );
 };

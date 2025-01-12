@@ -88,10 +88,9 @@ const formatDate = (dateString) => {
 * @return {string}
 */
 function formatTime(time) {
-    const hours = Math.floor(time / 3600);
     const minutes = Math.floor((time % 3600) / 60);
     const seconds = time % 60;
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+    return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 }
 
 export { sortDateCroissant, stringToDate, dateToString, getDetailedDate, dateBasedOnTimeframe, formatDate, formatTime };
