@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import API from '../utils/API';
 import { getUserById } from '../utils/user';
 import { MiniLoader } from './Loader';
+import ProfilePic from './profilePic';
 
 const DisplayReactions = ({ showReactions, setShowReactions, reactions, currentUser }) => {
     const [followingInProgress, setFollowingInProgress] = useState([]);
@@ -145,20 +146,9 @@ const DisplayReactions = ({ showReactions, setShowReactions, reactions, currentU
                                     marginBottom: '15px'
                                 }}
                             >
-                                <img
-                                    className="icon-navbar"
-                                    src={reaction.user?.profilePic ? reaction.user.profilePic : require('../images/profilepic.webp')}
-                                    alt='compte'
-                                    style={{
-                                        borderRadius: "50%",
-                                        border: "1px solid white",
-                                        width: '40px',
-                                        height: '40px'
-                                    }}
-                                    onError={(e) => {
-                                        e.target.onerror = null; // Prevent infinite loop
-                                        e.target.src = require('../images/profilepic.webp');
-                                    }}
+                                <ProfilePic
+                                    user={reaction.user}
+                                    size="40px"
                                     onClick={() => window.location.href = `/compte?id=${reaction.user._id}`}
                                 />
                                 <div style={{ flex: 1 }}>

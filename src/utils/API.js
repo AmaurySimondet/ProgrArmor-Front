@@ -71,7 +71,8 @@ export default {
     return axios.get(`${burl}/user/getUsers`, {
       headers: headers, params: {
         page: params.page,
-        limit: params.limit
+        limit: params.limit,
+        search: params.search
       }, data: params
     });
   },
@@ -364,6 +365,7 @@ export default {
   },
 
   getSeanceComments: function (seanceId) {
+    console.log("getSeanceComments", seanceId, localStorage.getItem('id'));
     return axios.get(`${burl}/user/seance/${seanceId}/comments`, {
       headers: headers,
       params: {
@@ -372,11 +374,31 @@ export default {
     });
   },
 
-  postSeanceComment: function (seanceId, text, seanceUser) {
+  postSeanceComment: function (seanceId, text, seanceUser, identifiedUsers, parentComment) {
     return axios.post(`${burl}/user/seance/${seanceId}/comments`, {
       userId: localStorage.getItem('id'),
       text,
-      seanceUser: seanceUser
+      seanceUser: seanceUser,
+      identifiedUsers: identifiedUsers,
+      parentComment: parentComment
     }, { headers: headers });
+  },
+
+  updateSeanceComment: function (seanceId, commentId, text, seanceUser, identifiedUsers) {
+    return axios.put(`${burl}/user/seance/${seanceId}/comments/${commentId}`, {
+      userId: localStorage.getItem('id'),
+      text,
+      seanceUser,
+      identifiedUsers
+    }, { headers: headers });
+  },
+
+  deleteSeanceComment: function (seanceId, commentId) {
+    return axios.delete(`${burl}/user/seance/${seanceId}/comments/${commentId}`, {
+      headers: headers,
+      data: {
+        userId: localStorage.getItem('id')
+      }
+    });
   },
 };

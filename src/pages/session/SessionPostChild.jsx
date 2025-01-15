@@ -8,6 +8,7 @@ import { getDetailedDate } from '../../utils/dates';
 import ReactionsAndComments from './ReactionsAndComments';
 import Comments from './Comments';
 import DisplayReactions from '../../components/DisplayReactions';
+import ProfilePic from '../../components/profilePic';
 
 function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescription, setPostDescription, selectedName, selectedExercices, recordSummary, selectedDate, stats, backgroundColors, editable, seancePhotos, displayComments }) {
     const { width } = useWindowDimensions();
@@ -62,20 +63,9 @@ function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescrip
             {/* User Info and options */}
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <img
-                        className="icon-navbar"
-                        src={user?.profilePic ? user?.profilePic : require('../../images/profilepic.webp')}
-                        alt='compte'
-                        style={{
-                            borderRadius: "50%",
-                            border: "1px solid white",
-                        }}
-                        onClick={() => window.location.href = `/compte?id=${user._id}`}
-                        onError={(e) => {
-                            e.target.onerror = null; // Prevent infinite loop
-                            e.target.src = require('../../images/profilepic.webp');
-                        }}
-                    />
+                    <ProfilePic user={user} size="40px" onClick={() => {
+                        window.location.href = `/compte?id=${user._id}`;
+                    }} />
                     <div>
                         {user ? <strong><a href={`/compte?id=${user._id}`}>{user.fName} {user.lName}</a></strong> : <strong>Prénom Nom</strong>}
                         <br />

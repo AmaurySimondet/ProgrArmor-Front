@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import API from '../utils/API';
-import { Loader } from './Loader';
+import { MiniLoader } from './Loader';
 
 const Bannieres = ({ imageUrl, alt, url }) => {
     return (
@@ -40,6 +40,22 @@ const WeatherBanner = ({ weather }) => {
     );
 };
 
+const FeaturesBanner = () => {
+    return (
+        <div className="popInElement dashboard-banner weather-banner features-banner" style={{ width: "315px" }}>
+            <h3 className="features-title" style={{ width: "315px", fontSize: "15px" }}>Dernières features 🎉</h3>
+            <ul className="features-list">
+                <li>Implémentation complete des commentaires:
+                    <ul>
+                        <li>modifier, supprimer, identifier, répondre et notifications associées</li>
+                    </ul>
+                </li>
+                <li>Minuteur pour stalker entre 2 séries 😜</li>
+            </ul>
+        </div>
+    );
+};
+
 const AllBanners = ({ userId }) => {
     const [weather, setWeather] = useState({
         current: { temp: null, description: '' },
@@ -52,7 +68,6 @@ const AllBanners = ({ userId }) => {
     const PARIS_LON = 2.3522;
     const [location, setLocation] = useState(null);
     const bannerImages = [
-        { src: require('../images/bannieres/christmas.webp'), alt: 'Christmas', url: window.location.href },
         { src: require('../images/bannieres/Bannieres-Stats.webp'), alt: 'Stats', url: window.location.origin + '/compte?id=' + userId + '&activeTab=statistiques' },
     ];
 
@@ -85,7 +100,7 @@ const AllBanners = ({ userId }) => {
     }, [location]);
 
     if (loading) {
-        return <Loader />
+        return <MiniLoader />
     }
 
     return (
@@ -104,6 +119,7 @@ const AllBanners = ({ userId }) => {
                 paddingLeft: '20px',
                 paddingRight: '20px'
             }}>
+                <FeaturesBanner />
                 {bannerImages.map((banner, index) => (
                     <div key={index} style={{ flex: '0 0 auto' }}>
                         <Bannieres

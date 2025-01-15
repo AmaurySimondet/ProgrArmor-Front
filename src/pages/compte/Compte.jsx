@@ -14,6 +14,7 @@ import Followers from "./Followers.jsx";
 import { getUserById } from "../../utils/user";
 import ModifyProfile from './ModifyProfile.jsx';
 import { uploadToS3 } from "../../utils/s3Upload.js";
+import ProfilePic from "../../components/profilePic.jsx";
 
 function Compte() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -212,28 +213,13 @@ function Compte() {
             />
           )}
           <div style={{ position: 'relative' }}>
-            <img
-              className="icon-navbar"
-              src={user?.profilePic ? user?.profilePic : require('../../images/profilepic.webp')}
-              alt='compte'
-              onError={(e) => {
-                e.target.onerror = null; // Prevent infinite loop
-                e.target.src = require('../../images/profilepic.webp');
-              }}
-              style={{
-                borderRadius: "50%",
-                border: "1px solid white",
-                width: "100px",
-                height: "100px",
-                opacity: imageUploading ? 0.5 : 1,
-                cursor: user?._id === localStorage.getItem('id') ? 'pointer' : 'default'
-              }}
-              onClick={() => {
-                if (user?._id === localStorage.getItem('id')) {
-                  document.getElementById('imageUpload').click();
-                }
-              }}
-            />
+            <ProfilePic user={user} imageUploading={imageUploading} onClick={() => {
+              if (user?._id === localStorage.getItem('id')) {
+                document.getElementById('imageUpload').click();
+                return;
+              }
+              window.location.href = `/compte?id=${user._id}`;
+            }} />
             {imageUploading && user?._id === localStorage.getItem('id') && (
               <div style={{
                 position: 'absolute',

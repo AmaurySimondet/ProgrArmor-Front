@@ -295,6 +295,10 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
                             {VIDEO_FORMATS.includes(photo.cloudfrontUrl.toLowerCase().split('.').pop()) ? (
                                 <video
                                     controls
+                                    autoPlay
+                                    muted
+                                    loop
+                                    playsInline
                                     style={{
                                         width: '100%',
                                         height: '100%',

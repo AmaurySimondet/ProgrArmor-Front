@@ -40,10 +40,14 @@ const DisplaySeancesPost = (props) => {
     useEffect(() => {
         const fetchSeances = async () => {
             try {
-                const followings = currentUser?.following?.length > 0 ? currentUser?.following?.join(',') + ',' + currentUser?._id : currentUser?._id;
-                const response = await fetchSeancesData(props.userId || followings, page);
+                const userIdParam = props.admin
+                    ? null
+                    : props.userId || (currentUser?.following?.length > 0
+                        ? currentUser?.following?.join(',') + ',' + currentUser?._id
+                        : currentUser?._id);
+
+                const response = await fetchSeancesData(userIdParam, page);
                 setSeances(prev => [...prev, ...(response.seances || [])]);
-                console.log(response.seances)
                 setHasMore(response.hasMore);
             } catch (error) {
                 console.error('Error fetching seances:', error);
@@ -56,7 +60,7 @@ const DisplaySeancesPost = (props) => {
             setLoading(true);
             fetchSeances();
         }
-    }, [currentUser, page]);
+    }, [currentUser, page, props.admin]);
 
     if (loading && page === 1) return <Loader />;
 

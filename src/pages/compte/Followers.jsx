@@ -1,6 +1,7 @@
 import { React, useState, useEffect } from "react";
 import API from "../../utils/API";
 import { Loader } from "../../components/Loader";
+import ProfilePic from "../../components/profilePic";
 
 const Followers = ({ user, title, dataKey }) => {
     const [followers, setFollowers] = useState([]);
@@ -33,22 +34,9 @@ const Followers = ({ user, title, dataKey }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
                 {followers.map(follower => (
                     <div key={follower._id} style={{ display: 'flex', alignItems: 'center', margin: '20px', gap: '20px' }}>
-                        <img
-                            className="icon-navbar"
-                            src={follower?.profilePic ? follower?.profilePic : require('../../images/profilepic.webp')}
-                            alt='compte'
-                            style={{
-                                borderRadius: "50%",
-                                border: "1px solid white",
-                                width: "100px",
-                                height: "100px"
-                            }}
-                            onError={(e) => {
-                                e.target.onerror = null; // Prevent infinite loop
-                                e.target.src = require('../../images/profilepic.webp');
-                            }}
-                            onClick={() => window.location.href = `/compte?id=${follower._id}`}
-                        />
+                        <ProfilePic user={follower} size="100px" onClick={() => {
+                            window.location.href = `/compte?id=${follower._id}`;
+                        }} />
                         <h2 className="clickable" style={{ cursor: 'pointer' }} onClick={() => window.location.href = `/compte?id=${follower._id}`}>{follower?.fName} {follower?.lName}</h2>
                     </div>
                 ))}

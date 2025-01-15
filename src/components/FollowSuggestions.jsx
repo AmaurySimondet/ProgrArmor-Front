@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useWindowDimensions } from "../utils/useEffect";
 import { Loader } from "./Loader";
 import API from "../utils/API";
+import ProfilePic from "./profilePic";
 
 const USERS_PER_PAGE = 10;
 
@@ -148,20 +149,7 @@ const FollowSuggestions = ({ userId }) => {
                                 className='basic-flex'
                                 style={{ gap: '20px', alignItems: 'center' }}
                             >
-                                <img
-                                    className="icon-navbar"
-                                    src={user?.profilePic ? user?.profilePic : require('../images/profilepic.webp')}
-                                    alt='compte'
-                                    onError={(e) => {
-                                        e.target.onerror = null; // Prevent infinite loop
-                                        e.target.src = require('../images/profilepic.webp');
-                                    }}
-                                    style={{
-                                        borderRadius: "50%",
-                                        border: "1px solid white",
-                                    }}
-                                    onClick={() => window.location.href = `/compte?id=${user._id}`}
-                                />
+                                <ProfilePic user={user} onClick={() => window.location.href = `/compte?id=${user._id}`} size="60px" />
                                 <div>
                                     <div><a href={`/compte?id=${user._id}`}>
                                         {user.fName} {user.lName} </a> </div>

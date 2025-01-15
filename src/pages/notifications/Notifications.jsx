@@ -7,6 +7,7 @@ import { useWindowDimensions } from "../../utils/useEffect";
 import { formatDate } from "../../utils/dates";
 import { getUserById } from "../../utils/user";
 import API from "../../utils/API";
+import ProfilePic from "../../components/profilePic";
 
 function Notifications() {
     const [notifications, setNotifications] = useState([]);
@@ -22,8 +23,12 @@ function Notifications() {
                 return 'a réagit à ta séance';
             case 'comment':
                 return 'a commenté ta séance';
+            case 'identifiedUser':
+                return 't\'as mentionné dans un commentaire';
+            case 'answer':
+                return 'a répondu à ton commentaire';
             default:
-                return 'a interagi avec ta profil';
+                return 'a interagi avec ton profil';
         }
     };
 
@@ -50,7 +55,11 @@ function Notifications() {
 
                             if (sameTypeAndSeance.length > 1) {
                                 const names = `${notification.fromUser.fName} ${notification.fromUser.lName} et ${sameTypeAndSeance.length - 1} autre${sameTypeAndSeance.length - 1 > 1 ? 's' : ''}`
-                                notification.fromUser.notificationName = `${names} ${notification.type === 'reaction' ? 'ont réagis à' : 'ont commenté'} ta séance`;
+                                notification.fromUser.notificationName = `${names} ${notification.type === 'reaction' ? 'ont réagis à ta séance' :
+                                        notification.type === 'comment' ? 'ont commenté ta séance' :
+                                            notification.type === 'identifiedUser' ? 't\'ont mentionné' :
+                                                notification.type === 'answer' ? 'ont répondu à ton commentaire' :
+                                                    'ont interagi avec ton profil'}`;
                                 // Check if all notifications in group are read
                                 notification.read = sameTypeAndSeance.every(n => n.read);
                                 notification.allIds = sameTypeAndSeance.map(n => n._id);
@@ -108,10 +117,12 @@ function Notifications() {
         }
 
         // Navigate to user profile
-        if (notification.type === 'reaction') {
-            window.location.href = `/seance?id=${notification.seance}`;
-        } else if (notification.type === 'comment') {
-            window.location.href = `/seance?id=${notification.seance}`;
+        if (notification.type === 'reaction' || notification.type === 'comment' || notification.type === 'identifiedUser' || notification.type === 'answer') {
+            if (notification.comment) {
+                window.location.href = `/seance?id=${notification.seance}&commentId=${notification.comment}`;
+            } else {
+                window.location.href = `/seance?id=${notification.seance}`;
+            }
         } else {
             window.location.href = `/compte?id=${notification.fromUser._id}`;
         }
@@ -168,20 +179,9 @@ function Notifications() {
                                             }}
                                             onClick={() => handleNotificationClick(notification)}
                                         >
-                                            <img
-                                                src={fromUser?.profilePic || require('../../images/profilepic.webp')}
-                                                alt="Profile"
-                                                style={{
-                                                    width: '50px',
-                                                    height: '50px',
-                                                    borderRadius: '50%',
-                                                    marginRight: '15px'
-                                                }}
-                                                onError={(e) => {
-                                                    e.target.onerror = null; // Prevent infinite loop
-                                                    e.target.src = require('../../images/profilepic.webp');
-                                                }}
-                                            />
+                                            <ProfilePic user={fromUser} size="60px" onClick={() => {
+                                                window.location.href = `/compte?id=${fromUser._id}`;
+                                            }} />
                                             <div style={{ flex: 1 }}>
                                                 <div style={{ fontWeight: notification.read ? 'normal' : 'bold' }}>
                                                     {fromUser?.notificationName}

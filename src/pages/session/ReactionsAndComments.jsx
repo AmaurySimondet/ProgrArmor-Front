@@ -88,10 +88,14 @@ function ReactionsAndComments({ seanceUser, seanceId, displayComments, setShowRe
                         gap: '5px',
                         marginBottom: '3px'
                     }}>
-                        <span style={{ fontWeight: 'bold' }}>{commentData.topComment.comment.user.fName} {commentData.topComment.comment.user.lName}</span>
+                        <span style={{ fontWeight: 'bold' }} className='clickable' onClick={() => {
+                            window.location.href = `/compte?id=${commentData.topComment.comment.user._id}`;
+                        }}>{commentData.topComment.comment.user.fName} {commentData.topComment.comment.user.lName}</span>
                         <span style={{ fontSize: '0.8em' }}>• {commentData.topComment.reactions?.length || 0} reaction{commentData.topComment.reactions?.length > 1 ? 's' : ''}</span>
                     </div>
-                    <div>{commentData.topComment.comment.text}</div>
+                    <div className='clickable' onClick={() => {
+                        window.location.href = `/seance?id=${seanceId}`;
+                    }}>{commentData.topComment.comment.text}</div>
                 </div>
             )}
 

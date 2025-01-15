@@ -148,23 +148,9 @@ function Accomplissements() {
                                     :
                                     { marginTop: "20px", width: "60%", background: "#aaaaaa" }}
                         >
-                            <img
-                                className="profile-pic"
-                                style={
-                                    dimensions.width < 500 ?
-                                        dimensions.width < 300 ?
-                                            { width: "30px", height: "30px", padding: "2%" }
-                                            :
-                                            { width: "50px", height: "50px", padding: "2%" }
-                                        :
-                                        { width: "100px", height: "100px", padding: "2%" }}
-                                src={user.profilePic}
-                                onError={(e) => {
-                                    e.target.onerror = null; // Prevent infinite loop
-                                    e.target.src = require('../../images/profilepic.webp');
-                                }}
-                                alt="profile-pic"
-                            />
+                            <ProfilePic user={user} size="40px" onClick={() => {
+                                window.location.href = `/compte?id=${user._id}`;
+                            }} />
 
                             <div style={{ padding: "5% 0 0 5%", margin: "auto", display: "inline-block" }}>
                                 <p style={
