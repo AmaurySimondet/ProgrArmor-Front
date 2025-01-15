@@ -1,4 +1,4 @@
-import { S3Client } from "@aws-sdk/client-s3";
+import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { Upload } from "@aws-sdk/lib-storage";
 
 const s3Client = new S3Client({
@@ -37,6 +37,24 @@ export const uploadToS3 = async (file, userId) => {
         };
     } catch (error) {
         console.error('Error uploading to S3:', error);
+        throw error;
+    }
+};
+
+export const deleteFromS3 = async (key) => {
+    const params = {
+        Bucket: process.env.REACT_APP_AWS_BUCKET_NAME,
+        Key: key
+    };
+
+    try {
+        await s3Client.send(new DeleteObjectCommand({
+            Bucket: params.Bucket,
+            Key: params.Key
+        }));
+        return true;
+    } catch (error) {
+        console.error('Error deleting from S3:', error);
         throw error;
     }
 }; 

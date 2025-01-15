@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import API from '../utils/API';
 import { MiniLoader } from './Loader';
+import { COLORS } from '../utils/constants';
 
 const Bannieres = ({ imageUrl, alt, url }) => {
     return (
@@ -52,6 +53,32 @@ const FeaturesBanner = () => {
                 </li>
                 <li>Minuteur pour stalker entre 2 séries 😜</li>
             </ul>
+        </div>
+    );
+};
+
+const CreateSeanceBanner = () => {
+    return (
+        <div className="popInElement dashboard-banner weather-banner features-banner" style={{ backgroundColor: COLORS.PROGARMOR }}>
+            <div className="features-list"
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', width: '150px', fontSize: '16px', padding: '10px', color: 'white' }}
+                onClick={() => window.location.href = window.location.origin + '/session'}>
+                <div style={{ fontSize: '36px' }}>✍️</div>
+                <div>Enregistres ta séance !</div>
+            </div>
+        </div>
+    );
+};
+
+const FeedbackBanner = () => {
+    return (
+        <div className="popInElement dashboard-banner weather-banner features-banner" style={{ backgroundColor: COLORS.PROGARMOR }}>
+            <div className="features-list"
+                style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', width: '150px', fontSize: '16px', padding: '10px', color: 'white' }}
+                onClick={() => window.location.href = window.location.origin + '/aide#feedback'}>
+                <div style={{ fontSize: '36px' }}>💬</div>
+                <div>Un bug ? Une suggestion ?</div>
+            </div>
         </div>
     );
 };
@@ -119,6 +146,8 @@ const AllBanners = ({ userId }) => {
                 paddingLeft: '20px',
                 paddingRight: '20px'
             }}>
+                <CreateSeanceBanner />
+                <FeedbackBanner />
                 <FeaturesBanner />
                 {bannerImages.map((banner, index) => (
                     <div key={index} style={{ flex: '0 0 auto' }}>

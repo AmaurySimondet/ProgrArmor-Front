@@ -345,6 +345,19 @@ export default {
     return axios.get(`${burl}/user/admin/inscription`, { headers: headers, params: send });
   },
 
+  //FEEDBACK
+  sendFeedback: function ({ type, text, media }) {
+    return axios.post(`${burl}/user/feedback`, { type, text, media }, {
+      headers: headers,
+      params: {
+        userId: localStorage.getItem('id')
+      }
+    });
+  },
+  getFeedback: function (send) {
+    return axios.get(`${burl}/user/feedback`, { headers: headers, params: send });
+  },
+
   // REACTIONS & COMMENTS
   getSeanceReactions: function (seanceId) {
     return axios.get(`${burl}/user/seance/${seanceId}/reactions`, {

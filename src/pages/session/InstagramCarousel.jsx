@@ -4,7 +4,7 @@ import { renderSets } from '../../utils/sets';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import API from '../../utils/API';
 import { resizeImage, validateFileSize, MAX_FILE_SIZE } from '../../utils/mediaUtils';
-import { uploadToS3 } from '../../utils/s3Upload';
+import { deleteFromS3, uploadToS3 } from '../../utils/s3Upload';
 import { VIDEO_FORMATS } from '../../utils/constants';
 
 function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgroundColors, editable, selectedDate, seancePhotos }) {
@@ -140,6 +140,7 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
 
     const handleDeleteImage = async (photoUrl) => {
         try {
+            await deleteFromS3(photoUrl);
             setDeletingPhotos(prev => ({ ...prev, [photoUrl]: true }));
             await API.deleteSeancePhoto(photoUrl);
             setPhotos(photos.filter(photo => photo.cloudfrontUrl !== photoUrl));
