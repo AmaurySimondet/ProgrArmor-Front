@@ -378,7 +378,6 @@ export default {
   },
 
   getSeanceComments: function (seanceId) {
-    console.log("getSeanceComments", seanceId, localStorage.getItem('id'));
     return axios.get(`${burl}/user/seance/${seanceId}/comments`, {
       headers: headers,
       params: {

@@ -28,6 +28,8 @@ function Compte() {
   const [imageUploading, setImageUploading] = useState(false);
   const [userImages, setUserImages] = useState(null);
   const [showModifyProfile, setShowModifyProfile] = useState(false);
+  const [seanceNames, setSeanceNames] = useState([]);
+  const [selectedSeanceName, setSelectedSeanceName] = useState(null);
 
   useEffect(() => {
     // Trigger animation when the value changes
@@ -53,7 +55,10 @@ function Compte() {
         // Get user data
         getUserById(searchParams.get('id')).then(setUser);
         getUserById(localStorage.getItem('id')).then(setCurrentUser);
-
+        API.getSeanceNames({ userId: searchParams.get('id') }).then(response => {
+          const uniqueNames = new Set(response.data.seanceNames.map(seance => seance.name));
+          setSeanceNames(Array.from(uniqueNames));
+        });
         // Get stats
         const statsRes = await API.getStats(searchParams.get('id'));
         const favoriteExercices = await apiCalls.buildFavoriteExercices(statsRes.data.stats.topExercices.topExercices);
@@ -443,6 +448,29 @@ function Compte() {
     );
   };
 
+  const SeanceNameSelector = () => {
+    return (
+      <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'center' }}>
+        <select
+          value={selectedSeanceName}
+          onChange={(e) => setSelectedSeanceName(e.target.value === 'all' ? null : e.target.value)}
+          style={{
+            padding: '8px 12px',
+            borderRadius: '4px',
+            border: '1px solid #ddd',
+            backgroundColor: 'white',
+            minWidth: '200px'
+          }}
+        >
+          <option value="all">Toutes les séances</option>
+          {seanceNames.map(name => (
+            <option key={name} value={name}>{name}</option>
+          ))}
+        </select>
+      </div>
+    );
+  };
+
   return (
     <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
       <div className="page-container">
@@ -474,7 +502,15 @@ function Compte() {
 
                 {/* Render active tab component */}
                 {activeTab === 'statistiques' && <Stats stats={stats} userId={searchParams.get('id')} />}
-                {activeTab === 'seances' && <DisplaySeancesPost userId={searchParams.get('id')} />}
+                {activeTab === 'seances' &&
+                  <div>
+                    <SeanceNameSelector />
+                    <DisplaySeancesPost
+                      userId={searchParams.get('id')}
+                      seanceName={selectedSeanceName}
+                    />
+                  </div>
+                }
               </div>
             </div>
           )}

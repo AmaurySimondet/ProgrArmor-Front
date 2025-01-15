@@ -15,6 +15,7 @@ const DisplaySeancesPost = (props) => {
     const [hasMore, setHasMore] = useState(true);
     const [currentUser, setCurrentUser] = useState(null);
     const observer = useRef();
+    const [previousName, setPreviousName] = useState(null);
 
     useEffect(() => {
         setLoading(true);
@@ -38,15 +39,23 @@ const DisplaySeancesPost = (props) => {
     }, [loading, hasMore]);
 
     useEffect(() => {
+        // Reset seances and page when seanceName changes
+        if (props.seanceName !== previousName) {
+            setSeances([]);
+            setPage(1);
+            setPreviousName(props.seanceName);
+        }
+    }, [props.seanceName]);
+
+    useEffect(() => {
         const fetchSeances = async () => {
             try {
-                const userIdParam = props.admin
-                    ? null
-                    : props.userId || (currentUser?.following?.length > 0
-                        ? currentUser?.following?.join(',') + ',' + currentUser?._id
-                        : currentUser?._id);
-
-                const response = await fetchSeancesData(userIdParam, page);
+                const followings = currentUser?.following?.length > 0 ? currentUser?.following?.join(',') + ',' + currentUser?._id : currentUser?._id;
+                const response = await fetchSeancesData(
+                    props.userId || followings,
+                    props.seanceName,
+                    page
+                );
                 setSeances(prev => [...prev, ...(response.seances || [])]);
                 setHasMore(response.hasMore);
             } catch (error) {
@@ -60,7 +69,7 @@ const DisplaySeancesPost = (props) => {
             setLoading(true);
             fetchSeances();
         }
-    }, [currentUser, page, props.admin]);
+    }, [currentUser, page, props.seanceName]);
 
     if (loading && page === 1) return <Loader />;
 

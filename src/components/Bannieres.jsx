@@ -64,7 +64,7 @@ const CreateSeanceBanner = () => {
                 style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', width: '150px', fontSize: '16px', padding: '10px', color: 'white' }}
                 onClick={() => window.location.href = window.location.origin + '/session'}>
                 <div style={{ fontSize: '36px' }}>✍️</div>
-                <div>Enregistres ta séance !</div>
+                <div>Enregistre ta séance !</div>
             </div>
         </div>
     );
