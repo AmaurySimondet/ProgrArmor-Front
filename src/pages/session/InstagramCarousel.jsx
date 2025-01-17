@@ -154,10 +154,10 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
 
     // New function to estimate exercise height
     const estimateExerciseHeight = (exercise) => {
-        const BASE_HEIGHT = 70; // Base height for exercise name and emoji
-        const SET_HEIGHT = 45; // Height per set
-        const setsCount = exercise.sets?.length || 0;
-        return BASE_HEIGHT + (setsCount * SET_HEIGHT);
+        const BASE_HEIGHT = 72; // Base emoji height
+        const SET_HEIGHT = 60; // Height per set
+        const differentSetsValues = new Set(exercise.sets.map(set => set.value)).size;
+        return BASE_HEIGHT + (differentSetsValues * SET_HEIGHT);
     };
 
     // New function to group exercises
@@ -169,6 +169,7 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
 
         exercises.forEach((exercise) => {
             const exerciseHeight = estimateExerciseHeight(exercise);
+            console.log("exerciseHeight", exercise.exercice.name.fr, exercise.sets, exerciseHeight);
 
             // If a single exercise is too tall, split it across multiple slides
             if (exerciseHeight > MAX_HEIGHT) {
