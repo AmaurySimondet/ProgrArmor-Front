@@ -52,7 +52,7 @@ function Connexion() {
 
     //RECUPERATION EMAIL
     async function sendRecuperationEmail(req, res) {
-        const serviceId = process.env.REACT_APP_EMAILJS_SERVICEID;
+        const serviceId = process.env.REACT_APP_EMAILJS_SERVICE_ID;
         const templateId = process.env.REACT_APP_EMAILJS_TEMPLATE_ID;
         const publicKey = process.env.REACT_APP_EMAILJS_PUBLIC_KEY;
         const code = uuidv4().slice(0, 8);
@@ -70,7 +70,8 @@ function Connexion() {
             emailjs.send(serviceId, templateId, templateParams, publicKey)
         }
         catch (e) {
-            alert("Erreur lors de l'envoi de l'email", e);
+            console.log("error", e);
+            alert("Erreur lors de l'envoi de l'email", e.message);
         }
 
     }

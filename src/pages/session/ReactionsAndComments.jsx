@@ -41,7 +41,6 @@ function ReactionsAndComments({ seanceUser, seanceId, displayComments, setShowRe
                     totalComments: commentRes.data.totalComments,
                     hasUserCommented: commentRes.data.hasUserCommented
                 });
-                console.log("commentData", commentRes.data.topComment);
             }
         } catch (error) {
             console.error('Error loading reactions and comments:', error);
@@ -55,12 +54,7 @@ function ReactionsAndComments({ seanceUser, seanceId, displayComments, setShowRe
             const newReaction = selectedReaction === reaction ? null : reaction;
             const response = await API.updateSeanceReaction(seanceId, newReaction, null, seanceUser._id);
 
-            if (response.data.success) {
-                setSelectedReaction(newReaction);
-                setAllReactions(response.data.reactions);
-                setTopReactions(response.data.topReactions);
-                setTotalReactions(response.data.reactions.length);
-            }
+            await loadReactionsAndComments();
         } catch (error) {
             console.error('Error updating reaction:', error);
         }
