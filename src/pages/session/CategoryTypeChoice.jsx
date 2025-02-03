@@ -199,28 +199,30 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
 
             <RenderExercice exercice={exercice} />
 
-            {exercice.categories.length > 0 && <div className="popInElement" style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
-                <button onClick={onDeleteCategories} className='btn btn-white'>Supprimer les détails</button>
-                <button onClick={onDeleteLastCategorie} className='btn btn-white'>Supprimer dernier détail</button>
-            </div>}
+            <div>
+                {exercice.categories.length > 0 && <div className="popInElement" style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+                    <button onClick={onDeleteCategories} className='btn btn-white'>Supprimer les détails</button>
+                    <button onClick={onDeleteLastCategorie} className='btn btn-white'>Supprimer dernier détail</button>
+                </div>}
 
-            {alert && <Alert message={alert.message} type={alert.type} onClose={handleClose} />}
+                {alert && <Alert message={alert.message} type={alert.type} onClose={handleClose} />}
 
-            {/* Search Bar */}
-            <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearch}
-                placeholder="Rechercher un détail..."
-                style={{
-                    padding: '10px',
-                    fontSize: '1rem',
-                    margin: '20px 0',
-                    width: '80%',
-                    maxWidth: '400px',
-                    borderRadius: '5px',
-                }}
-            />
+                {/* Search Bar */}
+                <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearch}
+                    placeholder="Rechercher un détail..."
+                    style={{
+                        padding: '10px',
+                        fontSize: '1rem',
+                        margin: '20px 0',
+                        width: '80%',
+                        maxWidth: '400px',
+                        borderRadius: '5px',
+                    }}
+                />
+            </div>
 
             {/* Search Results */}
             {
