@@ -17,6 +17,7 @@ import { COLORS } from "../../utils/constants";
 import Alert from "../../components/Alert";
 import { useSearchParams } from 'react-router-dom';
 import { verifySession } from "../../utils/seance";
+import AppFooter from "../../components/AppFooter";
 
 const Session = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -276,7 +277,7 @@ const Session = () => {
       <div className="content-wrap">
         <Loader />
       </div>
-      <Footer />
+      <AppFooter />
     </div>
   }
 
@@ -402,7 +403,7 @@ const Session = () => {
             />
           )}
         </div>
-        <Footer />
+        <AppFooter />
       </div>
     </div>
   );

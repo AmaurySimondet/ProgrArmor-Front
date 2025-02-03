@@ -2,6 +2,7 @@ import { React } from "react";
 import Footer from "../components/Footer.jsx";
 import NavigBar from "../components/NavigBar.jsx"
 import { COLORS } from "../utils/constants.js";
+import AppFooter from "../components/AppFooter.jsx";
 
 function Travaux() {
 
@@ -21,7 +22,9 @@ function Travaux() {
             <p>
               <img className="travaux-icon" src={require('../images/icons/icons8-man-construction-worker-48.webp')} alt="miguel" />
               <br />
-              Miguel fait encore chauffer la betonnière pour cette page ! Reviens plus tard...
+              Miguel fait encore chauffer la betonnière pour cette page !
+              <br />
+              Reviens plus tard...
               <br />
               <img className="travaux-icon" src={require('../images/icons/icons8-brick-48.webp')} alt="brique" />
             </p>
@@ -32,7 +35,7 @@ function Travaux() {
         </div>
 
 
-        <Footer />
+        <AppFooter />
       </div>
     </div>
   );

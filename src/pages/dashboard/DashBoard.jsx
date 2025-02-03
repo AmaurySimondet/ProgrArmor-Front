@@ -5,6 +5,7 @@ import { COLORS } from '../../utils/constants';
 import DisplaySeancesPost from '../../components/DisplaySeancesPost';
 import FollowSuggestions from '../../components/FollowSuggestions';
 import AllBanners from '../../components/Bannieres';
+import AppFooter from '../../components/AppFooter';
 
 const DashBoard = () => {
 
@@ -31,8 +32,8 @@ const DashBoard = () => {
 
 
 
-
-                <Footer />
+                <AppFooter />
+                <AppFooter />
             </div>
         </div>
     );

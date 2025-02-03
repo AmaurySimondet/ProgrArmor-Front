@@ -8,6 +8,7 @@ import { resizeImage, validateFileSize, MAX_FILE_SIZE } from "../../utils/mediaU
 import { deleteFromS3, uploadToS3 } from "../../utils/s3Upload";
 import API from "../../utils/API";
 import Alert from "../../components/Alert";
+import AppFooter from "../../components/AppFooter";
 
 function Aide() {
     const [clickInstallApp, setClickInstallApp] = useState(false);
@@ -310,7 +311,7 @@ function Aide() {
 
 
 
-                <Footer />
+                <AppFooter />
             </div>
         </div>
     )

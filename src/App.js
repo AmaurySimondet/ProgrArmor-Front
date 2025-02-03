@@ -16,6 +16,7 @@ import Aide from "./pages/aide/Aide.jsx";
 import Notifications from "./pages/notifications/Notifications.jsx";
 import SingleSeanceView from "./pages/seance/singleSeanceView.jsx";
 import Admin from "./pages/admin/Admin.jsx";
+import About from "./pages/about/About.jsx";
 
 // import eruda from "eruda";
 
@@ -77,6 +78,10 @@ function App() {
 
             <Route path="/admin" element={<PrivateRoute />}>
                 <Route exact path='' element={<Admin />} />
+            </Route>
+
+            <Route path="/a_propos" element={<PrivateRoute />}>
+                <Route exact path='' element={<About />} />
             </Route>
         </Routes>
     );

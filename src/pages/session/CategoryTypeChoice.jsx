@@ -195,14 +195,14 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
                     <span onClick={onSkip} style={{ cursor: 'pointer' }} className="clickable"> Passer &gt; </span>
                 </h1>
             </div>
-            <h1 style={{ margin: '0' }}>{index !== null ? "Modifier les détails" : "On ajoute du détail ?"}</h1>
+            <h1 style={{ margin: '20px' }}>{index !== null ? "Modifier les détails" : "On ajoute du détail ?"}</h1>
 
             <RenderExercice exercice={exercice} />
 
-            <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+            {exercice.categories.length > 0 && <div className="popInElement" style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
                 <button onClick={onDeleteCategories} className='btn btn-white'>Supprimer les détails</button>
                 <button onClick={onDeleteLastCategorie} className='btn btn-white'>Supprimer dernier détail</button>
-            </div>
+            </div>}
 
             {alert && <Alert message={alert.message} type={alert.type} onClose={handleClose} />}
 

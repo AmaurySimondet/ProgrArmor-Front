@@ -5,6 +5,7 @@ import { COLORS } from "../../utils/constants";
 import API from "../../utils/API";
 import DisplaySeancesPost from "../../components/DisplaySeancesPost";
 import ProfilePic from "../../components/profilePic";
+import AppFooter from "../../components/AppFooter";
 
 function Admin() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -63,7 +64,7 @@ function Admin() {
                             </form>
                         </div>
                     </div>
-                    <Footer />
+                    <AppFooter />
                 </div>
             </div >
         );
@@ -183,7 +184,7 @@ function Admin() {
                         </>
                     )}
                 </div>
-                <Footer />
+                <AppFooter />
             </div>
         </div>
     )

@@ -3,6 +3,7 @@ import { getUserById } from "../utils/user";
 import API from "../utils/API";
 import Chrono from "./Chrono";
 import ProfilePic from "./profilePic";
+
 function NavigBar(props) {
     const [toggled, setToggled] = useState(false);
     const [user, setUser] = useState(null);
@@ -74,30 +75,6 @@ function NavigBar(props) {
                                 <button className="btn btn-black" type="submit">Go</button>
                             </div>
                             <hr style={{ borderColor: "black" }} />
-                            <a className="nav-link" href="/dashboard"><img className="icon-navbar" src={require('../images/icons/home.webp')} alt='home' /> Dashboard</a>
-                            <a className="nav-link" href="/notifications">
-                                <img className="icon-navbar" src={require('../images/icons/notifications.webp')} alt='notifications' />
-                                Notifications
-                                {notifications.length > 0 && (
-                                    <span className="badge rounded-pill bg-warning text-dark popInElement"
-                                        style={{
-                                            marginLeft: "10px",
-                                            fontWeight: "bold",
-                                            boxShadow: "0 0 5px rgba(255, 255, 255, 0.5)"
-                                        }}>
-                                        {notifications.length}
-                                    </span>
-                                )}
-                            </a>
-                            <a className="nav-link" href="/session"><img className="icon-navbar" src={require('../images/icons/write.webp')} alt='session' /> Nouvelle séance</a>
-                            <a className="nav-link" href="/programme"><img className="icon-navbar" src={require('../images/icons/plus.webp')} alt='programme' /> Programmes</a>
-                            <hr style={{ borderColor: "black" }} />
-                            <a className="nav-link" href={`/compte?id=${localStorage.getItem('id')}`}>
-                                <ProfilePic user={user} size="40px" onClick={() => {
-                                    window.location.href = `/compte?id=${user._id}`;
-                                }} />
-                                {user?.fName} {user?.lName}
-                            </a>
                             <a className="nav-link" href="/aide"> <img className="icon-navbar" src={require('../images/icons/icons8-question-mark-96.webp')} alt='aide' style={{ filter: "invert(1)" }} /> Aide </a>
                             <a className="nav-link" href="/admin"><img className="icon-navbar" src={require('../images/icons/lock.webp')} alt='admin' /> Admin</a>
                             <hr style={{ borderColor: "black" }} />

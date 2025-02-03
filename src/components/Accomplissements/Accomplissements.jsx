@@ -8,6 +8,7 @@ import Niveaux from './Programme/Niveaux';
 import TypeDeProgrammes from './Programme/TypeDeProgrammes';
 import { customStyles, customStylesDark, customStylesDarkMini, customStylesMini } from "../../utils/customStyles";
 import { getUserById } from "../../utils/user";
+import AppFooter from '../AppFooter';
 
 function Accomplissements() {
     const [dimensions, setDimensions] = useState({
@@ -273,7 +274,7 @@ function Accomplissements() {
             }
 
 
-            <Footer />
+            <AppFooter />
         </div>
     )
 }

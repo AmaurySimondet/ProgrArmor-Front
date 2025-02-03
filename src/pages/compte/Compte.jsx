@@ -15,6 +15,7 @@ import { getUserById } from "../../utils/user";
 import ModifyProfile from './ModifyProfile.jsx';
 import { uploadToS3 } from "../../utils/s3Upload.js";
 import ProfilePic from "../../components/profilePic.jsx";
+import AppFooter from "../../components/AppFooter.jsx";
 
 function Compte() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -516,7 +517,7 @@ function Compte() {
           )}
         </div>
 
-        <Footer />
+        <AppFooter />
       </div>
       {showModifyProfile && (
         <ModifyProfile

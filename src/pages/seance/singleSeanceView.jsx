@@ -7,6 +7,7 @@ import Footer from '../../components/Footer';
 import { fetchSeanceData } from '../../utils/seance';
 import { COLORS } from '../../utils/constants';
 import { useWindowDimensions } from '../../utils/useEffect';
+import AppFooter from '../../components/AppFooter';
 
 const SingleSeanceView = () => {
     const [searchParams] = useSearchParams();
@@ -58,7 +59,7 @@ const SingleSeanceView = () => {
                         </div>
                     </div>
                 </div>
-                <Footer />
+                <AppFooter />
             </div>
         </div>
     );

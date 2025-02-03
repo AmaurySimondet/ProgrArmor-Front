@@ -8,6 +8,7 @@ import { formatDate } from "../../utils/dates";
 import { getUserById } from "../../utils/user";
 import API from "../../utils/API";
 import ProfilePic from "../../components/profilePic";
+import AppFooter from "../../components/AppFooter";
 
 function Notifications() {
     const [notifications, setNotifications] = useState([]);
@@ -56,10 +57,10 @@ function Notifications() {
                             if (sameTypeAndSeance.length > 1) {
                                 const names = `${notification.fromUser.fName} ${notification.fromUser.lName} et ${sameTypeAndSeance.length - 1} autre${sameTypeAndSeance.length - 1 > 1 ? 's' : ''}`
                                 notification.fromUser.notificationName = `${names} ${notification.type === 'reaction' ? 'ont réagis à ta séance' :
-                                        notification.type === 'comment' ? 'ont commenté ta séance' :
-                                            notification.type === 'identifiedUser' ? 't\'ont mentionné' :
-                                                notification.type === 'answer' ? 'ont répondu à ton commentaire' :
-                                                    'ont interagi avec ton profil'}`;
+                                    notification.type === 'comment' ? 'ont commenté ta séance' :
+                                        notification.type === 'identifiedUser' ? 't\'ont mentionné' :
+                                            notification.type === 'answer' ? 'ont répondu à ton commentaire' :
+                                                'ont interagi avec ton profil'}`;
                                 // Check if all notifications in group are read
                                 notification.read = sameTypeAndSeance.every(n => n.read);
                                 notification.allIds = sameTypeAndSeance.map(n => n._id);
@@ -215,7 +216,7 @@ function Notifications() {
                     </div>
                 </div>
 
-                <Footer />
+                <AppFooter />
             </div>
         </div>
     );

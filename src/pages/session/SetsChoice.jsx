@@ -9,7 +9,7 @@ import { MiniLoader } from '../../components/Loader';
 const GranularitySelector = ({ granularity, onChange }) => {
     return <div className="dropdown">
         <button
-            className="btn btn-link p-0"
+            className="btn p-0 rotating-gear"
             type="button"
             data-bs-toggle="dropdown"
             aria-expanded="false"
@@ -247,7 +247,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
             <h1 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h1>
-            <h1 style={{ margin: '0' }}>
+            <h1 style={{ margin: '20px' }}>
                 {index !== null ? "Modifier" : "Ajouter"} les séries
             </h1>
 
@@ -300,7 +300,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                 style={{
                                     display: 'inline-block',  // Ensure each item stays inline
                                     textAlign: 'center',  // Center text within each item
-                                    minWidth: '200px',  // Set a minimum width for each item for better alignment
+                                    minWidth: '180px',  // Set a minimum width for each item for better alignment
                                     whiteSpace: 'normal',  // Allow text to wrap within this div
                                 }}
                             >
