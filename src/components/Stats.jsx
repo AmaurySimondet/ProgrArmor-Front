@@ -4,6 +4,7 @@ import API from "../utils/API.js";
 import { Loader } from "./Loader.jsx";
 import { dateBasedOnTimeframe } from "../utils/dates.js";
 import { useWindowDimensions } from "../utils/useEffect.js";
+import { COLORS } from "../utils/constants.js";
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
@@ -137,10 +138,17 @@ function Stats({ stats, userId }) {
         );
     };
 
+    const handleRegularityScore = async () => {
+        const regularityScore = await API.getRegularityScore(userId);
+        setRegularityScore(regularityScore.data);
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 await handlePrTable();
+                await handleRegularityScore();
+
                 const exerciceData = [];
                 const dateMin = dateBasedOnTimeframe(selectedTimeframe);
 
@@ -178,7 +186,49 @@ function Stats({ stats, userId }) {
 
     return (
         <div className="stats-container popInElement">
+
+            {/* Regularity Score */}
+            {regularityScore && (
+                <section className="stats-section" style={{ display: "flex", margin: 0, padding: "5px", flexDirection: "column", gap: "0", alignItems: "center" }}>
+                    <div style={{ textAlign: "center" }}>
+                        <h2>Régularité d'entraînement</h2>
+                        <i>3 derniers mois</i>
+                    </div>
+                    <div className="stats-grid" style={{ display: "flex", flexDirection: "column", gap: "0", width: "100%" }}>
+                        <div className="stat-item" style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
+                            <h2 style={{
+                                color: regularityScore.average * 100 >= 80 ? '#28a745' :  // Green
+                                    regularityScore.average * 100 >= 60 ? '#90EE90' :  // Light green
+                                        regularityScore.average * 100 >= 40 ? '#ffa500' :  // Orange
+                                            regularityScore.average * 100 >= 20 ? '#dc3545' :  // Red
+                                                '#000000'                                          // Black
+                            }}>
+                                {(regularityScore.average * 100).toFixed(2)} %
+                            </h2>
+                            <p>Des semaines avec une séance</p>
+                            <p style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
+                                {regularityScore.average * 100 >= 80 ? "Tu es exemplaire !" :
+                                    regularityScore.average * 100 >= 60 ? "Tu as une belle regularité !" :
+                                        regularityScore.average * 100 >= 40 ? "Allez, tu peux mieux faire !" :
+                                            regularityScore.average * 100 >= 20 ? "Un soucis ? Tes amis et un coach peuvent t'aider à te remotiver !" :
+                                                "Revient t'entraîner !"}
+                            </p>
+                        </div>
+                        <div className="stat-item" style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
+                            <h3>Série actuelle</h3>
+                            <p>{regularityScore.currentStreak} semaines</p>
+                        </div>
+                        <div className="stat-item" style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
+                            <h3>Meilleure série</h3>
+                            <p>{regularityScore.bestStreak} semaines</p>
+                        </div>
+                    </div>
+                </section>
+            )
+            }
+
             {/* Exercise and Timeframe Selection */}
+            <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Statistiques d'exercice</h2>
             <div className="exercise-selection" style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
                 <select
                     value={selectedExercise}
@@ -211,56 +261,37 @@ function Stats({ stats, userId }) {
             </div>
 
             {/* Workout Progress Chart */}
-            {workoutDataTopExercices.map((exerciceData, index) => {
-                // Format dates for exercise data points and multiply value by 10
-                const formattedData = exerciceData.map(data => ({
-                    ...data,
-                    date: new Date(data.date).toLocaleDateString('fr-FR'),
-                }));
+            {
+                workoutDataTopExercices.map((exerciceData, index) => {
+                    // Format dates for exercise data points and multiply value by 10
+                    const formattedData = exerciceData.map(data => ({
+                        ...data,
+                        date: new Date(data.date).toLocaleDateString('fr-FR'),
+                    }));
 
-                return (
-                    <div>
-                        <section key={index} className="chart-section">
-                            <ResponsiveContainer width="100%" height={300}>
-                                <ComposedChart width={400} height={400} data={formattedData}>
-                                    <XAxis dataKey="date" tick={() => null} />
-                                    <Tooltip content={<CustomTooltip />} />
-                                    <CartesianGrid stroke="#f5f5f5" />
-                                    <Bar name="Reps / Secs" dataKey="value" fill="black" opacity={opacity.value} />
-                                    <Line name="Charge (kg)" type="monotone" dataKey="weightLoad" stroke="#9b0000" strokeOpacity={opacity.weightLoad} />
-                                    <Line name="Tension élastique (kg)" type="monotone" dataKey="elastic.tension" stroke="#82ca9d" strokeOpacity={opacity['elastic.tension']} />
-                                    <Legend onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
-                                </ComposedChart>
-                            </ResponsiveContainer>
-                        </section>
-                    </div>
-                );
-            })}
+                    return (
+                        <div>
+                            <section key={index} className="chart-section">
+                                <ResponsiveContainer width="100%" height={300}>
+                                    <ComposedChart width={400} height={400} data={formattedData}>
+                                        <XAxis dataKey="date" tick={() => null} />
+                                        <Tooltip content={<CustomTooltip />} />
+                                        <CartesianGrid stroke="#f5f5f5" />
+                                        <Bar name="Reps / Secs" dataKey="value" fill="black" opacity={opacity.value} />
+                                        <Line name="Charge (kg)" type="monotone" dataKey="weightLoad" stroke="#9b0000" strokeOpacity={opacity.weightLoad} />
+                                        <Line name="Tension élastique (kg)" type="monotone" dataKey="elastic.tension" stroke="#82ca9d" strokeOpacity={opacity['elastic.tension']} />
+                                        <Legend onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+                                    </ComposedChart>
+                                </ResponsiveContainer>
+                            </section>
+                        </div>
+                    );
+                })
+            }
 
             {/* PR Table */}
             {prTableResults && <PrTableElement PrTableResults={prTableResults} />}
-
-            {/* Regularity Score
-            {regularityScore && (
-                <section className="stats-section">
-                    <h2>Workout Regularity</h2>
-                    <div className="stats-grid">
-                        <div className="stat-item">
-                            <h3>Current Streak</h3>
-                            <p>{regularityScore.currentStreak} weeks</p>
-                        </div>
-                        <div className="stat-item">
-                            <h3>Best Streak</h3>
-                            <p>{regularityScore.bestStreak} weeks</p>
-                        </div>
-                        <div className="stat-item">
-                            <h3>Average</h3>
-                            <p>{regularityScore.average.toFixed(1)} sessions/week</p>
-                        </div>
-                    </div>
-                </section>
-            )}*/}
-        </div>
+        </div >
     );
 }
 

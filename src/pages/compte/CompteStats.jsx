@@ -15,7 +15,7 @@ const CompteStats = ({ stats }) => {
                 <div>
                     {Array.isArray(stats?.topExercices) ?
                         stats.topExercices.slice(0, 3).map((exercise, index) => (
-                            <div key={exercise._id} style={{ color: index % 2 === 0 ? 'black' : 'grey' }}>
+                            <div key={exercise._id} style={{ color: index % 2 === 0 ? 'black' : 'grey', fontSize: '12px' }}>
                                 {exercise.fullName}
                             </div>
                         ))

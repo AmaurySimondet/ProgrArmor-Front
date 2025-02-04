@@ -55,11 +55,11 @@ function AppFooter() {
                 <a href="/programme" className={`footer-link ${isActive('/programme')}`}>
                     <img
                         className="footer-icon"
-                        src={require('../images/icons/plus.webp')}
-                        alt='programmes'
+                        src={require('../images/icons/coach.webp')}
+                        alt='coachings'
                         style={{ filter: location.pathname === '/programme' ? "invert(1)" : "invert(0.3)" }}
                     />
-                    <span>Programmes</span>
+                    <span>Coachings</span>
                 </a>
 
                 <a href="/session" className={`footer-link ${isActive('/session')}`}>

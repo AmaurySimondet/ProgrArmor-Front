@@ -388,6 +388,12 @@ function Compte() {
               {width > 700 ? ' Statistiques' : null}
             </a>
           </li>
+          <li className={activeTab === 'coaching' ? 'selected' : ''}>
+            <a className="tab" onClick={() => handleTabChange('coaching')}>
+              <img src={require('../../images/icons/coach.webp')} alt="coach" style={{ width: '20px', height: '20px', filter: 'invert(1)' }} />
+              {width > 700 ? ' Coaching' : null}
+            </a>
+          </li>
         </ul>
       </div>
     )
@@ -472,6 +478,198 @@ function Compte() {
     );
   };
 
+  const CoachingSection = () => {
+    const programs = [
+      {
+        title: "Programme Débutant",
+        description: "Parfait pour commencer la musculation en toute sécurité",
+        duration: "3 mois",
+        price: "49€/mois"
+      },
+      {
+        title: "Programme Intermédiaire",
+        description: "Pour progresser et atteindre de nouveaux objectifs",
+        duration: "4 mois",
+        price: "69€/mois"
+      },
+      {
+        title: "Suivi Premium",
+        description: "Accompagnement personnalisé et suivi hebdomadaire",
+        duration: "6 mois",
+        price: "99€/mois"
+      }
+    ];
+
+    const nutritionalPlans = [
+      {
+        title: "Plan Nutritionnel Débutant",
+        description: "Pour commencer la musculation en toute sécurité",
+        duration: "3 mois",
+        price: "49€/mois"
+      },
+      {
+        title: "Plan Nutritionnel Intermédiaire",
+        description: "Pour progresser et atteindre de nouveaux objectifs",
+        duration: "4 mois",
+        price: "69€/mois"
+      }
+    ]
+
+
+    const testimonials = [
+      {
+        user: {
+          fname: "Thomas",
+          lname: "Dewitte",
+          profilePic: "https://via.placeholder.com/150"
+        },
+        text: "Excellent coach, très à l'écoute et professionnel !",
+        rating: 5
+      },
+      {
+        user: {
+          fname: "Marie",
+          lname: "Leroy",
+          profilePic: "https://via.placeholder.com/150"
+        },
+        text: "Grâce à son programme, j'ai atteint mes objectifs en 4 mois.",
+        rating: 5
+      }
+    ];
+
+    const coach = null
+    // const coach = {
+    //   name: "John Doe",
+    //   description: "Coach certifié en musculation et nutrition sportive",
+    //   experience: "5 ans de coaching personnalisé",
+    //   certifications: ["BPJEPS AGFF mention D", "Certification en nutrition sportive"],
+    //   speciality: "Musculation & Remise en forme",
+    //   meanRating: 4.5
+    // }
+
+    return (
+      <div>
+        {coach ?
+          <div className="popInElement coaching-section" style={{ padding: '20px' }}>
+            {/* Présentation */}
+            <div style={{ marginBottom: '30px' }}>
+              <h3 style={{ borderBottom: '2px solid #000', paddingBottom: '10px' }}>💪 Présentation</h3>
+              <div style={{ marginTop: '20px' }}>
+                <p><strong>Spécialité:</strong> {coach.speciality}</p>
+                <p><strong>Expérience:</strong> {coach.experience}</p>
+                <p><strong>Certifications:</strong></p>
+                <ul>
+                  {coach.certifications.map((certification, index) => (
+                    <li key={index}>{certification}</li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Programmes */}
+            <div style={{ marginBottom: '30px' }}>
+              <h3 style={{ borderBottom: '2px solid #000', paddingBottom: '10px' }}>🎯 Programmes</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginTop: '20px' }}>
+                {programs.map((program, index) => (
+                  <div className="coaching-div" key={index} style={{
+                    padding: '20px',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    backgroundColor: 'white'
+                  }}>
+                    <h4>{program.title}</h4>
+                    <p>{program.description}</p>
+                    <p><strong>Durée:</strong> {program.duration}</p>
+                    <p><strong>Tarif:</strong> {program.price}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Plans nutritionnels */}
+            <div style={{ marginBottom: '30px' }}>
+              <h3 style={{ borderBottom: '2px solid #000', paddingBottom: '10px' }}>🍏 Plans Nutritionnels</h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '20px', marginTop: '20px' }}>
+                {nutritionalPlans.map((plan, index) => (
+                  <div className="coaching-div" key={index} style={{
+                    padding: '20px',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    backgroundColor: 'white'
+                  }}>
+                    <h4>{plan.title}</h4>
+                    <p>{plan.description}</p>
+                    <p><strong>Durée:</strong> {plan.duration}</p>
+                    <p><strong>Tarif:</strong> {plan.price}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+
+            {/* Témoignages */}
+            <div style={{ marginBottom: '30px' }}>
+              <h3 style={{ borderBottom: '2px solid #000', paddingBottom: '10px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>⭐ Avis</span>
+                <span style={{ fontSize: '0.9em' }}>
+                  {coach.meanRating ? `${coach.meanRating}/5 ⭐` : ''}
+                </span>
+              </h3>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '20px', marginTop: '20px' }}>
+                {testimonials.map((testimonial, index) => (
+                  <div className="coaching-div" key={index} style={{
+                    padding: '20px',
+                    border: '1px solid #ddd',
+                    borderRadius: '8px',
+                    backgroundColor: 'white'
+                  }}>
+                    <p>{"⭐".repeat(testimonial.rating)}</p>
+                    <p style={{ fontStyle: 'italic' }}>"{testimonial.text}"</p>
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '12px',
+                      marginTop: '15px',
+                    }}>
+                      <ProfilePic user={testimonial.user} size="32px" onClick={() => window.open(`/compte?id=${testimonial.user._id}`, '_blank')} />
+                      <p style={{
+                        margin: 0,
+                        fontSize: '0.9em',
+                        fontWeight: 500,
+                        cursor: 'pointer'
+                      }} onClick={() => window.open(`/compte?id=${testimonial.user._id}`, '_blank')} className="clickable">
+                        {testimonial.user.fname} {testimonial.user.lname}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Boutons d'action */}
+            <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
+              <button className="btn btn-black">
+                📅 Prendre RDV
+              </button>
+              <button className="btn btn-white">
+                ✉️ Message
+              </button>
+            </div>
+          </div>
+          :
+
+
+          <div style={{ display: 'flex', justifyContent: 'center', margin: "40px" }} className="popInElement">
+            <button className="btn btn-black" disabled>
+              <img src={require('../../images/icons/coach.webp')} alt="coach" style={{ width: '20px', height: '20px' }} />
+              <span style={{ fontSize: '0.8em' }}>Devenir coach</span>
+            </button>
+          </div>
+        }
+      </div>
+    );
+  };
+
   return (
     <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
       <div className="page-container">
@@ -512,6 +710,7 @@ function Compte() {
                     />
                   </div>
                 }
+                {activeTab === 'coaching' && <CoachingSection />}
               </div>
             </div>
           )}

@@ -85,6 +85,9 @@ export default {
   unfollowUser: function (send) {
     return axios.post(`${burl}/user/unfollowUser`, send, { headers: headers });
   },
+  getRegularityScore: function (userId) {
+    return axios.get(`${burl}/user/regularityScore`, { headers: headers, params: { userId } });
+  },
 
 
 
