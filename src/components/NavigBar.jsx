@@ -7,7 +7,6 @@ import ProfilePic from "./profilePic";
 function NavigBar(props) {
     const [toggled, setToggled] = useState(false);
     const [user, setUser] = useState(null);
-    const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -17,8 +16,6 @@ function NavigBar(props) {
                 const response = await API.getNotifications({
                     userId: localStorage.getItem('id')
                 });
-                const unreadNotifications = response.data.notifications.filter(notification => !notification.read);
-                setNotifications(unreadNotifications);
             } catch (error) {
                 console.error("Error fetching notifications:", error);
             } finally {
@@ -53,15 +50,6 @@ function NavigBar(props) {
                 <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
                     <div className={toggled ? "toggler-icon scaled" : "toggler-icon not-scaled"} >
                         <img onClick={toggling} src={require('../images/icons/output-onlinepngtools.webp')} alt="logo" />
-                        <span className="badge rounded-pill bg-warning text-dark popInElement"
-                            style={{
-                                scale: "1.5",
-                                fontWeight: "bold",
-                                boxShadow: "0 0 5px rgba(255, 255, 255, 0.5)",
-                                visibility: notifications.length > 0 ? "visible" : "hidden"
-                            }}>
-                            {notifications.length}
-                        </span>
                     </div>
 
                     <div>

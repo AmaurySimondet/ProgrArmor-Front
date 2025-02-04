@@ -183,7 +183,7 @@ function Notifications() {
                                             <ProfilePic user={fromUser} size="60px" onClick={() => {
                                                 window.location.href = `/compte?id=${fromUser._id}`;
                                             }} />
-                                            <div style={{ flex: 1 }}>
+                                            <div style={{ flex: 1, marginLeft: '10px' }}>
                                                 <div style={{ fontWeight: notification.read ? 'normal' : 'bold' }}>
                                                     {fromUser?.notificationName}
                                                 </div>

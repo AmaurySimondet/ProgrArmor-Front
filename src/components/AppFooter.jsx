@@ -3,6 +3,7 @@ import { useLocation } from "react-router-dom";
 import { MiniLoader } from "./Loader";
 import ProfilePic from "./profilePic";
 import { getUserById } from "../utils/user";
+import API from "../utils/API";
 
 function AppFooter() {
     const location = useLocation();
@@ -22,6 +23,7 @@ function AppFooter() {
                     userId: localStorage.getItem('id')
                 });
                 const unreadNotifications = response.data.notifications.filter(notification => !notification.read);
+                console.log(unreadNotifications);
                 setNotifications(unreadNotifications);
             } catch (error) {
                 console.error("Error fetching notifications:", error);
@@ -71,12 +73,27 @@ function AppFooter() {
                 </a>
 
                 <a href="/notifications" className={`footer-link ${isActive('/notifications')}`}>
-                    <img
-                        className="footer-icon"
-                        src={require('../images/icons/notifications.webp')}
-                        alt='notifications'
-                        style={{ filter: location.pathname === '/notifications' ? "invert(1)" : "invert(0.3)" }}
-                    />
+                    <div style={{ position: 'relative' }}>
+                        <span className="badge rounded-pill bg-warning text-dark popInElement"
+                            style={{
+                                scale: "1.5",
+                                fontWeight: "bold",
+                                boxShadow: "0 0 5px rgba(255, 255, 255, 0.5)",
+                                visibility: notifications.length > 0 ? "visible" : "hidden",
+                                position: 'absolute',
+                                top: '-8px',
+                                right: '-8px',
+                                zIndex: 1
+                            }}>
+                            {notifications.length}
+                        </span>
+                        <img
+                            className="footer-icon"
+                            src={require('../images/icons/notifications.webp')}
+                            alt='notifications'
+                            style={{ filter: location.pathname === '/notifications' ? "invert(1)" : "invert(0.3)" }}
+                        />
+                    </div>
                     <span>Notifications</span>
                 </a>
 
