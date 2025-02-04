@@ -24,6 +24,17 @@ function Inscription() {
     const [classdiv4, setClassdiv4] = useState("not-visible");
     const [classdiv5, setClassdiv5] = useState("not-visible");
     const [stats, setStats] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (localStorage.getItem("token")) {
+            setLoading(true);
+
+            createTokenAndId().then(() => {
+                setLoading(false);
+            });
+        }
+    }, []); // Empty dependency array means this only runs once on mount
 
     useEffect(() => {
         const observer = new IntersectionObserver(
@@ -113,14 +124,10 @@ function Inscription() {
         });
     }, []);
 
-    if (localStorage.getItem("token")) {
-        createTokenAndId();
-    }
-
     return (
         <div style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
             <div className="page-container">
-                <HomeHeader />
+                <HomeHeader loading={loading} />
 
 
                 <main className="content-wrap popInElement" style={{ margin: "0 auto" }}>

@@ -169,7 +169,6 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
 
         exercises.forEach((exercise) => {
             const exerciseHeight = estimateExerciseHeight(exercise);
-            console.log("exerciseHeight", exercise.exercice.name.fr, exercise.sets, exerciseHeight);
 
             // If a single exercise is too tall, split it across multiple slides
             if (exerciseHeight > MAX_HEIGHT) {

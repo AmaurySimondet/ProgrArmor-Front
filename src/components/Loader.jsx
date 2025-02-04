@@ -43,7 +43,7 @@ const Loader = () => {
 
 const MiniLoader = () => {
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60px', width: '100%' }}>
             <div className="loader"></div>
         </div>
     );
