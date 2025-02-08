@@ -98,7 +98,7 @@ const getExerciseTypeById = async (exerciceTypeId) => {
 // Helper function to get a unique key for exercise-category combinations
 const getExerciseCategoryKey = (exerciseId, categories) => {
     // Convert categories to a string sorted by category ID to ensure uniqueness
-    const categoryIds = categories.map(cat => cat.category).sort().join('-');
+    const categoryIds = categories.map(cat => cat._id).sort().join('-');
     return `${exerciseId}-${categoryIds}`;
 };
 
@@ -106,6 +106,7 @@ const getExerciseCategoryKey = (exerciseId, categories) => {
 const setsToSeance = async (sessionSets, name, date) => {
     // Group sets by exercise and category combination
     const exercisesMap = {};
+
 
     for (const set of sessionSets) {
         const exerciseId = set.exercice;
@@ -154,7 +155,6 @@ const setsToSeance = async (sessionSets, name, date) => {
 
 const seanceToSets = (seanceId, selectedExercices, userId, date) => {
     const seanceSets = [];
-    console.log('Selected exercices:', selectedExercices);
 
     selectedExercices.forEach((exercise, exerciseIndex) => {
         const { exercice, exerciceType, categories, sets } = exercise;
