@@ -1,30 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { getUserById } from "../utils/user";
-import API from "../utils/API";
+import React, { useState } from "react";
 import Chrono from "./Chrono";
-import ProfilePic from "./profilePic";
 
-function NavigBar(props) {
+function NavigBar() {
     const [toggled, setToggled] = useState(false);
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                getUserById(localStorage.getItem('id')).then(setUser);
-                const response = await API.getNotifications({
-                    userId: localStorage.getItem('id')
-                });
-            } catch (error) {
-                console.error("Error fetching notifications:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
-    }, []);
 
     function toggling() {
         setToggled(oldToggled => {

@@ -1,11 +1,10 @@
 import { React, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 import NavigBar from "../../components/NavigBar.jsx";
-import Footer from "../../components/Footer.jsx";
 import { COLORS } from "../../utils/constants.js";
 import DisplaySeancesPost from "../../components/DisplaySeancesPost.jsx";
 import API from "../../utils/API.js";
-import { Loader } from "../../components/Loader.jsx";
+import { MiniLoader } from "../../components/Loader.jsx";
 import CompteStats from "./CompteStats.jsx";
 import Stats from "../../components/Stats.jsx";
 import apiCalls from "../../utils/apiCalls";
@@ -20,7 +19,7 @@ import AppFooter from "../../components/AppFooter.jsx";
 function Compte() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [activeTab, setActiveTab] = useState(searchParams.get('activeTab') || 'seances');
-  const [loading, setLoading] = useState(true);
+  const [loadingUser, setLoadingUser] = useState(true);
   const [user, setUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [stats, setStats] = useState(null);
@@ -32,6 +31,9 @@ function Compte() {
   const [seanceNames, setSeanceNames] = useState([]);
   const [selectedSeanceName, setSelectedSeanceName] = useState(null);
   const [coach, setCoach] = useState(false);
+  const [loadingStats, setLoadingStats] = useState(true);
+  const [loadingSeanceNames, setLoadingSeanceNames] = useState(true);
+  const [loadingImages, setLoadingImages] = useState(true);
 
   useEffect(() => {
     // Trigger animation when the value changes
@@ -55,13 +57,23 @@ function Compte() {
     const fetchData = async () => {
       try {
         // Get user data
-        getUserById(searchParams.get('id')).then(setUser);
+        setLoadingUser(true);
+        getUserById(searchParams.get('id')).then(userData => {
+          setUser(userData);
+          setLoadingUser(false);
+        });
         getUserById(localStorage.getItem('id')).then(setCurrentUser);
+
+        // Get seance names
+        setLoadingSeanceNames(true);
         API.getSeanceNames({ userId: searchParams.get('id') }).then(response => {
           const uniqueNames = new Set(response.data.seanceNames.map(seance => seance.name));
           setSeanceNames(Array.from(uniqueNames));
+          setLoadingSeanceNames(false);
         });
+
         // Get stats
+        setLoadingStats(true);
         const statsRes = await API.getStats(searchParams.get('id'));
         const favoriteExercices = await apiCalls.buildFavoriteExercices(statsRes.data.stats.topExercices.topExercices);
         const formattedStats = {
@@ -76,14 +88,19 @@ function Compte() {
           favoriteDay: statsRes.data.stats.favoriteDay || 'N/A'
         };
         setStats(formattedStats);
+        setLoadingStats(false);
 
         // Get user images
-        const imagesRes = await API.getUserImages(searchParams.get('id'));
-        setUserImages(imagesRes.data.images);
+        const imagesRes = await API.getUserImages(searchParams.get('id')).then(response => {
+          setUserImages(response.data.images);
+          setLoadingImages(false);
+        });
       } catch (error) {
         console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
+        // Reset loading states on error
+        setLoadingUser(false);
+        setLoadingStats(false);
+        setLoadingSeanceNames(false);
       }
     };
 
@@ -202,11 +219,10 @@ function Compte() {
     }
   };
 
-  if (loading) {
-    return <Loader />
-  }
-
   const UserInfo = () => {
+    if (loadingUser) {
+      return <MiniLoader />;
+    }
     return (
       <div style={{ display: 'flex', alignItems: 'center', margin: '20px', gap: '20px' }}>
         <div style={{ position: 'relative' }}>
@@ -270,6 +286,9 @@ function Compte() {
 
 
   const UserActions = () => {
+    if (loadingUser) {
+      return <MiniLoader />;
+    }
     return (
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', margin: '20px 20px' }}>
         <div style={{ display: 'flex', gap: '20px' }}>
@@ -403,7 +422,7 @@ function Compte() {
   }
 
   const UserImages = () => {
-    if (!userImages) {
+    if (loadingImages) {
       return (
         <div id="header-photos">
           <div style={{
@@ -413,7 +432,7 @@ function Compte() {
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            Chargement...
+            <MiniLoader />
           </div>
         </div>
       );
@@ -459,6 +478,9 @@ function Compte() {
   };
 
   const SeanceNameSelector = () => {
+    if (loadingSeanceNames) {
+      return <MiniLoader />;
+    }
     return (
       <div style={{ margin: '20px 0', display: 'flex', justifyContent: 'center' }}>
         <select
@@ -704,7 +726,9 @@ function Compte() {
                 <Tabs />
 
                 {/* Render active tab component */}
-                {activeTab === 'statistiques' && <Stats stats={stats} userId={searchParams.get('id')} />}
+                {activeTab === 'statistiques' && (
+                  loadingStats ? <MiniLoader /> : <Stats stats={stats} userId={searchParams.get('id')} />
+                )}
                 {activeTab === 'seances' &&
                   <div>
                     <SeanceNameSelector />

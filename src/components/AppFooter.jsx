@@ -23,7 +23,6 @@ function AppFooter() {
                     userId: localStorage.getItem('id')
                 });
                 const unreadNotifications = response.data.notifications.filter(notification => !notification.read);
-                console.log(unreadNotifications);
                 setNotifications(unreadNotifications);
             } catch (error) {
                 console.error("Error fetching notifications:", error);

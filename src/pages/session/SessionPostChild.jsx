@@ -19,9 +19,9 @@ function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescrip
 
     const handleDelete = async () => {
         setIsDeleting(true);
-        await API.deleteSeance({ id, user: user._id });
+        await API.deleteSeance({ seanceId, user: user._id });
         setIsDeleting(false);
-        window.location.href = `/dashboard`;
+        window.location.reload();
     };
 
     const handleShare = async () => {
