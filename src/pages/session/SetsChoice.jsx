@@ -6,6 +6,8 @@ import Alert from '../../components/Alert';
 import API from '../../utils/API';
 import { MiniLoader } from '../../components/Loader';
 
+const THREE_MONTHS = 90 * 24 * 60 * 60 * 1000;
+
 const GranularitySelector = ({ granularity, onChange }) => {
     return <div className="dropdown">
         <button
@@ -35,7 +37,7 @@ const GranularitySelector = ({ granularity, onChange }) => {
     </div>
 }
 
-const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, onGoToExerciceType, onGoToCategories }) => {
+const SetsChoice = ({ selectedExercices, onBack, onNext, editingSets, exercice, index, onDelete, onGoToExerciceType, onGoToCategories }) => {
     const [sets, setSets] = useState([{
         unit: 'repetitions',
         value: 0,
@@ -71,6 +73,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
     const [topFormatsPage, setTopFormatsPage] = useState(1);
     const [hasMoreFormats, setHasMoreFormats] = useState(true);
     const [loadingMoreFormats, setLoadingMoreFormats] = useState(false);
+    const [lastPRs, setLastPRs] = useState({});
 
     useEffect(() => {
         console.log("sets", sets);
@@ -92,6 +95,28 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
         }).catch(error => {
             console.error("Error fetching top formats:", error);
         });
+    }, [exercice]);
+
+    useEffect(() => {
+        if (!exercice?.exercice?._id) return;
+
+        const getPRs = async () => {
+            const PrTableQuery = {
+                exercice: exercice.exercice._id,
+                categories: exercice.categories.map(category => ({ category: category._id })),
+                userId: localStorage.getItem('id'),
+                dateMin: new Date(Date.now() - THREE_MONTHS).toISOString()
+            };
+
+            try {
+                const response = await API.getPRs(PrTableQuery);
+                setLastPRs(response.data.prs);
+            } catch (error) {
+                console.error("Error fetching PRs:", error);
+            }
+        };
+
+        getPRs();
     }, [exercice]);
 
     const showAlert = (message, type) => {
@@ -241,6 +266,102 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
         }
     };
 
+    const handleLastPRSelect = (data) => {
+        // Create sets based on PR data
+        const newSets = [];
+        if (data.repetitions) {
+            // Get decimal part of weight load
+            const decimalPart = data.repetitions.weightLoad % 1;
+            console.log("decimalPart", decimalPart);
+
+            // Determine granularity based on decimal part
+            let newGranularity = 1;
+            if (decimalPart > 0) {
+                if (decimalPart <= 0.1) newGranularity = 0.1;
+                else if (decimalPart <= 0.25) newGranularity = 0.25;
+                else if (decimalPart <= 0.5) newGranularity = 0.5;
+            }
+
+            // Update granularity if needed
+            if (newGranularity < granularity) {
+                setGranularity(newGranularity);
+                // Wait for next render before setting sets
+                setTimeout(() => {
+                    newSets.push({
+                        unit: 'repetitions',
+                        value: data.repetitions.value,
+                        weightLoad: data.repetitions.weightLoad || 0,
+                        elastic: data.repetitions.elastic || null,
+                    });
+                    if (data.seconds) {
+                        newSets.push({
+                            unit: 'seconds',
+                            value: data.seconds.value,
+                            weightLoad: data.seconds.weightLoad || 0,
+                            elastic: data.seconds.elastic || null,
+                        });
+                    }
+                    if (newSets.length > 0) {
+                        setSets(newSets);
+                    }
+                }, 0);
+                return;
+            }
+        }
+
+        if (data.seconds && newSets.length === 0) {
+            // Get decimal part of weight load
+            const decimalPart = data.seconds.weightLoad % 1;
+
+            // Determine granularity based on decimal part
+            let newGranularity = 1;
+            if (decimalPart > 0) {
+                if (decimalPart <= 0.1) newGranularity = 0.1;
+                else if (decimalPart <= 0.25) newGranularity = 0.25;
+                else if (decimalPart <= 0.5) newGranularity = 0.5;
+            }
+
+            // Update granularity if needed
+            if (newGranularity < granularity) {
+                setGranularity(newGranularity);
+                // Wait for next render before setting sets
+                setTimeout(() => {
+                    newSets.push({
+                        unit: 'seconds',
+                        value: data.seconds.value,
+                        weightLoad: data.seconds.weightLoad || 0,
+                        elastic: data.seconds.elastic || null,
+                    });
+                    if (newSets.length > 0) {
+                        setSets(newSets);
+                    }
+                }, 0);
+                return;
+            }
+        }
+
+        // If no granularity change needed, set sets immediately
+        if (data.repetitions) {
+            newSets.push({
+                unit: 'repetitions',
+                value: data.repetitions.value,
+                weightLoad: data.repetitions.weightLoad || 0,
+                elastic: data.repetitions.elastic || null,
+            });
+        }
+        if (data.seconds) {
+            newSets.push({
+                unit: 'seconds',
+                value: data.seconds.value,
+                weightLoad: data.seconds.weightLoad || 0,
+                elastic: data.seconds.elastic || null,
+            });
+        }
+        if (newSets.length > 0) {
+            setSets(newSets);
+        }
+    }
+
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <Tooltip id="my-tooltip" />
@@ -304,7 +425,7 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                                     whiteSpace: 'normal',  // Allow text to wrap within this div
                                 }}
                             >
-                                <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>💪</div>
+                                <div style={{ fontSize: width < 500 ? '18px' : '24px' }}>💪</div>
                                 <div style={{ display: 'flex', gap: '5px', alignItems: 'center', justifyContent: 'center' }}>
                                     <div>{`${format.sets} x ${format.reps}:`} </div>
                                     <select
@@ -353,6 +474,104 @@ const SetsChoice = ({ onBack, onNext, editingSets, exercice, index, onDelete, on
                     </div>
                 </div>
             }
+
+            {Object.keys(lastPRs).length > 0 && (
+                <div>
+                    <h3 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+                        Records Personnels
+                    </h3>
+                    <div style={{
+                        display: 'flex',
+                        gap: '10px',
+                        alignItems: 'center',
+                        maxWidth: '95vw',
+                        maxHeight: '250px',
+                        overflowX: 'scroll',
+                        overflowY: 'hidden',
+                        whiteSpace: 'nowrap',
+                        marginBottom: '40px'
+                    }}>
+                        {Object.entries(lastPRs).map(([category, data]) => (
+                            <div
+                                key={category}
+                                className='sessionChoiceSmall'
+                                onClick={() => handleLastPRSelect(data)}
+                                style={{
+                                    display: 'inline-block',
+                                    textAlign: 'center',
+                                    minWidth: '180px',
+                                    whiteSpace: 'normal',
+                                }}
+                            >
+                                <div style={{ fontSize: width < 500 ? '18px' : '24px' }}>🏆</div>
+                                <div>{category}</div>
+                                {data.repetitions && (
+                                    <div>
+                                        {data.repetitions.value} reps @ {data.repetitions.weightLoad}kg
+                                        {data.repetitions.elastic?.use &&
+                                            ` + ${data.repetitions.elastic.use} ${data.repetitions.elastic.tension}kg`
+                                        }
+                                    </div>
+                                )}
+                                {data.seconds && (
+                                    <div>
+                                        {data.seconds.value}s @ {data.seconds.weightLoad}kg
+                                        {data.seconds.elastic?.use &&
+                                            ` + ${data.seconds.elastic.use} ${data.seconds.elastic.tension}kg`
+                                        }
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
+
+            {/* Add Current Session Sets */}
+            {selectedExercices?.length > 0 && selectedExercices.some(ex => ex.sets?.length > 0) && (
+                <div>
+                    <h3 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
+                        Séries de cette séance
+                    </h3>
+                    <div style={{
+                        display: 'flex',
+                        gap: '10px',
+                        alignItems: 'center',
+                        maxWidth: '95vw',
+                        maxHeight: '250px',
+                        overflowX: 'scroll',
+                        overflowY: 'hidden',
+                        whiteSpace: 'nowrap',
+                        marginBottom: '40px'
+                    }}>
+                        {selectedExercices.map((ex, idx) => ex.sets?.length > 0 && (
+                            <div
+                                key={idx}
+                                className='sessionChoiceSmall'
+                                onClick={() => setSets(ex.sets)}
+                                style={{
+                                    display: 'inline-block',
+                                    textAlign: 'center',
+                                    minWidth: '180px',
+                                    whiteSpace: 'normal',
+                                }}
+                            >
+                                {/* <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>📝</div> */}
+                                <strong>{ex.exercice.name.fr}</strong>
+                                {ex.sets.slice(0, 3).map((set, setIdx) => (
+                                    <div key={setIdx}>
+                                        {set.value} {set.unit === 'repetitions' ? 'reps' : 's'} @ {set.weightLoad}kg
+                                        {set.elastic?.use &&
+                                            ` + ${set.elastic.use} ${set.elastic.tension}kg`
+                                        }
+                                    </div>
+                                ))}
+                                {ex.sets.length > 3 && <div>...</div>}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
 
             <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
                 {sets.length > 0 ? (

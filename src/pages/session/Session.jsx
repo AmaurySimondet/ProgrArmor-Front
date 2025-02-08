@@ -66,7 +66,7 @@ const Session = () => {
           const selectedSessionSets = response.data.sets;
           const seance = await setsToSeance(selectedSessionSets, selectedSession.name, selectedSession.date);
           setSelectedName(selectedSession.name);
-          const updatedExercices = await addPrToSets(seance.exercices, null, null);
+          const updatedExercices = await addPrToSets(searchParams.get('id'), seance.exercices, null, null);
           setSelectedExercices(updatedExercices);
 
           if (selectedSession.value === "params") {
@@ -155,7 +155,7 @@ const Session = () => {
 
     // Handle exercise replacement or addition
     const updateExercices = async () => {
-      const finalExercices = await addPrToSets(selectedExercices, newExercice, editingExerciceIndex);
+      const finalExercices = await addPrToSets(searchParams.get('id'), selectedExercices, newExercice, editingExerciceIndex);
       setSelectedExercices(finalExercices);
     };
     updateExercices();
@@ -230,7 +230,6 @@ const Session = () => {
   // Add this useEffect to load state from URL params on initial load
   useEffect(() => {
     const stateFromUrl = searchParams.get('state');
-    const seanceId = searchParams.get('id');
 
     if (stateFromUrl) {
       try {
@@ -378,6 +377,7 @@ const Session = () => {
           )}
           {step === 6 && (
             <SetsChoice
+              selectedExercices={selectedExercices}
               onAddSet={handleAddSet}
               onBack={() => { setStep(5); scrollToElement() }}
               onNext={handleNextExercice}

@@ -31,6 +31,7 @@ function Compte() {
   const [showModifyProfile, setShowModifyProfile] = useState(false);
   const [seanceNames, setSeanceNames] = useState([]);
   const [selectedSeanceName, setSelectedSeanceName] = useState(null);
+  const [coach, setCoach] = useState(false);
 
   useEffect(() => {
     // Trigger animation when the value changes
@@ -388,12 +389,14 @@ function Compte() {
               {width > 700 ? ' Statistiques' : null}
             </a>
           </li>
-          <li className={activeTab === 'coaching' ? 'selected' : ''}>
-            <a className="tab" onClick={() => handleTabChange('coaching')}>
-              <img src={require('../../images/icons/coach.webp')} alt="coach" style={{ width: '20px', height: '20px', filter: 'invert(1)' }} />
-              {width > 700 ? ' Coaching' : null}
-            </a>
-          </li>
+          {localStorage.getItem('id') === searchParams.get('id') || coach ? (
+            <li className={activeTab === 'coaching' ? 'selected' : ''}>
+              <a className="tab" onClick={() => handleTabChange('coaching')}>
+                <img src={require('../../images/icons/coach.webp')} alt="coach" style={{ width: '20px', height: '20px', filter: 'invert(1)' }} />
+                {width > 700 ? ' Coaching' : null}
+              </a>
+            </li>
+          ) : null}
         </ul>
       </div>
     )
@@ -659,7 +662,8 @@ function Compte() {
           :
 
 
-          <div style={{ display: 'flex', justifyContent: 'center', margin: "40px" }} className="popInElement">
+          <div style={{ display: 'flex', justifyContent: 'center', margin: "40px", flexDirection: 'column', alignItems: 'center' }} className="popInElement">
+            <i style={{ fontStyle: 'italic', fontSize: '0.8em', marginBottom: '20px' }}>Seul vous pouvez voir cette section</i>
             <button className="btn btn-black" disabled>
               <img src={require('../../images/icons/coach.webp')} alt="coach" style={{ width: '20px', height: '20px' }} />
               <span style={{ fontSize: '0.8em' }}>Devenir coach</span>

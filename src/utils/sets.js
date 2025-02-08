@@ -188,7 +188,7 @@ const seanceToSets = (seanceId, selectedExercices, userId, date) => {
     return seanceSets;
 };
 
-const addPrToSets = async (selectedExercices, selectedExercice, index) => {
+const addPrToSets = async (seanceId, selectedExercices, selectedExercice, index) => {
     const exercicesToRender = [...selectedExercices];
 
     // Place selectedExercice at the correct position
@@ -204,7 +204,7 @@ const addPrToSets = async (selectedExercices, selectedExercice, index) => {
             // console.log('Querying PR for:', exercice.exercice.name.fr + " (" + exercice.exercice._id + ") " + exercice.categories.map((category) => (category.name.fr + " (" + category._id + ") ")).join(', '));
             const updatedSets = await Promise.all(
                 exercice.sets.map(async (set) => {
-                    const isPR = await isPersonalRecord(set, exercice.exercice._id, exercice.categories.map((category) => ({ category: category._id })));
+                    const isPR = await isPersonalRecord(seanceId, set, exercice.exercice._id, exercice.categories.map((category) => ({ category: category._id })));
                     return { ...set, PR: isPR };
                 })
             );

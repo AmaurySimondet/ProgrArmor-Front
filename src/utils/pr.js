@@ -7,7 +7,7 @@ import API from "./API";
  * @param {list} categories writen as [{category: "id"}]
  * @returns {string} "PR" if it is a personal record, "SB" if it is the same best, null if it is not a personal record
  */
-export const isPersonalRecord = async (set, exercice, categories) => {
+export const isPersonalRecord = async (seanceId, set, exercice, categories) => {
     // Extract necessary data from the set
     const { unit, value, weightLoad, elastic } = set;
 
@@ -17,6 +17,7 @@ export const isPersonalRecord = async (set, exercice, categories) => {
     try {
         const userId = localStorage.getItem("id");
         const query = {
+            excludedSeanceId: seanceId,
             userId,
             exercice,
             categories,
