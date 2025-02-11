@@ -11,7 +11,6 @@ function ConnexionForm(props) {
 
   async function handleClick() {
     event.preventDefault();
-
     const { email, password } = state;
 
     if (!email || email.length === 0) {
@@ -23,9 +22,11 @@ function ConnexionForm(props) {
     try {
       const { data } = await API.login(email, password);
       if (data.success === true) {
-        console.log(data)
-        window.location = "/token?token=" + data.token;
-      } else { alert(data.message); }
+        const redirectUrl = new URLSearchParams(window.location.search).get('redirect');
+        window.location = `/token?token=${data.token}&redirect=${encodeURIComponent(redirectUrl || '/dashboard')}`;
+      } else {
+        alert(data.message);
+      }
     } catch (error) {
       alert(error);
     }

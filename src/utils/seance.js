@@ -66,11 +66,8 @@ const fetchSeancesData = async (users, seanceName, page = 1, limit = 3) => {
  */
 const fetchSeanceData = async (seanceId) => {
     try {
-        console.log("fetching seance data for seanceId:", seanceId);
         const response = await API.getSeance({ id: seanceId });
-        console.log("response:", response);
         const seance = response.data.seanceData;
-        console.log("seance:", seance);
 
         // Fetch seance sets
         const seanceSetsResponse = await API.getSeanceSets({ seanceId: seance._id });

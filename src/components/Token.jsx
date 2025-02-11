@@ -2,14 +2,17 @@ import { useSearchParams } from "react-router-dom";
 import API from "../utils/API.js";
 
 function Token() {
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
 
     async function createTokenAndId() {
-        const result = await API.verifyToken({ token: searchParams.get("token") });
+        const token = searchParams.get("token");
+        const redirectUrl = searchParams.get("redirect");
+
+        const result = await API.verifyToken({ token });
         if (result.data.success === true) {
-            await localStorage.setItem("token", searchParams.get("token"));
-            await localStorage.setItem("id", result.data.id)
-            window.location = "/dashboard";
+            await localStorage.setItem("token", token);
+            await localStorage.setItem("id", result.data.id);
+            window.location = redirectUrl || "/dashboard";
         }
         else {
             console.log(result.data.message)
@@ -18,5 +21,4 @@ function Token() {
 
     createTokenAndId();
 }
-
 export default Token;
