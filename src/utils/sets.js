@@ -1,6 +1,7 @@
 import API from './API';
 import React from 'react';
 import { isPersonalRecord } from './pr';
+import { COLORS } from './constants';
 
 const renderSets = (sets, hasModifications, className = "set-item") => {
     // Count identical sets
@@ -44,13 +45,26 @@ const renderSets = (sets, hasModifications, className = "set-item") => {
         return (
             <li key={setKey}
                 className={`${className} ${PR ? 'personal-record' : ''}`.trim()}
-                style={PR === 'PR' ? { backgroundColor: "#e0ffe0", border: "2px solid #00c853" } : PR === "SB" ? { backgroundColor: "#fff9c4", border: "2px solid #ffeb3b" } : {}}>
+                style={PR === 'PR'
+                    ? { backgroundColor: COLORS.PR.background, border: `2px solid ${COLORS.PR.border}` }
+                    : PR === "SB"
+                        ? { backgroundColor: COLORS.SB.background, border: `2px solid ${COLORS.SB.border}` }
+                        : PR === "NB"
+                            ? { backgroundColor: COLORS.NB.background, border: `2px solid ${COLORS.NB.border}` }
+                            : {}}>
 
                 {`${count} x ${set.value} ${set.unit} ${set.weightLoad ? `@ ${set.weightLoad} kg` : ''} ${set.elastic && set.elastic.tension ? `Elastique: ${set.elastic.use} ${set.elastic.tension} kg` : ''}`}
 
                 {PR && className !== "" && (
-                    // if PR green, if SB yellow
-                    <span className="pr-badge" style={PR === 'PR' ? { color: "#00c853" } : { color: "rgb(255 178 59)" }}>
+                    // if PR green, if SB yellow, if NB gray
+                    <span className="pr-badge"
+                        style={PR === 'PR'
+                            ? { color: COLORS.PR.text }
+                            : PR === "SB"
+                                ? { color: COLORS.SB.text }
+                                : PR === "NB"
+                                    ? { color: COLORS.NB.text }
+                                    : { color: "#666" }}>
                         {PR}
                     </span>
                 )}

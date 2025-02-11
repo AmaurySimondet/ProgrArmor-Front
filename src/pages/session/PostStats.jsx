@@ -1,4 +1,5 @@
 import React from 'react';
+import { COLORS } from '../../utils/constants';
 
 const PostStats = ({ recordSummary, stats, width }) => {
 
@@ -61,13 +62,10 @@ const PostStats = ({ recordSummary, stats, width }) => {
             </div>
 
             {recordSummary && recordSummary.length > 0 && (
-                <div style={{
-                    textAlign: 'center',
-                    minWidth: 'fit-content'
-                }}>
-                    <ul style={{ listStyleType: 'none', padding: 0, margin: 0 }}>
-                        {recordSummary.map((record, idx) => (
-                            <li key={record.PR}
+                <div style={statsRowStyle}>
+                    {recordSummary.map((record, idx) => (
+                        <div key={idx} style={statStyle}>
+                            <li
                                 className={`${record.PR ? 'personal-record' : ''}`.trim()}
                                 style={{
                                     display: 'inline-block',
@@ -75,20 +73,26 @@ const PostStats = ({ recordSummary, stats, width }) => {
                                     padding: '3px 8px',
                                     borderRadius: '4px',
                                     ...(record.PR === 'PR'
-                                        ? { backgroundColor: "#e0ffe0", border: "2px solid #00c853" }
+                                        ? { backgroundColor: COLORS.PR.background, border: `2px solid ${COLORS.PR.border}` }
                                         : record.PR === "SB"
-                                            ? { backgroundColor: "#fff9c4", border: "2px solid #ffeb3b" }
-                                            : {})
+                                            ? { backgroundColor: COLORS.SB.background, border: `2px solid ${COLORS.SB.border}` }
+                                            : record.PR === "NB"
+                                                ? { backgroundColor: COLORS.NB.background, border: `2px solid ${COLORS.NB.border}` }
+                                                : {})
                                 }}>
                                 <span className="pr-badge"
                                     style={record.PR === 'PR'
-                                        ? { color: "#00c853", margin: 0, fontSize: "14px" }
-                                        : { color: "rgb(255 178 59)", margin: 0, fontSize: "14px" }}>
+                                        ? { color: COLORS.PR.text, margin: 0, fontSize: "14px" }
+                                        : record.PR === "SB"
+                                            ? { color: COLORS.SB.text, margin: 0, fontSize: "14px" }
+                                            : record.PR === "NB"
+                                                ? { color: COLORS.NB.text, margin: 0, fontSize: "14px" }
+                                                : { color: "#666", margin: 0, fontSize: "14px" }}>
                                     {record.PR} x {record.number}
                                 </span>
                             </li>
-                        ))}
-                    </ul>
+                        </div>
+                    ))}
                 </div>
             )}
         </div>

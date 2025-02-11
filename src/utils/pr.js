@@ -16,6 +16,19 @@ export const isPersonalRecord = async (seanceId, set, exercice, categories) => {
     // Call the API to check if this set is a personal record
     try {
         const userId = localStorage.getItem("id");
+
+        // Check if this is the first time recording this exercise
+        const allSetsQuery = {
+            excludedSeanceId: seanceId,
+            userId,
+            exercice,
+            categories
+        };
+        const allSets = await API.getSeanceSets(allSetsQuery);
+        if (allSets.data.sets.length === 0) {
+            return "NB"; // New Best - first time recording this exercise
+        }
+
         const query = {
             excludedSeanceId: seanceId,
             userId,
