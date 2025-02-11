@@ -6,7 +6,7 @@ import { randomBodybuildingEmojis } from '../../utils/emojis';
 import { useWindowDimensions } from '../../utils/useEffect';
 import RenderExercice from './RenderExercice';
 
-const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavorite }) => {
+const ExerciceTypeChoice = ({ selectedName, onNext, onBack, onSearch, index, exercice, onFavorite }) => {
     const [exerciceTypes, setExerciceTypes] = useState(null);
     const [allExerciceTypes, setAllExerciceTypes] = useState(null);
     const [allCombinations, setAllCombinations] = useState(null);
@@ -24,12 +24,16 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
     const [exerciceTypesPage, setExerciceTypesPage] = useState(1);
     const [hasMoreTypes, setHasMoreTypes] = useState(true);
     const [loadingMoreTypes, setLoadingMoreTypes] = useState(false);
+    const [sameNameExercices, setSameNameExercices] = useState(null);
+    const [sameNameExercicesPage, setSameNameExercicesPage] = useState(1);
+    const [hasMoreSameNames, setHasMoreSameNames] = useState(true);
+    const [loadingMoreSameNames, setLoadingMoreSameNames] = useState(false);
 
     useEffect(() => {
         // Fetch exercise types from the API
         setLoading(true);
 
-        // Fetch all data (exercise types, combinations, favorite exercices)
+        // Fetch all data (exercise types, combinations, favorite exercices, same name exercices)
         const fetchAllData = async () => {
             try {
                 // Fetch and process exercise types with pagination
@@ -73,6 +77,17 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                 setFavoriteExercices(favoriteExercices);
                 setHasMoreFavorites(pagination.hasMore);
 
+                // Fetch exercises from sessions with same name
+                const { favoriteExercices: sameNameExercices, pagination: sameNamePagination } =
+                    await apiCalls.fetchFavoriteExercices(
+                        localStorage.getItem('id'),
+                        1,
+                        5,
+                        selectedName // Pass the seance name as parameter
+                    );
+                setSameNameExercices(sameNameExercices);
+                setHasMoreSameNames(sameNamePagination.hasMore);
+
                 setLoading(false);
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -81,7 +96,7 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
         };
 
         fetchAllData();
-    }, []);
+    }, [exercice?.seanceName]);
 
     useEffect(() => {
         if (allExerciceTypes) {
@@ -194,6 +209,29 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
         }
     };
 
+    const loadMoreSameNames = async () => {
+        if (loadingMoreSameNames || !hasMoreSameNames) return;
+
+        try {
+            setLoadingMoreSameNames(true);
+            const nextPage = sameNameExercicesPage + 1;
+            const { favoriteExercices: newSameNames, pagination } = await apiCalls.fetchFavoriteExercices(
+                localStorage.getItem('id'),
+                nextPage,
+                5,
+                selectedName
+            );
+
+            setSameNameExercices(prev => [...prev, ...newSameNames]);
+            setHasMoreSameNames(pagination.hasMore);
+            setSameNameExercicesPage(nextPage);
+        } catch (error) {
+            console.error("Error loading more same name exercises:", error);
+        } finally {
+            setLoadingMoreSameNames(false);
+        }
+    };
+
     if (loading) {
         return <Loader />;
     }
@@ -210,9 +248,69 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
 
             <RenderExercice exercice={exercice} />
 
+            {/* Exercises from sessions with same name */}
+            {sameNameExercices && sameNameExercices.length > 0 &&
+                <div>
+                    <h3 style={{ color: '#9b0000' }}>Exercices habituels</h3>
+                    <div
+                        style={{
+                            display: 'flex',
+                            gap: '10px',
+                            alignItems: 'center',
+                            maxWidth: '95vw',
+                            margin: '0 auto',
+                            maxHeight: '250px',
+                            overflowX: 'auto',
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        {sameNameExercices.map((favorite) => (
+                            <div
+                                key={favorite.id}
+                                onClick={() => onFavorite(favorite.exercice, favorite.categories)}
+                                className='sessionChoiceSmall'
+                                style={{
+                                    display: 'inline-block',
+                                    textAlign: 'center',
+                                    minWidth: '200px',
+                                    whiteSpace: 'normal',
+                                }}
+                            >
+                                <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>📝</div>
+                                <div>{favorite.exercice.name.fr}</div>
+                                <div style={{ fontSize: '0.66rem', wordWrap: 'break-word', whiteSpace: 'normal' }}>
+                                    {favorite.categories.map(category => category.category.name.fr).join(', ')}
+                                </div>
+                            </div>
+                        ))}
+                        {hasMoreSameNames && (
+                            <div
+                                onClick={loadMoreSameNames}
+                                className='sessionChoiceSmall'
+                                style={{
+                                    display: 'inline-block',
+                                    textAlign: 'center',
+                                    minWidth: '200px',
+                                    cursor: 'pointer'
+                                }}
+                            >
+                                {loadingMoreSameNames ? (
+                                    <MiniLoader />
+                                ) : (
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                                        <div style={{ fontSize: width < 500 ? '18px' : '36px', filter: "invert(1)" }}>➕</div>
+                                        <div>Voir plus</div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+                </div>
+            }
+
             {/* Favorite Exercices */}
             {favoriteExercices && favoriteExercices.length > 0 &&
-                <div>
+                <div style={{ marginTop: '20px' }}>
                     <h3 style={{ color: '#9b0000' }}>Exercices favoris</h3>
                     <div
                         style={{
@@ -269,8 +367,6 @@ const ExerciceTypeChoice = ({ onNext, onBack, onSearch, index, exercice, onFavor
                     </div>
                 </div>
             }
-
-
 
             {/* Search Bar */}
             <input

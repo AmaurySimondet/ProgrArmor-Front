@@ -370,7 +370,7 @@ const Session = () => {
             <SeanceDateChoice onNext={handleNextDateChoice} onBack={() => { setStep(2); scrollToElement() }} />
           )}
           {step === 4 && (
-            <ExerciceTypeChoice onNext={handleNextExerciceTypeChoice} onBack={() => { setStep(3); scrollToElement() }} onSearch={(combination) => handleSearchCombination(combination)} index={editingExerciceIndex} exercice={selectedExercice} onFavorite={handleFavorite} />
+            <ExerciceTypeChoice selectedName={selectedName} onNext={handleNextExerciceTypeChoice} onBack={() => { setStep(3); scrollToElement() }} onSearch={(combination) => handleSearchCombination(combination)} index={editingExerciceIndex} exercice={selectedExercice} onFavorite={handleFavorite} />
           )}
           {step === 5 && (
             <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(6)} onBack={() => { setStep(4); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} onDeleteCategories={handleGoToCategories} onDeleteLastCategorie={handleDeleteLastCategorie} />

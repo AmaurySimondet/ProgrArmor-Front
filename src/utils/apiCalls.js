@@ -48,12 +48,13 @@ async function buildFavoriteExercices(favoriteExercices) {
  * @param {string} userId 
  * @param {number} page 
  * @param {number} limit 
+ * @param {string} seanceName
  * @returns {Promise} A promise that resolves to { favoriteExercices, pagination }
  */
-async function fetchFavoriteExercices(userId, page = 1, limit = 5) {
+async function fetchFavoriteExercices(userId, page = 1, limit = 5, seanceName = null) {
     try {
         // Fetch the top exercises for the user with pagination
-        const response = await API.getTopExercices({ userId, page, limit });
+        const response = await API.getTopExercices({ userId, page, limit, seanceName });
         let favoriteExercices = response.data.topExercices;
 
         favoriteExercices = await buildFavoriteExercices(favoriteExercices);

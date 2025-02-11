@@ -214,7 +214,8 @@ export default {
       params: {
         userId: send.userId,
         page: send.page || 1,
-        limit: send.limit || 5
+        limit: send.limit || 5,
+        seanceName: send.seanceName
       }
     });
   },
