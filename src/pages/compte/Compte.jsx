@@ -328,13 +328,13 @@ function Compte() {
           </button>
           {searchParams.get('id') !== localStorage.getItem('id') &&
             <button
-              className={`btn ${currentUser.following.includes(searchParams.get('id'))
+              className={`btn ${currentUser?.following?.includes(searchParams.get('id'))
                 ? "btn-white follow-btn following"
                 : "btn-black follow-btn not-following"}`}
               style={{ display: 'flex', alignItems: 'center', gap: '5px' }}
               onClick={handleFollowToggle}
             >
-              {currentUser.following.includes(searchParams.get('id')) ? 'Ne Plus Suivre' : 'Suivre'}
+              {currentUser?.following?.includes(searchParams.get('id')) ? 'Ne Plus Suivre' : 'Suivre'}
             </button>
           }
           {searchParams.get('id') === localStorage.getItem('id') &&
