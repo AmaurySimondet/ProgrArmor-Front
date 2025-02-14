@@ -255,6 +255,9 @@ export default {
       }
     });
   },
+  createExerciceType: function (data) {
+    return axios.post(`${burl}/user/exercicetype`, data, { headers: headers });
+  },
   getExerciceType: function (send) {
     return axios.get(`${burl}/user/exerciceType`, {
       headers: headers, params: send
@@ -268,6 +271,9 @@ export default {
     return axios.get(`${burl}/user/exercices`, {
       headers: headers, params: send
     });
+  },
+  createExercice: function (data) {
+    return axios.post(`${burl}/user/exercice`, data, { headers: headers });
   },
 
   getExercice: function (send) {
@@ -299,6 +305,9 @@ export default {
       }
     });
   },
+  createCategoryType: function (data) {
+    return axios.post(`${burl}/user/categorietype`, data, { headers: headers });
+  },
   getCategorieType: function (send) {
     return axios.get(`${burl}/user/categorietype`, {
       headers: headers, params: send
@@ -317,6 +326,9 @@ export default {
         search: send?.search
       }
     });
+  },
+  createCategory: function (data) {
+    return axios.post(`${burl}/user/category`, data, { headers: headers });
   },
   getCategory: function (send) {
     return axios.get(`${burl}/user/category`, {

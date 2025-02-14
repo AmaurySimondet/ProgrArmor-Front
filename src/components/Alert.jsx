@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 
-const Alert = ({ message, type, onClose }) => {
+const Alert = ({ message, type, onClose, timeout = 2000 }) => {
 
     // Auto-dismiss the alert after 3 seconds
     useEffect(() => {
         const removeTimer = setTimeout(() => {
             onClose(); // Remove the alert completely after the fade-out ends
-        }, 2000);
+        }, timeout);
 
         return () => {
             clearTimeout(removeTimer);
