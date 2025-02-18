@@ -69,6 +69,12 @@ input:hover {
     text-align: -webkit-center;
 }
 
+.set-item-small {
+    padding: 0;
+    margin: 0;
+    background-color: transparent;
+}
+
 .personal-record {
     color: black;
     font-weight: bold;
