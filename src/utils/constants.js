@@ -3,6 +3,7 @@ export const COLORS = {
     PROGARMOR: "#9b0000",
     backgroundColors: ["#9C005D", "#9C1B00", "#9B0000", "#8B009C", "#9C3600"],
     ReactionColor: "#FFD580",
+    lightRose: "#EBCCCC",
     PR: {
         background: "#e0ffe0",
         border: "#00c853",

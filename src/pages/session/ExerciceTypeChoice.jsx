@@ -5,6 +5,7 @@ import apiCalls from '../../utils/apiCalls';
 import { randomBodybuildingEmojis } from '../../utils/emojis';
 import { useWindowDimensions } from '../../utils/useEffect';
 import RenderExercice from './RenderExercice';
+import { COLORS } from '../../utils/constants';
 
 const ExerciceTypeChoice = ({ selectedName, onNext, onBack, onSearch, index, exercice, onFavorite }) => {
     const [exerciceTypes, setExerciceTypes] = useState(null);
@@ -381,6 +382,7 @@ const ExerciceTypeChoice = ({ selectedName, onNext, onBack, onSearch, index, exe
                     width: '80%',
                     maxWidth: '400px',
                     borderRadius: '5px',
+                    backgroundColor: COLORS.lightRose,
                 }}
             />
 

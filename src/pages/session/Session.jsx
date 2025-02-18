@@ -292,10 +292,6 @@ const Session = () => {
   }
 
   const handleGoToCategories = () => {
-    setSelectedExercice({
-      ...selectedExercice,
-      categories: []
-    })
     setStep(5);
     scrollToElement();
   }
