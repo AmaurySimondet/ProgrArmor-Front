@@ -12,7 +12,7 @@ function Selector() {
                 {/* PAGE CONTENT */}
                 <div className="content-wrap">
                     <div className="popInElement">
-                        <h1 style={{ textAlign: 'center' }}>Que souhaitez-vous enregistrer ?</h1>
+                        <h1 style={{ textAlign: 'center' }}>Alors, on enregistre quoi ?</h1>
 
                         <div className="sessionChoiceContainer">
                             <div
