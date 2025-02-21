@@ -15,6 +15,7 @@ import ModifyProfile from './ModifyProfile.jsx';
 import { uploadToS3 } from "../../utils/s3Upload.js";
 import ProfilePic from "../../components/profilePic.jsx";
 import AppFooter from "../../components/AppFooter.jsx";
+import { circularProgressClasses } from "@mui/material";
 
 function Compte() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -45,10 +46,15 @@ function Compte() {
   }, [user?.followers?.length]); // Run the effect whenever the value changes
 
   // Modified tab change handler
-  const handleTabChange = (tab) => {
+  const handleTabChange = (tab, subTab = null) => {
     setActiveTab(tab);
     setSearchParams(params => {
       params.set('activeTab', tab);
+      if (subTab) {
+        params.set('subTab', subTab);
+      } else {
+        params.delete('subTab');
+      }
       return params;
     });
   };
@@ -62,7 +68,7 @@ function Compte() {
           setUser(userData);
           setLoadingUser(false);
         });
-        getUserById(localStorage.getItem('id')).then(setCurrentUser);
+        getUserById(localStorage.getItem('id')).then(user => { setCurrentUser(user) });
 
         // Get seance names
         setLoadingSeanceNames(true);
@@ -109,15 +115,24 @@ function Compte() {
 
   // Add useEffect to handle initial scroll
   useEffect(() => {
-    if (searchParams.get('activeTab')) {
-      // Small delay to ensure content is rendered
-      setTimeout(() => {
+    setTimeout(() => {
+      if (searchParams.get('scroll') === 'exerciceStats') {
+        setActiveTab('statistiques');
+        setSearchParams(params => {
+          params.set('activeTab', 'statistiques');
+          return params;
+        });
+        document.getElementById('exercise-stats-section')?.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start'
+        });
+      } else if (searchParams.get('activeTab')) {
         document.querySelector('.tab-container')?.scrollIntoView({
           behavior: 'smooth',
           block: 'start'
         });
-      }, 100);
-    }
+      }
+    }, 300);
   }, []); // Run only on initial mount
 
   const handleFollowToggle = async () => {
@@ -727,7 +742,25 @@ function Compte() {
 
                 {/* Render active tab component */}
                 {activeTab === 'statistiques' && (
-                  loadingStats ? <MiniLoader /> : <Stats stats={stats} userId={searchParams.get('id')} />
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'center' }}>
+                      <ul className="tabs" role="navigation" style={{ listStyle: 'none', padding: 0, display: 'flex', justifyContent: 'center' }}>
+                        <li className={!searchParams.get('subTab') || searchParams.get('subTab') === 'regularity' ? 'selected' : ''}>
+                          <a className="tab" onClick={() => handleTabChange('statistiques', 'regularity')}>
+                            🔄
+                            {width > 700 ? ' Régularité' : null}
+                          </a>
+                        </li>
+                        <li className={searchParams.get('subTab') === 'exercises' ? 'selected' : ''}>
+                          <a className="tab" onClick={() => handleTabChange('statistiques', 'exercises')}>
+                            💪
+                            {width > 700 ? ' Exercices' : null}
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                    {loadingStats ? <MiniLoader /> : <Stats stats={stats} userId={searchParams.get('id')} subTab={searchParams.get('subTab') || 'regularity'} />}
+                  </div>
                 )}
                 {activeTab === 'seances' &&
                   <div>

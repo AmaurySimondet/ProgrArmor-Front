@@ -116,10 +116,6 @@ function Aide() {
     };
 
     useEffect(() => {
-        console.log("Feedback media:", feedbackMedia);
-    }, [feedbackMedia]);
-
-    useEffect(() => {
         // Check if URL has #feedback hash and open feedback section
         if (window.location.hash === '#feedback') {
             setClickSendFeedback(true);

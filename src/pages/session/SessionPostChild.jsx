@@ -291,7 +291,7 @@ function SessionPostChild({ seanceId, user, postTitle, setPostTitle, postDescrip
             <PostStats recordSummary={recordSummary} stats={stats} width={width} />
 
             {/* Session Summary */}
-            <InstagramCarousel seanceId={seanceId} selectedName={selectedName} selectedExercices={selectedExercices} backgroundColors={backgroundColors} editable={editable} selectedDate={selectedDate} seancePhotos={seancePhotos} />
+            <InstagramCarousel userId={user?._id} seanceId={seanceId} selectedName={selectedName} selectedExercices={selectedExercices} backgroundColors={backgroundColors} editable={editable} selectedDate={selectedDate} seancePhotos={seancePhotos} />
 
             {/* Reactions / Comments  */}
             {!editable && <ReactionsAndComments seanceUser={user} seanceId={seanceId} displayComments={displayComments} setShowReactions={setShowReactions} setReactions={setReactions} />}

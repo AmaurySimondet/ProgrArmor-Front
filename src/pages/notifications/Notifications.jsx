@@ -41,8 +41,6 @@ function Notifications() {
                     userId: localStorage.getItem('id')
                 });
 
-                console.log(response.data.notifications);
-
                 // Group and process notifications
                 const groupedNotifications = response.data.notifications.reduce((acc, notification) => {
                     if (notification.type === 'follow') {

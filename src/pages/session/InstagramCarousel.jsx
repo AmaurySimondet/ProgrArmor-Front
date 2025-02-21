@@ -7,7 +7,7 @@ import { resizeImage, validateFileSize, MAX_FILE_SIZE } from '../../utils/mediaU
 import { deleteFromS3, uploadToS3 } from '../../utils/s3Upload';
 import { VIDEO_FORMATS } from '../../utils/constants';
 
-function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgroundColors, editable, selectedDate, seancePhotos }) {
+function InstagramCarousel({ userId, seanceId, selectedName, selectedExercices, backgroundColors, editable, selectedDate, seancePhotos }) {
     const emojis = randomBodybuildingEmojis(selectedExercices.length);
     const { width } = useWindowDimensions();
     const carouselRef = useRef(null);
@@ -364,6 +364,11 @@ function InstagramCarousel({ seanceId, selectedName, selectedExercices, backgrou
                                         position: 'relative',
                                         paddingLeft: '4em',
                                         marginBottom: idx < group.length - 1 ? "20px" : "0"
+                                    }}
+                                    onClick={() => {
+                                        if (!editable && userId) {
+                                            window.location.href = `/compte?id=${userId}&activeTab=statistiques&subTab=exercises&exercice=${exercise.exercice._id}&categories=${exercise.categories.map((category) => category._id).join(',')}`;
+                                        }
                                     }}
                                 >
                                     <span style={{ position: 'absolute', left: 0, top: 0, fontSize: width < 500 ? "2em" : "3em" }}>
