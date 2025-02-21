@@ -1010,6 +1010,21 @@ table.profile-table {
     animation: popIn 1s forwards;
 }
 
+.sessionChoice:hover {
+    background-color: #9b0000;
+    color: white;
+}
+
+.sessionChoice.disabled {
+    cursor: not-allowed;
+    background-color: #ccc;
+}
+
+.sessionChoice.disabled:hover {
+    background-color: black;
+    color: white;
+}
+
 .sessionChoiceContainer {
     display: flex;
     gap: 5px;
@@ -1034,11 +1049,6 @@ table.profile-table {
     transition: background-color 0.3s, color 0.3s;
     opacity: 0;
     animation: popIn 1s forwards;
-    color: white;
-}
-
-.sessionChoice:hover {
-    background-color: #9b0000;
     color: white;
 }
 

@@ -435,4 +435,15 @@ export default {
       }
     });
   },
+
+  // FATSECRET
+  searchFood: function (query, page = 0) {
+    return axios.get(`${burl}/user/fatsecret/foods/search`, {
+      headers: headers,
+      params: {
+        query,
+        page
+      }
+    });
+  },
 };

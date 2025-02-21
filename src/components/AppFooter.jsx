@@ -12,7 +12,7 @@ function AppFooter() {
     const [user, setUser] = useState(null);
 
     const isActive = (path) => {
-        return location.pathname === path ? "active-footer-link" : "";
+        return path.includes(location.pathname) ? "active-footer-link" : "";
     };
 
     useEffect(() => {
@@ -61,14 +61,14 @@ function AppFooter() {
                     <span>Coachings</span>
                 </a>
 
-                <a href="/session" className={`footer-link ${isActive('/session')}`}>
+                <a href="/selector" className={`footer-link ${isActive(['/selector', '/meal', '/measurements', '/session'])}`}>
                     <img
                         className="footer-icon"
                         src={require('../images/icons/write.webp')}
                         alt='nouvelle séance'
-                        style={{ filter: location.pathname === '/session' ? "invert(1)" : "invert(0.3)" }}
+                        style={{ filter: location.pathname === '/selector' || location.pathname === '/meal' || location.pathname === '/measurements' || location.pathname === '/session' ? "invert(1)" : "invert(0.3)" }}
                     />
-                    <span>Séance</span>
+                    <span>Enregistrer</span>
                 </a>
 
                 <a href="/notifications" className={`footer-link ${isActive('/notifications')}`}>

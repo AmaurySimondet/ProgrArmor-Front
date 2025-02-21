@@ -17,6 +17,9 @@ import Notifications from "./pages/notifications/Notifications.jsx";
 import SingleSeanceView from "./pages/seance/singleSeanceView.jsx";
 import Admin from "./pages/admin/Admin.jsx";
 import About from "./pages/about/About.jsx";
+import Measurements from "./pages/measurements/Measurements.jsx";
+import Selector from "./pages/selector/Selector.jsx";
+import Meal from "./pages/meal/Meal.jsx";
 
 // import eruda from "eruda";
 
@@ -82,6 +85,18 @@ function App() {
 
             <Route path="/a_propos" element={<PrivateRoute />}>
                 <Route exact path='' element={<About />} />
+            </Route>
+
+            <Route path="/measurements" element={<PrivateRoute />}>
+                <Route exact path='' element={<Measurements />} />
+            </Route>
+
+            <Route path="/selector" element={<PrivateRoute />}>
+                <Route exact path='' element={<Selector />} />
+            </Route>
+
+            <Route path="/meal" element={<PrivateRoute />}>
+                <Route exact path='' element={<Meal />} />
             </Route>
         </Routes>
     );

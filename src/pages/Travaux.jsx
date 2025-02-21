@@ -1,5 +1,4 @@
 import { React } from "react";
-import Footer from "../components/Footer.jsx";
 import NavigBar from "../components/NavigBar.jsx"
 import { COLORS } from "../utils/constants.js";
 import AppFooter from "../components/AppFooter.jsx";
