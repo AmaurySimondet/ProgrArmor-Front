@@ -958,9 +958,10 @@ table.profile-table {
 
 .sessionSummaryExercice {
     transition: transform 0.3s ease-in-out;
-    width: fit-content !important;
-    min-width: fit-content !important;
+    /* width: fit-content !important;
+    min-width: fit-content !important; */
     display: inline-block !important;
+    width: 100%;
 }
 
 .sessionSummaryExercice:hover {

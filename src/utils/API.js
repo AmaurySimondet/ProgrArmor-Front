@@ -335,6 +335,12 @@ export default {
       headers: headers, params: send
     });
   },
+  fetchFavoriteCategories: function (exerciceId, page, limit) {
+    return axios.get(`${burl}/user/favoriteCategories`, {
+      headers: headers,
+      params: { exerciceId, page, limit, userId: localStorage.getItem('id') }
+    });
+  },
 
 
   //COMPTE

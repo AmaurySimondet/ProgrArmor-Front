@@ -249,6 +249,57 @@ const ExerciceTypeChoice = ({ selectedName, onNext, onBack, onSearch, index, exe
 
             <RenderExercice exercice={exercice} />
 
+            {/* Search Bar */}
+            <input
+                type="text"
+                value={searchQuery}
+                onChange={handleSearch}
+                placeholder="Rechercher un exercice..."
+                style={{
+                    padding: '10px',
+                    fontSize: '1rem',
+                    margin: '20px 0',
+                    width: '80%',
+                    maxWidth: '400px',
+                    borderRadius: '5px',
+                    backgroundColor: COLORS.lightRose,
+                }}
+            />
+
+            {/* Search Results */}
+            {searchQuery && (
+                <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
+                    {allCombinations.length ? (
+                        <>
+                            {allCombinations.map((combination, index) => (
+                                <div
+                                    key={index}
+                                    onClick={() => onSearch(combination)}
+                                    className="inputClickable"
+                                >
+                                    {combination.combinationName.fr}
+                                </div>
+                            ))}
+                            {hasMoreCombinations && (
+                                <div
+                                    onClick={loadMoreCombinations}
+                                    className="inputClickable"
+                                    style={{ textAlign: 'center', cursor: 'pointer' }}
+                                >
+                                    {loadingMoreCombinations ? (
+                                        <MiniLoader />
+                                    ) : (
+                                        "Voir plus..."
+                                    )}
+                                </div>
+                            )}
+                        </>
+                    ) : (
+                        <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
+                    )}
+                </div>
+            )}
+
             {/* Exercises from sessions with same name */}
             {sameNameExercices && sameNameExercices.length > 0 &&
                 <div>
@@ -311,7 +362,7 @@ const ExerciceTypeChoice = ({ selectedName, onNext, onBack, onSearch, index, exe
 
             {/* Favorite Exercices */}
             {favoriteExercices && favoriteExercices.length > 0 &&
-                <div style={{ marginTop: '20px' }}>
+                <div style={{ margin: '20px 0' }}>
                     <h3 style={{ color: '#9b0000' }}>Exercices favoris</h3>
                     <div
                         style={{
@@ -368,57 +419,6 @@ const ExerciceTypeChoice = ({ selectedName, onNext, onBack, onSearch, index, exe
                     </div>
                 </div>
             }
-
-            {/* Search Bar */}
-            <input
-                type="text"
-                value={searchQuery}
-                onChange={handleSearch}
-                placeholder="Rechercher un exercice..."
-                style={{
-                    padding: '10px',
-                    fontSize: '1rem',
-                    margin: '20px 0',
-                    width: '80%',
-                    maxWidth: '400px',
-                    borderRadius: '5px',
-                    backgroundColor: COLORS.lightRose,
-                }}
-            />
-
-            {/* Search Results */}
-            {searchQuery && (
-                <div style={{ marginBottom: '20px', textAlign: 'left', maxHeight: '200px', overflowY: 'auto' }}>
-                    {allCombinations.length ? (
-                        <>
-                            {allCombinations.map((combination, index) => (
-                                <div
-                                    key={index}
-                                    onClick={() => onSearch(combination)}
-                                    className="inputClickable"
-                                >
-                                    {combination.combinationName.fr}
-                                </div>
-                            ))}
-                            {hasMoreCombinations && (
-                                <div
-                                    onClick={loadMoreCombinations}
-                                    className="inputClickable"
-                                    style={{ textAlign: 'center', cursor: 'pointer' }}
-                                >
-                                    {loadingMoreCombinations ? (
-                                        <MiniLoader />
-                                    ) : (
-                                        "Voir plus..."
-                                    )}
-                                </div>
-                            )}
-                        </>
-                    ) : (
-                        <div style={{ padding: '10px', color: '#999' }}>Aucun résultat trouvé</div>
-                    )}
-                </div>
-            )}
 
             <div className="sessionChoiceContainer">
                 {exerciceTypes?.map((type, index) => (

@@ -89,6 +89,7 @@ const SessionNameChoice = ({ onNext, onBack }) => {
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h1>
             <h1 style={{ textAlign: 'center' }}>Choisir le nom de la séance</h1>
+            <p style={{ textAlign: 'center', maxWidth: '600px', margin: '5% auto' }}><i>Le nom de la séance te permet de l'identifier dans ton programme, par exemple "Pectauraux Triceps", "Jour 1 du programme A", "Séance de force", etc.</i></p>
             <div className="sessionChoiceContainer">
                 {names.map((name, index) => (
                     <div
