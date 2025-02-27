@@ -225,11 +225,13 @@ export default {
   getPRs: function (send) {
     return axios.get(`${burl}/user/pr`, { headers: headers, params: send });
   },
-  getTopFormat: function (send) {
-    return axios.get(`${burl}/user/topFormat`, {
+  getLastFormats: function (send) {
+    return axios.get(`${burl}/user/lastFormats`, {
       headers: headers,
       params: {
         userId: send.userId,
+        exercice: send.exercice,
+        categories: send.categories,
         page: send?.page || 1,
         limit: send?.limit || 5
       }

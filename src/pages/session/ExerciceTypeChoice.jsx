@@ -245,7 +245,7 @@ const ExerciceTypeChoice = ({ selectedName, onNext, onBack, onSearch, index, exe
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h1>
 
-            <h1 style={{ margin: '20px' }}>{index !== null ? "Modifier" : "Choisir"} un exercice</h1>
+            <h1 style={{ margin: '20px' }}>{index !== null ? "On va modifier cet exo" : "On travaille quoi ?"}</h1>
 
             <RenderExercice exercice={exercice} />
 

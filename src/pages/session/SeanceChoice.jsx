@@ -109,7 +109,7 @@ const SessionChoice = ({ onNext }) => {
 
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
-            <h1>Choisir un modèle</h1>
+            <h1>On part de quoi ?</h1>
             <div className="sessionChoiceContainer">
                 {allSessions.map((session) => (
                     <div

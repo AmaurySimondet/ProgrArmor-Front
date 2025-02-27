@@ -43,7 +43,7 @@ const SeanceDateChoice = ({ onNext, onBack }) => {
             >
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h1>
-            <h1>Choisir la date de la séance</h1>
+            <h1>C'était quand ?</h1>
             <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <div
                     onClick={handleTodayChoice}

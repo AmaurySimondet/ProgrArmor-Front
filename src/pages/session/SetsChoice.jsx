@@ -48,8 +48,10 @@ const SetsChoice = ({ selectedExercices, onBack, onNext, editingSets, exercice, 
     }]);
     const { width } = useWindowDimensions();
     const [alert, setAlert] = useState(null);
-    const [topFormats, setTopFormats] = useState([]);
-    const [topFormatWeight, setTopFormatWeight] = useState(0);
+    const [lastFormats, setLastFormats] = useState([]);
+    const [lastPRs, setLastPRs] = useState({});
+    const [tensionOptions, setTensionOptions] = useState([]);
+    const [weightLoadOptions, setWeightLoadOptions] = useState([]);
     const [granularity, setGranularity] = useState(() => {
         if (!editingSets) return 1;
 
@@ -69,12 +71,6 @@ const SetsChoice = ({ selectedExercices, onBack, onNext, editingSets, exercice, 
         if (smallestDecimal <= 0.5) return 0.5;
         return 1;
     });
-    const [tensionOptions, setTensionOptions] = useState([]);
-    const [weightLoadOptions, setWeightLoadOptions] = useState([]);
-    const [topFormatsPage, setTopFormatsPage] = useState(1);
-    const [hasMoreFormats, setHasMoreFormats] = useState(true);
-    const [loadingMoreFormats, setLoadingMoreFormats] = useState(false);
-    const [lastPRs, setLastPRs] = useState({});
 
     useEffect(() => {
         console.log("sets", sets);
@@ -82,19 +78,12 @@ const SetsChoice = ({ selectedExercices, onBack, onNext, editingSets, exercice, 
     }, [editingSets, sets]);
 
     useEffect(() => {
-        API.getTopFormat({ userId: localStorage.getItem('id') }).then(response => {
-            let res = response.data.topFormat || [];
-            res = res.map(doc => {
-                return {
-                    ...doc,
-                    sets: doc.format.length,
-                    reps: [...new Set(doc.format)][0],
-                }
-            });
-            setTopFormats(res);
-            setHasMoreFormats(response.data.pagination.hasMore);
+        API.getLastFormats({ userId: localStorage.getItem('id'), exercice: exercice.exercice._id, categories: exercice.categories.map(category => category._id) }).then(response => {
+            let res = response.data.lastFormats || [];
+            console.log("res", res);
+            setLastFormats(res);
         }).catch(error => {
-            console.error("Error fetching top formats:", error);
+            console.error("Error fetching last formats:", error);
         });
     }, [exercice]);
 
@@ -237,34 +226,31 @@ const SetsChoice = ({ selectedExercices, onBack, onNext, editingSets, exercice, 
         }]);
     }, [editingSets]);
 
-    const loadMoreFormats = async () => {
-        if (loadingMoreFormats || !hasMoreFormats) return;
+    const handleLastFormatSelect = (format) => {
+        // Create sets based on the format
+        const newSets = format.sets.map((set) => {
+            return {
+                unit: format._id.unit,
+                value: set.value,
+                weightLoad: set.weightLoad,
+                elastic: null
+            }
+        });
+        _modifySetsAndGranularity(newSets);
+    }
 
-        try {
-            setLoadingMoreFormats(true);
-            const nextPage = topFormatsPage + 1;
+    const handleBulkRepsChange = (increment) => {
+        setSets(sets.map(set => ({
+            ...set,
+            value: Math.max(0, set.value + increment)
+        })));
+    };
 
-            const response = await API.getTopFormat({
-                userId: localStorage.getItem('id'),
-                page: nextPage,
-                limit: 5
-            });
-
-            let newFormats = response.data.topFormat || [];
-            newFormats = newFormats.map(doc => ({
-                ...doc,
-                sets: doc.format.length,
-                reps: [...new Set(doc.format)][0],
-            }));
-
-            setTopFormats(prev => [...prev, ...newFormats]);
-            setHasMoreFormats(response.data.pagination.hasMore);
-            setTopFormatsPage(nextPage);
-        } catch (error) {
-            console.error("Error loading more formats:", error);
-        } finally {
-            setLoadingMoreFormats(false);
-        }
+    const handleBulkWeightChange = (increment) => {
+        setSets(sets.map(set => ({
+            ...set,
+            weightLoad: Math.max(0, Number((set.weightLoad + increment).toFixed(2)))
+        })));
     };
 
     const _modifySetsAndGranularity = (newSets) => {
@@ -320,20 +306,6 @@ const SetsChoice = ({ selectedExercices, onBack, onNext, editingSets, exercice, 
         }
     };
 
-    const handleBulkRepsChange = (increment) => {
-        setSets(sets.map(set => ({
-            ...set,
-            value: Math.max(0, set.value + increment)
-        })));
-    };
-
-    const handleBulkWeightChange = (increment) => {
-        setSets(sets.map(set => ({
-            ...set,
-            weightLoad: Math.max(0, Number((set.weightLoad + increment).toFixed(2)))
-        })));
-    };
-
     return (
         <div style={{ width: '100%', maxWidth: '1000px', margin: '0 auto', padding: '20px', textAlign: 'center' }} className='popInElement'>
             <Tooltip id="my-tooltip" />
@@ -341,7 +313,7 @@ const SetsChoice = ({ selectedExercices, onBack, onNext, editingSets, exercice, 
                 <span onClick={onBack} style={{ cursor: 'pointer' }} className="clickable">&lt; Retour</span>
             </h1>
             <h1 style={{ margin: '20px' }}>
-                {index !== null ? "Modifier" : "Ajouter"} les séries
+                {index !== null ? "On va modifier ces séries" : "C'était quoi comme séries ?"}
             </h1>
 
             <RenderExercice exercice={exercice} sets={sets} />
@@ -365,12 +337,11 @@ const SetsChoice = ({ selectedExercices, onBack, onNext, editingSets, exercice, 
                 </div>
             }
 
-            {/*Top Formats */}
-            {topFormats.length > 0 &&
+            {/*Last Formats */}
+            {lastFormats.length > 0 &&
                 <div>
                     <h3 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
-                        Formats les plus utilisés
-                        <GranularitySelector granularity={granularity} onChange={handleGranularityChange} />
+                        Derniers formats utilisés
                     </h3>
                     <div
                         style={{
@@ -379,74 +350,39 @@ const SetsChoice = ({ selectedExercices, onBack, onNext, editingSets, exercice, 
                             alignItems: 'center',
                             maxWidth: '95vw',
                             maxHeight: '250px',
-                            overflowX: 'scroll',  // Enable horizontal scrolling
+                            overflowX: 'scroll',
                             overflowY: 'hidden',
-                            whiteSpace: 'nowrap',  // Prevent items from wrapping to the next line
+                            whiteSpace: 'nowrap',
                             marginBottom: '40px'
                         }}
                     >
-                        {topFormats.map((format) => (
+                        {lastFormats.map((format) => (
                             <div
-                                key={format.id}  // Use a unique identifier instead of index for key
-                                onClick={() => { handleTopFormatSelect(format) }}
-                                className='sessionChoiceSmall'
-                                style={{
-                                    display: 'inline-block',  // Ensure each item stays inline
-                                    textAlign: 'center',  // Center text within each item
-                                    minWidth: '180px',  // Set a minimum width for each item for better alignment
-                                    whiteSpace: 'normal',  // Allow text to wrap within this div
-                                }}
-                            >
-                                <div style={{ fontSize: width < 500 ? '18px' : '24px' }}>💪</div>
-                                <div style={{ display: 'flex', gap: '5px', alignItems: 'center', justifyContent: 'center' }}>
-                                    <div>{`${format.sets} x ${format.reps}:`} </div>
-                                    <select
-                                        className="form-control"
-                                        value={topFormatWeight}
-                                        onChange={(e) => setTopFormatWeight(parseFloat(e.target.value))}
-                                        style={{ width: '80px' }}
-                                    >
-                                        <option value="" disabled>
-                                            Charge (kg)
-                                        </option>
-                                        {weightLoadOptions.map((option) => (
-                                            <option key={option} value={option}>
-                                                {option} kg
-                                            </option>
-                                        ))}
-                                    </select>
-                                    <div>{" kg"}</div>
-                                </div>
-                                <div style={{ fontSize: '0.66rem', wordWrap: 'break-word', whiteSpace: 'normal' }}>
-                                    {format.unit}
-                                </div>
-                            </div>
-                        ))}
-                        {hasMoreFormats && (
-                            <div
-                                onClick={loadMoreFormats}
+                                key={format._id.seance}
+                                onClick={() => handleLastFormatSelect(format)}
                                 className='sessionChoiceSmall'
                                 style={{
                                     display: 'inline-block',
                                     textAlign: 'center',
-                                    minWidth: '200px',
-                                    cursor: 'pointer'
+                                    minWidth: '180px',
+                                    whiteSpace: 'normal',
                                 }}
                             >
-                                {loadingMoreFormats ? (
-                                    <MiniLoader />
-                                ) : (
-                                    <>
-                                        <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>➕</div>
-                                        <div>Voir plus</div>
-                                    </>
-                                )}
+                                <div style={{ fontSize: '0.66rem', wordWrap: 'break-word', whiteSpace: 'normal' }}>
+                                    {new Date(format.date).toLocaleDateString()}
+                                </div>
+                                <div style={{ fontSize: width < 500 ? '18px' : '24px' }}>💪</div>
+                                <ul style={{ listStyleType: 'none', padding: 0, textAlign: "-webkit-center", margin: "0" }}>
+                                    {renderSets(format.sets.slice(0, 3), true, "set-item-small")}
+                                </ul>
+                                {format.sets.length > 3 && <div>...</div>}
                             </div>
-                        )}
+                        ))}
                     </div>
                 </div>
             }
 
+            {/*Personal Records*/}
             {Object.keys(lastPRs).length > 0 && (
                 <div>
                     <h3 style={{ color: '#9b0000', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '5px' }}>
@@ -518,7 +454,7 @@ const SetsChoice = ({ selectedExercices, onBack, onNext, editingSets, exercice, 
                     }}>
                         {selectedExercices.map((ex, idx) => ex.sets?.length > 0 && (
                             <div
-                                key={idx}
+                                key={ex.exercice._id}
                                 className='sessionChoiceSmall'
                                 onClick={() => _modifySetsAndGranularity(ex.sets)}
                                 style={{
@@ -590,7 +526,7 @@ const SetsChoice = ({ selectedExercices, onBack, onNext, editingSets, exercice, 
             <div style={{ marginTop: '10px', display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center' }}>
                 {sets.length > 0 ? (
                     sets.map((set, index) => (
-                        <div className="popInElement" key={index} style={{ marginBottom: '10px', width: '100%', maxWidth: '600px', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '10px' }}>
+                        <div className="popInElement" key={set._id} style={{ marginBottom: '10px', width: '100%', maxWidth: '600px', backgroundColor: '#f0f0f0', padding: '10px', borderRadius: '10px' }}>
                             <div style={{ display: 'flex', gap: '10px', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
                                 <div style={{ display: 'flex', gap: '10px', justifyContent: 'center', alignItems: 'center' }}>
                                     <label >

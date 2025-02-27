@@ -1041,7 +1041,7 @@ table.profile-table {
     text-align: center;
     background-color: #9b0000;
     width: 175px;
-    height: 130px;
+    height: 140px;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1065,7 +1065,7 @@ table.profile-table {
 
     .sessionChoiceSmall {
         width: 100px;
-        height: 100px;
+        height: 115px;
         font-size: 0.8rem;
     }
 }
