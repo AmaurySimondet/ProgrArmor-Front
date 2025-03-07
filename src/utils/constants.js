@@ -1,9 +1,18 @@
 export const COLORS = {
     PAGE_BACKGROUND: "#f9f4f4",
     PROGARMOR: "#9b0000",
-    backgroundColors: ["#9C005D", "#9C1B00", "#9B0000", "#8B009C", "#9C3600"],
+    backgroundColors: ["#ffa7cd", "#fff7b5", "#d2ff98", "#f3c2ff", "#befffe", "#bdffeb"],
     ReactionColor: "#FFD580",
     lightRose: "#EBCCCC",
+    calendarSeanceNameColors: [
+        '#FF6B6B', // coral red
+        '#4ECDC4', // turquoise
+        '#45B7D1', // sky blue
+        '#96CEB4', // sage green
+        '#FFBE0B', // golden yellow
+        '#9B5DE5', // purple
+        '#FF85A1'  // pink
+    ],
     PR: {
         background: "#e0ffe0",
         border: "#00c853",

@@ -1253,7 +1253,7 @@ table.profile-table {
     background-color: #9b0000;
     align-content: center;
     flex-shrink: 0;
-    color: white;
+    color: black;
     scroll-snap-align: center;
     transition: 0.5s;
     padding: 20px;
@@ -1409,7 +1409,7 @@ table.profile-table {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 20px;
-    margin: 20px 0;
+    margin: 0;
 }
 
 .stat-item {

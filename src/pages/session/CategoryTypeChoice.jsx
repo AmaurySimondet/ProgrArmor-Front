@@ -6,6 +6,7 @@ import { randomBodybuildingEmojis } from '../../utils/emojis';
 import RenderExercice from './RenderExercice';
 import Alert from '../../components/Alert';
 import { COLORS } from '../../utils/constants';
+
 const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteCategories, onDeleteLastCategorie }) => {
     const [categoryTypes, setCategoryTypes] = useState([]);
     const [loading, setLoading] = useState(true);

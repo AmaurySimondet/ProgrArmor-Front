@@ -6,6 +6,7 @@ import { dateBasedOnTimeframe } from "../utils/dates.js";
 import { useWindowDimensions } from "../utils/useEffect.js";
 import { COLORS } from "../utils/constants.js";
 import { useSearchParams } from "react-router-dom";
+import ActivityCalendar from "../pages/compte/ActivityCalendar.jsx";
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
@@ -144,14 +145,13 @@ function Stats({ stats, userId, subTab }) {
 
     const handleRegularityScore = async () => {
         const regularityScore = await API.getRegularityScore(userId);
+        console.log('regularityScore', regularityScore.data);
         setRegularityScore(regularityScore.data);
     };
 
     useEffect(() => {
-        console.log('searchParams', searchParams);
         const exerciceParam = searchParams.get('exercice');
         const categoriesParam = searchParams.get('categories');
-        console.log('exerciceParam', exerciceParam);
 
         if (exerciceParam) {
             // Find all exercises that match the exerciceParam
@@ -244,6 +244,8 @@ function Stats({ stats, userId, subTab }) {
                     <h2>Régularité d'entraînement</h2>
                     <i>3 derniers mois</i>
                 </div>
+
+                <ActivityCalendar regularityScore={regularityScore} />
                 <div className="stats-grid" style={{ display: "flex", flexDirection: "column", gap: "0", width: "100%" }}>
                     <div className="stat-item" style={{ backgroundColor: COLORS.PAGE_BACKGROUND }}>
                         <h2 style={{

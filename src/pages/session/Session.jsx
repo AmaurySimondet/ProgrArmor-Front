@@ -306,6 +306,16 @@ const Session = () => {
     scrollToElement();
   }
 
+  const handleDeleteCategories = () => {
+    setSelectedExercice({
+      ...selectedExercice,
+      categories: [],
+      sets: selectedExercice.sets || []
+    })
+    setStep(5);
+    scrollToElement();
+  }
+
   const handleFavorite = (exercice, categories) => {
     setSelectedExercice({
       exercice: exercice,
@@ -369,7 +379,7 @@ const Session = () => {
             <ExerciceTypeChoice selectedName={selectedName} onNext={handleNextExerciceTypeChoice} onBack={() => { setStep(3); scrollToElement() }} onSearch={(combination) => handleSearchCombination(combination)} index={editingExerciceIndex} exercice={selectedExercice} onFavorite={handleFavorite} />
           )}
           {step === 5 && (
-            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(6)} onBack={() => { setStep(4); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} onDeleteCategories={handleGoToCategories} onDeleteLastCategorie={handleDeleteLastCategorie} />
+            <CategoryTypeChoice onNext={handleNextCategoryTypeChoice} onSkip={() => setStep(6)} onBack={() => { setStep(4); scrollToElement() }} index={editingExerciceIndex} exercice={selectedExercice} onDeleteCategories={handleDeleteCategories} onDeleteLastCategorie={handleDeleteLastCategorie} />
           )}
           {step === 6 && (
             <SetsChoice
