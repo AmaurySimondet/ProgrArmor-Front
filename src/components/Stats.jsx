@@ -7,6 +7,7 @@ import { useWindowDimensions } from "../utils/useEffect.js";
 import { COLORS } from "../utils/constants.js";
 import { useSearchParams } from "react-router-dom";
 import ActivityCalendar from "../pages/compte/ActivityCalendar.jsx";
+import PrTable from "../pages/compte/PrTable.jsx";
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
@@ -91,61 +92,8 @@ function Stats({ stats, userId, subTab }) {
         }
     };
 
-    const PrTableElement = ({ PrTableResults }) => {
-        return (
-            <div className="popInElement">
-                {/* Repetitions Table */}
-                <table border="1" style={{ width: '100%', textAlign: 'center', backgroundColor: 'white', overflowX: 'auto', marginBottom: '20px' }}
-                    className="table table-hover table-striped table-bordered">
-                    <thead className="thead-white">
-                        <tr>
-                            <th>{width > 700 ? 'Plage de répétition' : 'Plage'}</th>
-                            <th>{width > 700 ? 'Repetitions' : 'Reps'}</th>
-                            <th>Charge</th>
-                            <th>Elastique</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Object.keys(PrTableResults).map(category => (
-                            <tr key={category}>
-                                <td>{category}</td>
-                                <td>{PrTableResults[category].repetitions?.value || '-'}</td>
-                                <td>{PrTableResults[category].repetitions?.weightLoad || '-'}</td>
-                                <td>{PrTableResults[category].repetitions?.elastic?.use} {PrTableResults[category].repetitions?.elastic?.tension || '-'}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-
-                {/* Seconds Table */}
-                <table border="1" style={{ width: '100%', textAlign: 'center', backgroundColor: 'white', overflowX: 'auto' }}
-                    className="table table-hover table-striped table-bordered">
-                    <thead className="thead-white">
-                        <tr>
-                            <th>{width > 700 ? 'Plage temporelle' : 'Plage'}</th>
-                            <th>{width > 700 ? 'Secondes' : 'Secs'}</th>
-                            <th>Charge</th>
-                            <th>Elastique</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {Object.keys(PrTableResults).map(category => (
-                            <tr key={category}>
-                                <td>{category}</td>
-                                <td>{PrTableResults[category].seconds?.value || '-'}</td>
-                                <td>{PrTableResults[category].seconds?.weightLoad || '-'}</td>
-                                <td>{PrTableResults[category].seconds?.elastic?.use} {PrTableResults[category].seconds?.elastic?.tension || '-'}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-        );
-    };
-
     const handleRegularityScore = async () => {
         const regularityScore = await API.getRegularityScore(userId);
-        console.log('regularityScore', regularityScore.data);
         setRegularityScore(regularityScore.data);
     };
 
@@ -158,7 +106,6 @@ function Stats({ stats, userId, subTab }) {
             const matchingExercises = stats.topExercices.filter(ex =>
                 ex.exercice._id === exerciceParam
             );
-            console.log('matchingExercises', matchingExercises);
 
             if (matchingExercises.length > 0) {
                 // If we have categoriesParam, find exact match in stats.topExercices
@@ -167,7 +114,6 @@ function Stats({ stats, userId, subTab }) {
                         ex.exercice._id === exerciceParam &&
                         ex.categories.some(cat => cat.category._id === categoriesParam)
                     );
-                    console.log('exactMatch', exactMatch);
                     if (exactMatch !== -1) {
                         setSelectedExercise(exactMatch);
                         setSelectedExerciseId(exerciceParam);
@@ -296,7 +242,7 @@ function Stats({ stats, userId, subTab }) {
                         style={{ width: '70%' }}
                     >
                         {stats.topExercices.map((exercise, index) => (
-                            <option key={index} value={index}>
+                            <option key={Math.random()} value={index}>
                                 {exercise.fullName}
                             </option>
                         ))}
@@ -327,7 +273,7 @@ function Stats({ stats, userId, subTab }) {
 
                         return (
                             <div>
-                                <section key={index} className="chart-section">
+                                <section key={Math.random()} className="chart-section">
                                     <ResponsiveContainer width="100%" height={300}>
                                         <ComposedChart width={400} height={400} data={formattedData}>
                                             <XAxis dataKey="date" tick={() => null} />
@@ -346,7 +292,7 @@ function Stats({ stats, userId, subTab }) {
                 }
 
                 {/* PR Table */}
-                {prTableResults && <PrTableElement PrTableResults={prTableResults} />}
+                {prTableResults && <PrTable PrTableResults={prTableResults} />}
             </div>
         );
     };

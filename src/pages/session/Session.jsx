@@ -124,14 +124,26 @@ const Session = () => {
     scrollToElement();
   };
 
-  const handleNextCategoryTypeChoice = (category) => {
-    let newExercice = {
-      ...selectedExercice,
-      categories: [...selectedExercice.categories, category],
-      sets: selectedExercice.sets || []
-    };
-    setSelectedExercice(newExercice);
-    setStep(5); // Loop back to choosing the next category type
+  const handleNextCategoryTypeChoice = (categoryOrCategories) => {
+    // Check if we received a single category or an array of categories
+    if (Array.isArray(categoryOrCategories)) {
+      // Handle multiple categories
+      let newExercice = {
+        ...selectedExercice,
+        categories: categoryOrCategories,
+        sets: selectedExercice.sets || []
+      };
+      setSelectedExercice(newExercice);
+    } else {
+      // Handle single category (existing behavior)
+      let newExercice = {
+        ...selectedExercice,
+        categories: [...selectedExercice.categories, categoryOrCategories],
+        sets: selectedExercice.sets || []
+      };
+      setSelectedExercice(newExercice);
+    }
+    setStep(5);
     scrollToElement();
   };
 

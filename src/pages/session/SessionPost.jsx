@@ -6,6 +6,7 @@ import { seanceToSets } from "../../utils/sets";
 import Alert from '../../components/Alert';
 import SessionPostChild from './SessionPostChild';
 import API from '../../utils/API';
+import { COLORS } from '../../utils/constants';
 
 const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, onBack, title, description, seancePhotos }) => {
     const [postTitle, setPostTitle] = useState(title);
@@ -171,8 +172,6 @@ const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, 
         return <Loader />;
     }
 
-    const backgroundColors = ["#9C005D", "#9C1B00", "#9B0000", "#8B009C", "#9C3600"];
-
     return (
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '40px', alignItems: 'center' }}>
             <h1 style={{ color: '#9b0000', position: "absolute", left: "40px", margin: "20px 0" }}>
@@ -192,7 +191,7 @@ const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, 
                     recordSummary={recordSummary}
                     selectedDate={selectedDate}
                     stats={stats}
-                    backgroundColors={backgroundColors}
+                    backgroundColors={COLORS.backgroundColors}
                     editable={true}
                     seancePhotos={seancePhotos}
                     displayComments={false}

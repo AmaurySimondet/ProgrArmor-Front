@@ -216,6 +216,16 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
         setSearchQuery('');
     };
 
+    const handleCategoriesClick = (categories) => {
+        const recreatedCategories = categories._id.map((categorie, index) => ({
+            _id: categorie.category,
+            type: categorie.categoryType,
+            name: categories.name[index]
+        }));
+        onNext(recreatedCategories);
+        showAlert("Détails ajoutés !", "success");
+    };
+
     if (loading) {
         return <Loader />;
     }
@@ -317,21 +327,28 @@ const CategoryTypeChoice = ({ onNext, onSkip, onBack, index, exercice, onDeleteC
                             whiteSpace: 'nowrap',
                         }}
                     >
-                        {favoriteCategories.map((favorite) => (
-                            <div
-                                key={favorite.id}
-                                onClick={() => handleCategoryClick(favorite)}
-                                className='sessionChoiceSmall'
-                                style={{
-                                    display: 'inline-block',
-                                    textAlign: 'center',
-                                    minWidth: '200px',
-                                    whiteSpace: 'normal',
-                                }}
-                            >
-                                <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>📝</div>
-                                <div>{favorite.name.fr}</div>
-                            </div>
+                        {favoriteCategories.map((favorite, index) => (
+                            favorite._id.length > 0 && (
+                                <div
+                                    key={index}
+                                    onClick={() => handleCategoriesClick(favorite)}
+                                    className='sessionChoiceSmall'
+                                    style={{
+                                        display: 'inline-block',
+                                        textAlign: 'center',
+                                        minWidth: '200px',
+                                        whiteSpace: 'normal',
+                                    }}
+                                >
+                                    <div style={{ fontSize: width < 500 ? '18px' : '36px' }}>📝</div>
+                                    <div>
+                                        <div style={{ fontSize: '0.9em' }}>{favorite.name.map((n, i) => `${n.fr}${i < favorite.name.length - 1 ? ', ' : ''}`).join('')}</div>
+                                        <div style={{ fontSize: '0.8em', color: 'lightgray' }}>
+                                            Utilisé {favorite.count} fois
+                                        </div>
+                                    </div>
+                                </div>
+                            )
                         ))}
                         {hasMoreFavorites && (
                             <div
