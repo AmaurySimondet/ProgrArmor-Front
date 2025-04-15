@@ -135,7 +135,7 @@ const AllBanners = ({ userId }) => {
             <div style={{
                 display: 'flex',
                 gap: '20px',
-                maxWidth: '700px',
+                maxWidth: '90%',
                 minWidth: '350px',
                 overflowX: 'auto',
                 overflowY: 'hidden',
