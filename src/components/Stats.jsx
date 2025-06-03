@@ -8,6 +8,7 @@ import { COLORS } from "../utils/constants.js";
 import { useSearchParams } from "react-router-dom";
 import ActivityCalendar from "../pages/compte/ActivityCalendar.jsx";
 import PrTable from "../pages/compte/PrTable.jsx";
+import { calculateMovingAverage } from "../utils/maths.js";
 
 const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
@@ -38,7 +39,9 @@ function Stats({ stats, userId, subTab }) {
     const [opacity, setOpacity] = useState({
         value: 1,
         weightLoad: 1,
-        'elastic.tension': 1
+        'elastic.tension': 1,
+        valueMovingAverage: 1,
+        weightLoadMovingAverage: 1
     });
     const [regularityScore, setRegularityScore] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -50,31 +53,31 @@ function Stats({ stats, userId, subTab }) {
     const [selectedCategoriesIds, setSelectedCategoriesIds] = useState(null);
     const [searchParams] = useSearchParams();
 
-    const handleMouseEnter = (o) => {
-        const { dataKey } = o;
+    // const handleMouseEnter = (o) => {
+    //     const { dataKey } = o;
 
-        setOpacity((op) => {
-            const newOpacity = { ...op };
-            // Set all keys to 0.5 except the hovered one
-            Object.keys(newOpacity).forEach(key => {
-                newOpacity[key] = key === dataKey ? 1 : 0.5;
-            });
-            return newOpacity;
-        });
-    };
+    //     setOpacity((op) => {
+    //         const newOpacity = { ...op };
+    //         // Set all keys to 0.5 except the hovered one
+    //         Object.keys(newOpacity).forEach(key => {
+    //             newOpacity[key] = key === dataKey ? 1 : 0.5;
+    //         });
+    //         return newOpacity;
+    //     });
+    // };
 
-    const handleMouseLeave = (o) => {
-        const { dataKey } = o;
+    // const handleMouseLeave = (o) => {
+    //     const { dataKey } = o;
 
-        setOpacity((op) => {
-            const newOpacity = { ...op };
-            // Reset all opacities to 1
-            Object.keys(newOpacity).forEach(key => {
-                newOpacity[key] = 1;
-            });
-            return newOpacity;
-        });
-    };
+    //     setOpacity((op) => {
+    //         const newOpacity = { ...op };
+    //         // Reset all opacities to 1
+    //         Object.keys(newOpacity).forEach(key => {
+    //             newOpacity[key] = 1;
+    //         });
+    //         return newOpacity;
+    //     });
+    // };
 
     const handlePrTable = async () => {
         const PrTableQuery = {
@@ -165,8 +168,24 @@ function Stats({ stats, userId, subTab }) {
                     });
                     setSelectedTimeframe('max');
                 }
-                exerciceData.push(topExerciceSets.data.sets);
 
+                // Calculate moving averages
+                const valueMovingAverage = calculateMovingAverage(topExerciceSets.data.sets, 'value');
+                const weightLoadMovingAverage = calculateMovingAverage(topExerciceSets.data.sets, 'weightLoad');
+
+                // Add moving averages to each data point
+                const processedData = topExerciceSets.data.sets.map(data => {
+                    const valueAvg = valueMovingAverage.find(avg => avg.date === data.date)?.average;
+                    const weightLoadAvg = weightLoadMovingAverage.find(avg => avg.date === data.date)?.average;
+
+                    return {
+                        ...data,
+                        valueMovingAverage: valueAvg,
+                        weightLoadMovingAverage: weightLoadAvg
+                    };
+                });
+
+                exerciceData.push(processedData);
                 setWorkoutDataTopExercices(exerciceData);
             } catch (error) {
                 console.error("Error fetching stats:", error);
@@ -282,7 +301,10 @@ function Stats({ stats, userId, subTab }) {
                                             <Bar name="Reps / Secs" dataKey="value" fill="black" opacity={opacity.value} />
                                             <Line name="Charge (kg)" type="monotone" dataKey="weightLoad" stroke="#9b0000" strokeOpacity={opacity.weightLoad} />
                                             <Line name="Tension élastique (kg)" type="monotone" dataKey="elastic.tension" stroke="#82ca9d" strokeOpacity={opacity['elastic.tension']} />
-                                            <Legend onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} />
+                                            <Line name="Moyenne mobile Reps/Secs" type="monotone" dataKey="valueMovingAverage" stroke="#0000BDFF" strokeOpacity={0.4} dot={false} />
+                                            <Line name="Moyenne mobile Charge" type="monotone" dataKey="weightLoadMovingAverage" stroke="#ff0000" strokeOpacity={0.4} dot={false} />
+                                            {/* <Legend onMouseEnter={handleMouseEnter} onMouseLeave={HandleMouseLeave} /> */}
+                                            <Legend />
                                         </ComposedChart>
                                     </ResponsiveContainer>
                                 </section>
