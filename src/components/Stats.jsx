@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { XAxis, Tooltip, CartesianGrid, Line, ResponsiveContainer, Bar, ComposedChart, Legend } from 'recharts';
+import { XAxis, CartesianGrid, Line, ResponsiveContainer, Bar, ComposedChart, Legend } from 'recharts';
 import API from "../utils/API.js";
 import { Loader } from "./Loader.jsx";
 import { dateBasedOnTimeframe } from "../utils/dates.js";
@@ -37,11 +37,11 @@ const CustomTooltip = ({ active, payload, label }) => {
 function Stats({ stats, userId, subTab }) {
     const [workoutDataTopExercices, setWorkoutDataTopExercices] = useState([]);
     const [opacity, setOpacity] = useState({
-        value: 1,
+        value: 0.6,
         weightLoad: 1,
         'elastic.tension': 1,
-        valueMovingAverage: 1,
-        weightLoadMovingAverage: 1
+        valueMovingAverage: 0.2,
+        weightLoadMovingAverage: 0.2
     });
     const [regularityScore, setRegularityScore] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -52,6 +52,7 @@ function Stats({ stats, userId, subTab }) {
     const [selectedExerciseId, setSelectedExerciseId] = useState(null);
     const [selectedCategoriesIds, setSelectedCategoriesIds] = useState(null);
     const [searchParams] = useSearchParams();
+    const [hoveredData, setHoveredData] = useState(null);
 
     // const handleMouseEnter = (o) => {
     //     const { dataKey } = o;
@@ -133,14 +134,14 @@ function Stats({ stats, userId, subTab }) {
             }
         } else {
             // Use default values from the first exercise
-            setSelectedExerciseId(stats.topExercices[0].exercice._id);
-            setSelectedCategoriesIds(stats.topExercices[0].categories.map(cat => cat.category._id));
+            setSelectedExerciseId(stats.topExercices[0]?.exercice?._id);
+            setSelectedCategoriesIds(stats.topExercices[0]?.categories?.map(cat => cat.category._id));
         }
     }, []); // Run once on component mount
 
     useEffect(() => {
-        setSelectedExerciseId(stats.topExercices[selectedExercise].exercice._id);
-        setSelectedCategoriesIds(stats.topExercices[selectedExercise].categories.map(cat => cat.category._id));
+        setSelectedExerciseId(stats.topExercices[selectedExercise]?.exercice?._id);
+        setSelectedCategoriesIds(stats.topExercices[selectedExercise]?.categories?.map(cat => cat.category._id));
     }, [selectedExercise]);
 
     useEffect(() => {
@@ -244,11 +245,20 @@ function Stats({ stats, userId, subTab }) {
         );
     };
 
+    const handleMouseMove = (data) => {
+        if (data && data.activePayload) {
+            console.log(data.activePayload[0].payload);
+            setHoveredData(data.activePayload[0].payload);
+        } else {
+            setHoveredData(null);
+        }
+    };
+
     const ExerciseStats = () => {
         if (!stats.topExercices.length) return null;
 
         return (
-            <div className="stats-container popInElement">
+            <div className="stats-container">
                 <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Statistiques d'exercice</h2>
                 <div className="exercise-selection" style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
                     <select
@@ -281,6 +291,29 @@ function Stats({ stats, userId, subTab }) {
                     </select>
                 </div>
 
+                <div>
+                    <h2 style={{ color: 'grey' }}>
+                        <span style={{ color: 'black' }}>
+                            {hoveredData ? hoveredData.value : '-'}
+                        </span>
+                        <span>{' x '}</span>
+                        <span style={{ color: '#9b0000' }}>
+                            {hoveredData ? hoveredData.weightLoad : '-'}
+                        </span>
+                        <span>{' kg'}</span>
+                        {hoveredData?.elastic?.use &&
+                            hoveredData?.elastic?.use === 'resistance' ? (
+                            <span style={{ color: 'red' }}>{' + ' + hoveredData?.elastic?.tension + ' kg'}</span>
+                        ) : hoveredData?.elastic?.use === 'assistance' ? (
+                            <span style={{ color: 'green' }}>{' - ' + hoveredData?.elastic?.tension + ' kg'}</span>
+                        ) : null
+                        }
+                    </h2>
+                    <p style={{ color: 'grey' }}>
+                        {hoveredData ? hoveredData.date : '-'}
+                    </p>
+                </div>
+
                 {/* Workout Progress Chart */}
                 {
                     workoutDataTopExercices.map((exerciceData, index) => {
@@ -294,16 +327,20 @@ function Stats({ stats, userId, subTab }) {
                             <div>
                                 <section key={Math.random()} className="chart-section">
                                     <ResponsiveContainer width="100%" height={300}>
-                                        <ComposedChart width={400} height={400} data={formattedData}>
+                                        <ComposedChart
+                                            width={400}
+                                            height={400}
+                                            data={formattedData}
+                                            onMouseMove={handleMouseMove}
+                                            onMouseLeave={() => setHoveredData(null)}
+                                        >
                                             <XAxis dataKey="date" tick={() => null} />
-                                            <Tooltip content={<CustomTooltip />} />
                                             <CartesianGrid stroke="#f5f5f5" />
-                                            <Bar name="Reps / Secs" dataKey="value" fill="black" opacity={opacity.value} />
-                                            <Line name="Charge (kg)" type="monotone" dataKey="weightLoad" stroke="#9b0000" strokeOpacity={opacity.weightLoad} dot={false} />
-                                            <Line name="Tension élastique (kg)" type="monotone" dataKey="elastic.tension" stroke="#82ca9d" strokeOpacity={opacity['elastic.tension']} dot={false} />
-                                            <Line name="Moyenne mobile Reps/Secs" type="monotone" dataKey="valueMovingAverage" stroke="#0000BDFF" strokeOpacity={0.4} dot={false} />
-                                            <Line name="Moyenne mobile Charge" type="monotone" dataKey="weightLoadMovingAverage" stroke="#ff0000" strokeOpacity={0.4} dot={false} />
-                                            {/* <Legend onMouseEnter={handleMouseEnter} onMouseLeave={HandleMouseLeave} /> */}
+                                            <Bar name="Reps / Secs" dataKey="value" fill="black" opacity={opacity.value} isAnimationActive={false} />
+                                            <Line name="Charge (kg)" type="monotone" dataKey="weightLoad" stroke="#9b0000" strokeOpacity={opacity.weightLoad} dot={false} isAnimationActive={false} />
+                                            <Line name="Tension élastique (kg)" type="monotone" dataKey="elastic.tension" stroke="#82ca9d" strokeOpacity={opacity['elastic.tension']} dot={false} isAnimationActive={false} />
+                                            <Line name="Moyenne mobile Reps/Secs" type="monotone" dataKey="valueMovingAverage" stroke="#0000BDFF" strokeOpacity={opacity.valueMovingAverage} dot={false} isAnimationActive={false} />
+                                            <Line name="Moyenne mobile Charge" type="monotone" dataKey="weightLoadMovingAverage" stroke="#ff0000" strokeOpacity={opacity.weightLoadMovingAverage} dot={false} isAnimationActive={false} />
                                             <Legend />
                                         </ComposedChart>
                                     </ResponsiveContainer>

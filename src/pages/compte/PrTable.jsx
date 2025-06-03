@@ -4,7 +4,7 @@ import { useWindowDimensions } from '../../utils/useEffect';
 const PrTable = ({ PrTableResults }) => {
     const { width } = useWindowDimensions();
     return (
-        <div className="popInElement">
+        <div className="">
             {/* Repetitions Table */}
             <table border="1" style={{ width: '100%', textAlign: 'center', backgroundColor: 'white', overflowX: 'auto', marginBottom: '20px' }}
                 className="table table-hover table-striped table-bordered">
