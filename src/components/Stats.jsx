@@ -299,8 +299,8 @@ function Stats({ stats, userId, subTab }) {
                                             <Tooltip content={<CustomTooltip />} />
                                             <CartesianGrid stroke="#f5f5f5" />
                                             <Bar name="Reps / Secs" dataKey="value" fill="black" opacity={opacity.value} />
-                                            <Line name="Charge (kg)" type="monotone" dataKey="weightLoad" stroke="#9b0000" strokeOpacity={opacity.weightLoad} />
-                                            <Line name="Tension élastique (kg)" type="monotone" dataKey="elastic.tension" stroke="#82ca9d" strokeOpacity={opacity['elastic.tension']} />
+                                            <Line name="Charge (kg)" type="monotone" dataKey="weightLoad" stroke="#9b0000" strokeOpacity={opacity.weightLoad} dot={false} />
+                                            <Line name="Tension élastique (kg)" type="monotone" dataKey="elastic.tension" stroke="#82ca9d" strokeOpacity={opacity['elastic.tension']} dot={false} />
                                             <Line name="Moyenne mobile Reps/Secs" type="monotone" dataKey="valueMovingAverage" stroke="#0000BDFF" strokeOpacity={0.4} dot={false} />
                                             <Line name="Moyenne mobile Charge" type="monotone" dataKey="weightLoadMovingAverage" stroke="#ff0000" strokeOpacity={0.4} dot={false} />
                                             {/* <Legend onMouseEnter={handleMouseEnter} onMouseLeave={HandleMouseLeave} /> */}
