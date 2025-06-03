@@ -37,7 +37,7 @@ const CustomTooltip = ({ active, payload, label }) => {
 function Stats({ stats, userId, subTab }) {
     const [workoutDataTopExercices, setWorkoutDataTopExercices] = useState([]);
     const [opacity, setOpacity] = useState({
-        value: 0.6,
+        value: 0.4,
         weightLoad: 1,
         'elastic.tension': 1,
         valueMovingAverage: 0.2,
@@ -46,7 +46,7 @@ function Stats({ stats, userId, subTab }) {
     const [regularityScore, setRegularityScore] = useState(null);
     const [loading, setLoading] = useState(true);
     const [selectedExercise, setSelectedExercise] = useState(0); // Default to first exercise
-    const [selectedTimeframe, setSelectedTimeframe] = useState('3m'); // Default to 3 months
+    const [selectedTimeframe, setSelectedTimeframe] = useState('max'); // Default to 3 months
     const [prTableResults, setPrTableResults] = useState(null);
     const { width } = useWindowDimensions();
     const [selectedExerciseId, setSelectedExerciseId] = useState(null);
@@ -188,6 +188,11 @@ function Stats({ stats, userId, subTab }) {
 
                 exerciceData.push(processedData);
                 setWorkoutDataTopExercices(exerciceData);
+
+                // Set hoveredData to the last set if there are any sets
+                if (processedData.length > 0) {
+                    setHoveredData({ ...processedData[processedData.length - 1], date: new Date(processedData[processedData.length - 1].date).toLocaleDateString('fr-FR') });
+                }
             } catch (error) {
                 console.error("Error fetching stats:", error);
             } finally {
@@ -247,7 +252,6 @@ function Stats({ stats, userId, subTab }) {
 
     const handleMouseMove = (data) => {
         if (data && data.activePayload) {
-            console.log(data.activePayload[0].payload);
             setHoveredData(data.activePayload[0].payload);
         } else {
             setHoveredData(null);
@@ -266,7 +270,7 @@ function Stats({ stats, userId, subTab }) {
                         className="form-control"
                         onChange={(e) => {
                             setSelectedExercise(parseInt(e.target.value));
-                            setSelectedTimeframe('3m');
+                            setSelectedTimeframe('max');
                         }}
                         style={{ width: '70%' }}
                     >
