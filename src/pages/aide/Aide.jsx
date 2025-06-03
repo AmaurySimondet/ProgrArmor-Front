@@ -293,7 +293,7 @@ function Aide() {
                             onClick={handleClickBerger}
                             id="Berger">
 
-                            Converion des tables de Berger (%1RM)
+                            Conversion des tables de Berger (%1RM)
                             <img className={clickBerger ? "expert-toggle rotated" : "expert-toggle not-rotated"}
                                 src={require('../../images/icons/icons8-expand-arrow-90.webp')} />
                         </h2>
