@@ -19,7 +19,7 @@ import { circularProgressClasses } from "@mui/material";
 
 function Compte() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [activeTab, setActiveTab] = useState(searchParams.get('activeTab') || 'seances');
+  const [activeTab, setActiveTab] = useState(searchParams.get('activeTab') || 'statistiques');
   const [loadingUser, setLoadingUser] = useState(true);
   const [user, setUser] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
@@ -411,16 +411,16 @@ function Compte() {
     return (
       <div style={{ display: 'flex', justifyContent: 'center' }} className="tab-container" >
         <ul className="tabs" role="navigation" style={{ listStyle: 'none', padding: 0, display: 'flex', justifyContent: 'center' }}>
-          <li className={activeTab === 'seances' ? 'selected' : ''}>
-            <a className="tab" onClick={() => handleTabChange('seances')}>
-              <img src={require('../../images/icons/write.webp')} alt="seances" style={{ width: '20px', height: '20px', filter: 'invert(1)' }} />
-              {width > 700 ? ' Séances' : null}
-            </a>
-          </li>
           <li className={activeTab === 'statistiques' ? 'selected' : ''}>
             <a className="tab" onClick={() => handleTabChange('statistiques')}>
               <img src={require('../../images/icons/chart.webp')} alt="statistiques" style={{ width: '20px', height: '20px', filter: 'invert(1)' }} />
               {width > 700 ? ' Statistiques' : null}
+            </a>
+          </li>
+          <li className={activeTab === 'seances' ? 'selected' : ''}>
+            <a className="tab" onClick={() => handleTabChange('seances')}>
+              <img src={require('../../images/icons/write.webp')} alt="seances" style={{ width: '20px', height: '20px', filter: 'invert(1)' }} />
+              {width > 700 ? ' Séances' : null}
             </a>
           </li>
           {localStorage.getItem('id') === searchParams.get('id') || coach ? (
