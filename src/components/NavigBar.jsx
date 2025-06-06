@@ -51,7 +51,7 @@ function NavigBar() {
 
                 </div>
             </nav >
-            <Chrono />
+            {/* <Chrono /> */}
         </div >
     )
 }

@@ -25,7 +25,7 @@ function InscriptionForm() {
 
     const { fName, lName, email, password, cpassword } = state;
 
-    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) return alert("Email au mauvais format !")
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(email)) return alert("Email au mauvais format !")
     if (!email || email.length === 0) return alert("Aucun email fourni !");
     if (!password || password.length === 0) return alert("Aucun mot de passe fourni !");
     if (!fName || fName.length === 0) return alert("Aucun prénom fourni !");

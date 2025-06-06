@@ -75,7 +75,7 @@ const DisplaySeancesPost = (props) => {
 
     return (
         <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
-            {currentUser.following.length === 0 && props.dashboard && <h3 style={{ padding: "20px", margin: "0", fontWeight: "normal" }}>Tu ne suis personne pour le moment, donc on t'affiche tes propres séances... Pars stalker des athlètes !</h3>}
+            {currentUser.following.length === 0 && props.dashboard && <h3 style={{ padding: "20px", margin: "0", fontWeight: "normal", maxWidth: "700px" }}>Tu ne suis personne pour le moment, donc on t'affiche tes propres séances... Pars stalker des athlètes !</h3>}
             {seances && seances.length > 0 ? (
                 seances.map((seance, index) => (
                     <div

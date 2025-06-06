@@ -1,0 +1,94 @@
+diff --git a/src/components/Bannieres.jsx b/src/components/Bannieres.jsx
+index 42eb9fb..4277440 100644
+--- a/src/components/Bannieres.jsx
++++ b/src/components/Bannieres.jsx
+@@ -146,9 +146,9 @@ const AllBanners = ({ userId }) => {
+                 paddingLeft: '20px',
+                 paddingRight: '20px'
+             }}>
+-                <CreateSeanceBanner />
++                {/* <CreateSeanceBanner /> */}
+                 <FeedbackBanner />
+-                <FeaturesBanner />
++                {/* <FeaturesBanner /> */}
+                 {bannerImages.map((banner, index) => (
+                     <div key={index} style={{ flex: '0 0 auto' }}>
+                         <Bannieres
+diff --git a/src/components/DisplaySeancesPost.jsx b/src/components/DisplaySeancesPost.jsx
+index f2348ab..117aaee 100644
+--- a/src/components/DisplaySeancesPost.jsx
++++ b/src/components/DisplaySeancesPost.jsx
+@@ -75,7 +75,7 @@ const DisplaySeancesPost = (props) => {
+ 
+     return (
+         <div className='basic-flex popInElement' style={{ flexDirection: 'column', gap: '20px', alignItems: 'center' }}>
+-            {currentUser.following.length === 0 && props.dashboard && <h3 style={{ padding: "20px", margin: "0", fontWeight: "normal" }}>Tu ne suis personne pour le moment, donc on t'affiche tes propres séances... Pars stalker des athlètes !</h3>}
++            {currentUser.following.length === 0 && props.dashboard && <h3 style={{ padding: "20px", margin: "0", fontWeight: "normal", maxWidth: "700px" }}>Tu ne suis personne pour le moment, donc on t'affiche tes propres séances... Pars stalker des athlètes !</h3>}
+             {seances && seances.length > 0 ? (
+                 seances.map((seance, index) => (
+                     <div
+diff --git a/src/components/NavigBar.jsx b/src/components/NavigBar.jsx
+index b35b24a..1cac08c 100644
+--- a/src/components/NavigBar.jsx
++++ b/src/components/NavigBar.jsx
+@@ -51,7 +51,7 @@ function NavigBar() {
+ 
+                 </div>
+             </nav >
+-            <Chrono />
++            {/* <Chrono /> */}
+         </div >
+     )
+ }
+diff --git a/src/pages/connexion/ConnexionForm.jsx b/src/pages/connexion/ConnexionForm.jsx
+index f2f33df..ebad310 100644
+--- a/src/pages/connexion/ConnexionForm.jsx
++++ b/src/pages/connexion/ConnexionForm.jsx
+@@ -21,7 +21,7 @@ function ConnexionForm(props) {
+     }
+     try {
+       const { data } = await API.login(email, password);
+-      if (data.success === true) {
++      if (data.token !== null) {
+         const redirectUrl = new URLSearchParams(window.location.search).get('redirect');
+         window.location = `/token?token=${data.token}&redirect=${encodeURIComponent(redirectUrl || '/dashboard')}`;
+       } else {
+diff --git a/src/pages/inscription/InscriptionForm.jsx b/src/pages/inscription/InscriptionForm.jsx
+index 62604ad..859d929 100644
+--- a/src/pages/inscription/InscriptionForm.jsx
++++ b/src/pages/inscription/InscriptionForm.jsx
+@@ -25,7 +25,7 @@ function InscriptionForm() {
+ 
+     const { fName, lName, email, password, cpassword } = state;
+ 
+-    if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) return alert("Email au mauvais format !")
++    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i.test(email)) return alert("Email au mauvais format !")
+     if (!email || email.length === 0) return alert("Aucun email fourni !");
+     if (!password || password.length === 0) return alert("Aucun mot de passe fourni !");
+     if (!fName || fName.length === 0) return alert("Aucun prénom fourni !");
+diff --git a/src/utils/API.js b/src/utils/API.js
+index 44b45f5..d313d64 100644
+--- a/src/utils/API.js
++++ b/src/utils/API.js
+@@ -1,6 +1,7 @@
+ import axios from "axios";
+ const headers = {
+-  "Content-Type": "application/json"
++  "Content-Type": "application/json",
++  "Authorization": `Bearer ${localStorage.getItem("token")}`
+ };
+ const burl = process.env.REACT_APP_BACKEND_URL;
+ 
+diff --git a/src/utils/seance.js b/src/utils/seance.js
+index 40a2a9e..0d5f973 100644
+--- a/src/utils/seance.js
++++ b/src/utils/seance.js
+@@ -10,7 +10,7 @@ import API from "./API";
+  * @param {number} limit - The number of seances to fetch per page
+  * @returns {Promise} A promise that resolves with the transformed seances
+  */
+-const fetchSeancesData = async (users, seanceName, page = 1, limit = 3) => {
++const fetchSeancesData = async (users, seanceName, page = 1, limit = 2) => {
+     try {
+         const response = await API.getSeances({
+             users,

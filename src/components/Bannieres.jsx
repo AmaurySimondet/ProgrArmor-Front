@@ -146,9 +146,9 @@ const AllBanners = ({ userId }) => {
                 paddingLeft: '20px',
                 paddingRight: '20px'
             }}>
-                <CreateSeanceBanner />
+                {/* <CreateSeanceBanner /> */}
                 <FeedbackBanner />
-                <FeaturesBanner />
+                {/* <FeaturesBanner /> */}
                 {bannerImages.map((banner, index) => (
                     <div key={index} style={{ flex: '0 0 auto' }}>
                         <Bannieres

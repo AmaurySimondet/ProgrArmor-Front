@@ -21,7 +21,7 @@ function ConnexionForm(props) {
     }
     try {
       const { data } = await API.login(email, password);
-      if (data.success === true) {
+      if (data.token !== null) {
         const redirectUrl = new URLSearchParams(window.location.search).get('redirect');
         window.location = `/token?token=${data.token}&redirect=${encodeURIComponent(redirectUrl || '/dashboard')}`;
       } else {

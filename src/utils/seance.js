@@ -10,7 +10,7 @@ import API from "./API";
  * @param {number} limit - The number of seances to fetch per page
  * @returns {Promise} A promise that resolves with the transformed seances
  */
-const fetchSeancesData = async (users, seanceName, page = 1, limit = 3) => {
+const fetchSeancesData = async (users, seanceName, page = 1, limit = 2) => {
     try {
         const response = await API.getSeances({
             users,

@@ -1,6 +1,7 @@
 import axios from "axios";
 const headers = {
-  "Content-Type": "application/json"
+  "Content-Type": "application/json",
+  "Authorization": `Bearer ${localStorage.getItem("token")}`
 };
 const burl = process.env.REACT_APP_BACKEND_URL;
 
