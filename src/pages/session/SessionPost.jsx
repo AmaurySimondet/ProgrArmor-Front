@@ -12,6 +12,7 @@ const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, 
     const [postTitle, setPostTitle] = useState(title);
     const [postDescription, setPostDescription] = useState(description);
     const [recordSummary, setRecordSummary] = useState(null);
+    const [randomizedColors, setRandomizedColors] = useState([]);
     const { width } = useWindowDimensions();
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -27,6 +28,9 @@ const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, 
     };
 
     useEffect(() => {
+        // Initialize randomized colors once
+        setRandomizedColors([...COLORS.backgroundColors].sort(() => Math.random() - 0.5));
+
         // Record Summary
         // count number of unique set.PR (ex. set.PR === "PR" 3 times then recordSummary.push({ PR: "PR", number: 3 }))
         let recordSummary = [];
@@ -191,7 +195,7 @@ const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, 
                     recordSummary={recordSummary}
                     selectedDate={selectedDate}
                     stats={stats}
-                    backgroundColors={COLORS.backgroundColors}
+                    backgroundColors={randomizedColors}
                     editable={true}
                     seancePhotos={seancePhotos}
                     displayComments={false}

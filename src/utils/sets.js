@@ -175,12 +175,18 @@ const seanceToSets = (seanceId, selectedExercices, userId, date) => {
         const exerciceId = exercice._id;
         const exerciceTypeId = exerciceType?._id || exercice.type;
         const categoryIds = categories.map(category => ({ category: category._id, categoryType: category.type }));
+        const variations = [{ variation: exerciceId, type: exerciceTypeId }];
+        // then add each category to the variations
+        categories.forEach(category => {
+            variations.push({ variation: category._id, type: category.type });
+        });
 
         sets.forEach((set, setIndex) => {
             const seanceSet = {
                 user: userId,
                 exercice: exerciceId,
                 exerciceType: exerciceTypeId,
+                variations: variations,
                 categories: categoryIds,
                 seance: seanceId,
                 exerciceOrder: exerciseIndex + 1,

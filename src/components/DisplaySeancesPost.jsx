@@ -14,12 +14,15 @@ const DisplaySeancesPost = (props) => {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [currentUser, setCurrentUser] = useState(null);
+    const [randomizedColors, setRandomizedColors] = useState([]);
     const observer = useRef();
     const [previousName, setPreviousName] = useState(null);
 
     useEffect(() => {
         setLoading(true);
         getUserById(localStorage.getItem('id')).then(setCurrentUser);
+        // Initialize randomized colors once
+        setRandomizedColors([...COLORS.backgroundColors].sort(() => Math.random() - 0.5));
     }, []);
 
     // Last element callback for intersection observer
@@ -97,7 +100,7 @@ const DisplaySeancesPost = (props) => {
                             selectedDate={stringToDate(seance.date)}
                             selectedExercices={seance.exercices}
                             stats={seance.stats ? seance.stats : { nSets: "N/A", nReps: "N/A", intervalReps: "N/A", totalWeight: "N/A", intervalWeight: "N/A" }}
-                            backgroundColors={COLORS.backgroundColors}
+                            backgroundColors={randomizedColors}
                             recordSummary={seance.recordSummary ? seance.recordSummary : []}
                             editable={false}
                             seancePhotos={seance.seancePhotos ? seance.seancePhotos : []}
