@@ -51,6 +51,15 @@ function CGU(props) {
 
                     <h2>7. Données Personnelles</h2>
                     <p>Les informations personnelles collectées lors de l'inscription et de l'utilisation de la plateforme sont traitées conformément à notre Politique de Confidentialité.</p>
+                    <p>
+                        <strong>Partage des données avec des tiers et Google Ads :</strong><br />
+                        Nous pouvons partager certaines données clients avec des tiers, notamment des partenaires tels que Google, afin qu'ils fournissent des services en notre nom, y compris des services liés à la publicité (par exemple, Google Ads). Ce partage est effectué dans le respect de la législation applicable et des règles de Google concernant les annonces personnalisées et/ou le consentement des utilisateurs, y compris les <a href="https://www.google.com/about/company/user-consent-policy.html" target="_blank" rel="noopener noreferrer">Règles Google relatives au consentement de l'utilisateur dans l'UE</a>. <br />
+                        En utilisant notre plateforme, vous consentez à ce partage de données dans le cadre de la fourniture de ces services. Vous pouvez gérer vos préférences de consentement à tout moment via les paramètres de confidentialité de votre compte.
+                    </p>
+                    <p>
+                        <strong>Autres obligations :</strong><br />
+                        Vous devez respecter les règles de confidentialité indiquant que des données clients peuvent être partagées avec des tiers pour fournir des services en notre nom. Vous devez également donner votre consentement pour un tel partage, conformément à la loi ou aux règles Google applicables.
+                    </p>
 
                     <h2>8. Modification des CGU</h2>
                     <p>Nous nous réservons le droit de modifier ces CGU à tout moment. Les utilisateurs seront informés des mises à jour, et la poursuite de l'utilisation du service après ces modifications vaudra acceptation des nouvelles conditions.</p>

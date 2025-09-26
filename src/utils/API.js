@@ -224,7 +224,7 @@ export default {
     return axios.post(`${burl}/user/createSet`, send, { headers: headers, params: send });
   },
   getPRs: function (send) {
-    return axios.get(`${burl}/user/pr`, { headers: headers, params: send });
+    return axios.get(`${burl}/user/prs`, { headers: headers, params: send });
   },
   getLastFormats: function (send) {
     return axios.get(`${burl}/user/lastFormats`, {
