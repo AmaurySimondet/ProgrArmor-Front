@@ -449,4 +449,42 @@ export default {
       }
     });
   },
+
+  // SHIFT
+  createShift: function (userId, type) {
+    return axios.post(`${burl}/user/shift/create`, { type }, {
+      headers: headers,
+      params: { userId }
+    });
+  },
+  getActiveShift: function (userId) {
+    return axios.get(`${burl}/user/shift/get`, {
+      headers: headers,
+      params: { userId }
+    });
+  },
+  breakStart: function (userId, breakTime = null) {
+    return axios.put(`${burl}/user/shift/breakStart`, { breakTime }, {
+      headers: headers,
+      params: { userId }
+    });
+  },
+  breakStop: function (userId, breakTime = null) {
+    return axios.put(`${burl}/user/shift/breakStop`, { breakTime }, {
+      headers: headers,
+      params: { userId }
+    });
+  },
+  endShift: function (userId, endTime = null) {
+    return axios.put(`${burl}/user/shift/end`, { endTime }, {
+      headers: headers,
+      params: { userId }
+    });
+  },
+  getShiftStats: function (userId, includeActive = true) {
+    return axios.get(`${burl}/user/shift/stats`, {
+      headers: headers,
+      params: { userId, includeActive }
+    });
+  },
 };

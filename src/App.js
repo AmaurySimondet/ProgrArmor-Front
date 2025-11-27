@@ -20,6 +20,7 @@ import About from "./pages/about/About.jsx";
 import Measurements from "./pages/measurements/Measurements.jsx";
 import Selector from "./pages/selector/Selector.jsx";
 import Meal from "./pages/meal/Meal.jsx";
+import Shift from "./pages/shift/Shift.jsx";
 
 // import eruda from "eruda";
 
@@ -97,6 +98,10 @@ function App() {
 
             <Route path="/meal" element={<PrivateRoute />}>
                 <Route exact path='' element={<Meal />} />
+            </Route>
+
+            <Route path="/shift" element={<PrivateRoute />}>
+                <Route exact path='' element={<Shift />} />
             </Route>
         </Routes>
     );
