@@ -451,8 +451,8 @@ export default {
   },
 
   // SHIFT
-  createShift: function (userId, type) {
-    return axios.post(`${burl}/user/shift/create`, { type }, {
+  createShift: function (userId, type, startedAt, endedAt) {
+    return axios.post(`${burl}/user/shift/create`, { type, startedAt, endedAt }, {
       headers: headers,
       params: { userId }
     });
@@ -485,6 +485,42 @@ export default {
     return axios.get(`${burl}/user/shift/stats`, {
       headers: headers,
       params: { userId, includeActive }
+    });
+  },
+  getShiftParameters: function (userId) {
+    return axios.get(`${burl}/user/shift/parameters`, {
+      headers: headers,
+      params: { userId }
+    });
+  },
+  createOrUpdateShiftParameters: function (userId, params) {
+    return axios.post(`${burl}/user/shift/parameters`, params, {
+      headers: headers,
+      params: { userId }
+    });
+  },
+  getShiftSchedule: function (userId) {
+    return axios.get(`${burl}/user/shift/schedule`, {
+      headers: headers,
+      params: { userId }
+    });
+  },
+  getAllShifts: function (userId, options = {}) {
+    return axios.get(`${burl}/user/shift/all`, {
+      headers: headers,
+      params: { userId, ...options }
+    });
+  },
+  updateShift: function (userId, shiftId, updates) {
+    return axios.put(`${burl}/user/shift/update/${shiftId}`, updates, {
+      headers: headers,
+      params: { userId }
+    });
+  },
+  deleteShift: function (userId, shiftId) {
+    return axios.delete(`${burl}/user/shift/delete/${shiftId}`, {
+      headers: headers,
+      params: { userId }
     });
   },
 };
