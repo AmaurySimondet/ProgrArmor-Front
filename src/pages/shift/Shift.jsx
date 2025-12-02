@@ -355,9 +355,19 @@ const Shift = () => {
     // Render Active Shift / Start Shift section
     const renderTracker = () => (
         <div style={styles.card}>
-            <h2 style={styles.cardTitle}>
-                {shift ? '🟢 Active Shift' : '⚫ No Active Shift'}
-            </h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <h2 style={styles.cardTitle}>
+                    {shift ? '🟢 Active Shift' : '⚫ No Active Shift'}
+                </h2>
+                {shift && shift.startedAt && (
+                    <span style={{ float: 'right', fontWeight: 'normal', fontSize: '1rem', color: '#888' }}>
+                        {"Started at: " + new Date(shift.startedAt).toLocaleTimeString('fr-FR', {
+                            hour: '2-digit',
+                            minute: '2-digit'
+                        })}
+                    </span>
+                )}
+            </div>
 
             {shift ? (
                 <div style={styles.shiftDetails}>
