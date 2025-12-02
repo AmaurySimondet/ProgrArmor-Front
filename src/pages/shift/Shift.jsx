@@ -1102,7 +1102,7 @@ const Shift = () => {
                     onClick={() => handleScheduleDayOff()}
                     style={{ ...styles.editButton, backgroundColor: '#22c55e' }}
                 >
-                    😴 Schedule a day off
+                    + Schedule a day
                 </button>
             </div>
 
