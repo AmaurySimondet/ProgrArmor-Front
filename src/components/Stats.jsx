@@ -228,7 +228,7 @@ function Stats({ stats, userId, subTab }) {
                         }}>
                             {(regularityScore.average * 100).toFixed(2)} %
                         </h2>
-                        <p>Des semaines avec une séance</p>
+                        <p>Des semaines avec une séance ({regularityScore.uniqueWeeks} / {regularityScore.totalWeeksSinceFirstWorkout})</p>
                         <p style={{ fontStyle: 'italic', fontWeight: 'bold' }}>
                             {regularityScore.average * 100 >= 80 ? "Tu es exemplaire !" :
                                 regularityScore.average * 100 >= 60 ? "Tu as une belle regularité !" :
