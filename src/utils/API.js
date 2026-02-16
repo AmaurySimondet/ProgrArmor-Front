@@ -20,22 +20,7 @@ export default {
     return axios.post(`${burl}/user/verifyToken`, send, { headers: headers });
 
   },
-  facebook: function () {
-    return axios.get(`${burl}/user/auth/facebook`, { headers: headers })
 
-  },
-  facebookAuthenticate: function () {
-    return axios.get(`${burl}/user/auth/facebook/authenticate`, { headers: headers })
-
-  },
-  google: function () {
-    return axios.get(`${burl}/user/auth/google`, { headers: headers })
-
-  },
-  googleAuthenticate: function () {
-    return axios.get(`${burl}/user/auth/google/authenticate`, { headers: headers })
-
-  },
   isAuth: async function () {
     if (localStorage.getItem("token") !== null) {
       const result = await axios.post(`${burl}/user/verifyToken`, { token: localStorage.getItem("token") }, { headers: headers });

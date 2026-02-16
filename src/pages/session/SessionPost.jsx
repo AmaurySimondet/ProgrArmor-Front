@@ -77,7 +77,15 @@ const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, 
         const nSets = selectedExercices.reduce((acc, exercice) => acc + exercice.sets.length, 0);
         const nReps = selectedExercices.reduce((acc, exercice) => acc + exercice.sets.reduce((acc, set) => acc + set.value, 0), 0);
         const intervalReps = `${selectedExercices.reduce((acc, exercice) => Math.min(acc, ...exercice.sets.map(set => set.value)), Infinity)}-${selectedExercices.reduce((acc, exercice) => Math.max(acc, ...exercice.sets.map(set => set.value)), -Infinity)}`;
-        const totalWeight = selectedExercices.reduce((acc, exercice) => acc + exercice.sets.reduce((acc, set) => acc + set.weightLoad, 0), 0);
+        // Compute total weight: sum of sets * weightLoad * value
+        let totalWeight = 0;
+        for (const ex of workoutExercises ?? []) {
+            for (const set of ex.sets ?? []) {
+                const weight = Number(set.weightLoad) || 0;
+                const reps = Number(set.value) || 0;
+                totalWeight += weight * reps;
+            }
+        }
         const intervalWeight = `${selectedExercices.reduce((acc, exercice) => Math.min(acc, ...exercice.sets.map(set => set.weightLoad)), Infinity)}-${selectedExercices.reduce((acc, exercice) => Math.max(acc, ...exercice.sets.map(set => set.weightLoad)), -Infinity)}`;
         const stats = { nSets, nReps, intervalReps, totalWeight, intervalWeight };
         setStats(stats);
