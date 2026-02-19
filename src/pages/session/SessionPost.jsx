@@ -79,7 +79,7 @@ const SessionPost = ({ seanceId, selectedName, selectedDate, selectedExercices, 
         const intervalReps = `${selectedExercices.reduce((acc, exercice) => Math.min(acc, ...exercice.sets.map(set => set.value)), Infinity)}-${selectedExercices.reduce((acc, exercice) => Math.max(acc, ...exercice.sets.map(set => set.value)), -Infinity)}`;
         // Compute total weight: sum of sets * weightLoad * value
         let totalWeight = 0;
-        for (const ex of workoutExercises ?? []) {
+        for (const ex of selectedExercices ?? []) {
             for (const set of ex.sets ?? []) {
                 const weight = Number(set.weightLoad) || 0;
                 const reps = Number(set.value) || 0;
